@@ -50,7 +50,7 @@ module.exports = {
 
     'react/jsx-filename-extension': [
       1,
-      {extensions: ['.js', '.jsx', '.tsx', '.ts']},
+      { extensions: ['.js', '.jsx', '.tsx', '.ts'] },
     ],
     'import/prefer-default-export': 'off',
     'react/jsx-one-expression-per-line': 'off',
