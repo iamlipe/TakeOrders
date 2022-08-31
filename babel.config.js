@@ -14,6 +14,7 @@ module.exports = {
           '@hooks': './src/hooks',
           '@components': './src/components',
           '@assets': './src/assets',
+          '@i18n': './src/i18n',
           '@__mocks__': './__mocks__',
           '@__tests__': './__tests__',
         },
