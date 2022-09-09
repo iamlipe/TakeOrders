@@ -1,6 +1,5 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-s;
 import { BillUseCase } from '@database/useCase/billUseCase';
 
 import {
