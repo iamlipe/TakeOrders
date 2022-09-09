@@ -16,11 +16,13 @@ module.exports = {
           '@routes': './src/routes',
           '@assets': './src/assets',
           '@i18n': './src/i18n',
+          '@database': './src/database',
           '@__mocks__': './__mocks__',
           '@__tests__': './__tests__',
         },
       },
     ],
     ['module:react-native-dotenv'],
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
   ],
 };
