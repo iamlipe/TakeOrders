@@ -10,13 +10,14 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@nozbe/watermelondb": "^0.24.0",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
     "@reduxjs/toolkit": "^1.8.5",
     "i18next": "^21.9.1",
-    "react": "18.0.0",
+    "react": "18.1.0",
     "react-i18next": "^11.18.5",
-    "react-native": "0.69.5",
+    "react-native": "0.70.0",
     "react-native-dotenv": "^3.3.1",
     "react-native-localize": "^2.2.3",
     "react-native-responsive-fontsize": "^0.5.1",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-decorators": "^7.18.10",
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
     "@tsconfig/react-native": "^2.0.2",
