@@ -60,6 +60,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/no-unused-vars': 'off',
     strict: 0,
     'import/no-named-as-default': 0,
   },
