@@ -1,4 +1,4 @@
-import { all, call, put, take, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { StockUseCase } from '@database/useCase/stockUseCase';

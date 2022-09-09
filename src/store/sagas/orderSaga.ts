@@ -1,6 +1,5 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { database } from '@database/index';
 
 import { OrderUseCase } from '@database/useCase/orderUseCase';
 

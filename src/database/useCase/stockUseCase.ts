@@ -1,7 +1,6 @@
 import { database } from '@database/index';
 import { Stock as StockModel } from '@database/models/stockModel';
 import { Q } from '@nozbe/watermelondb';
-import { RemovedSpent, UpdatedSpent } from '@store/slices/spentSlice';
 
 import {
   GetStock,
