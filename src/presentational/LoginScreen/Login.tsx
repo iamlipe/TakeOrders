@@ -1,18 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-import Button from '@components/Button';
-
 export const Login = () => {
   return (
     <StyledContainer>
-      <Button
-        backgroundColor="dark"
-        fontColor="dark"
-        iconPosition="left"
-        align="center"
-        icon={{ name: 'arrow-forward', color: 'WHITE' }}
-      />
+      <StyledText>Login</StyledText>
     </StyledContainer>
   );
 };
@@ -25,3 +17,5 @@ const StyledContainer = styled.View`
   align-items: center;
   align-self: center;
 `;
+
+const StyledText = styled.Text``;
