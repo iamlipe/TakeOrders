@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "^2.9.8",
     "@nozbe/watermelondb": "^0.24.0",
+    "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
     "@reduxjs/toolkit": "^1.8.5",
