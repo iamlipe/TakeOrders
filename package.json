@@ -10,12 +10,14 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.8",
     "@nozbe/watermelondb": "^0.24.0",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
     "@reduxjs/toolkit": "^1.8.5",
     "i18next": "^21.9.1",
     "react": "18.1.0",
+    "react-hook-form": "^7.35.0",
     "react-i18next": "^11.18.5",
     "react-native": "0.70.0",
     "react-native-dotenv": "^3.3.1",
@@ -28,7 +30,8 @@
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.2",
     "redux-saga": "^1.2.1",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
