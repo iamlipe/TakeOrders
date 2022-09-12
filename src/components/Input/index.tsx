@@ -1,8 +1,11 @@
 /* eslint-disable react/display-name */
 
-import React, { forwardRef, memo, useCallback, useState } from 'react';
-import styled from 'styled-components/native';
-import { TextInputProps } from 'react-native';
+import React, { forwardRef, memo, useCallback } from 'react';
+import styled, { useTheme } from 'styled-components/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { TextInputProps, View } from 'react-native';
+import { useController } from 'react-hook-form';
+
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -10,21 +13,29 @@ import Animated, {
 } from 'react-native-reanimated';
 
 interface InputProps extends TextInputProps {
+  name: string;
+  control: any;
   label: string;
+  error?: string;
 }
 
-const Input = forwardRef(({ label }: InputProps, ref) => {
-  const [value, setValue] = useState('');
+const Input = forwardRef(({ name, control, label, error }: InputProps, ref) => {
+  const theme = useTheme();
+
   const labelTraslateY = useSharedValue(0);
   const labelFontSize = useSharedValue(14);
   const labelOpacity = useSharedValue(1);
+
+  const {
+    field: { onChange, value },
+  } = useController({ name, control });
 
   const handleFocus = useCallback(
     (editing: boolean) => {
       if (editing) {
         labelTraslateY.value = withTiming(-12, { duration: 100 });
         labelFontSize.value = withTiming(10, { duration: 100 });
-        labelOpacity.value = withTiming(0.2, { duration: 100 });
+        labelOpacity.value = withTiming(0.4, { duration: 100 });
       } else {
         labelTraslateY.value = withTiming(0, { duration: 100 });
         labelFontSize.value = withTiming(12, { duration: 100 });
@@ -43,17 +54,29 @@ const Input = forwardRef(({ label }: InputProps, ref) => {
   });
 
   return (
-    <StyledContainer style={{ elevation: 5 }}>
-      <StyledLabel style={animatedStyleLabel}>{label}</StyledLabel>
-      <StyledInputText
-        ref={ref}
-        onChangeText={setValue}
-        onFocus={() => handleFocus(true)}
-        onBlur={() => {
-          if (value === '') handleFocus(false);
-        }}
-      />
-    </StyledContainer>
+    <>
+      <StyledContainer style={{ elevation: 5 }}>
+        <StyledLabel style={animatedStyleLabel}>{label}</StyledLabel>
+        <StyledRow>
+          <StyledInputText
+            ref={ref}
+            onChangeText={onChange}
+            onFocus={() => handleFocus(true)}
+            onBlur={() => {
+              if (value === '') handleFocus(false);
+            }}
+          />
+          {error && (
+            <StyledIconError
+              name="error-outline"
+              size={16}
+              color={theme.colors.ERROR_300}
+            />
+          )}
+        </StyledRow>
+      </StyledContainer>
+      <StyledError>{error}</StyledError>
+    </>
   );
 });
 
@@ -68,6 +91,10 @@ const StyledContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.WHITE};
 
   padding: 0 16px;
+`;
+
+const StyledRow = styled.View`
+  flex-direction: row;
 `;
 
 const StyledLabel = styled(Animated.Text)`
@@ -91,6 +118,19 @@ const StyledInputText = styled.TextInput`
 
   padding: 0;
   margin-top: 12px;
+`;
+
+const StyledError = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+
+  color: ${({ theme }) => theme.colors.ERROR_500};
+
+  align-self: flex-end;
+`;
+
+const StyledIconError = styled(Icon)`
+  align-self: center;
 `;
 
 export default memo(Input);
