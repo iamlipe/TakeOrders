@@ -18,7 +18,7 @@ const App = () => {
             <StatusBar
               barStyle="dark-content"
               animated={false}
-              backgroundColor="transparent"
+              backgroundColor="#F2CB05"
             />
             <Routes />
           </I18nextProvider>
