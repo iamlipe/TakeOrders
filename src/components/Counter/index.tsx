@@ -3,15 +3,16 @@
 import React, { memo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Feather';
+
 import { useController } from 'react-hook-form';
 
-interface Props {
+interface CounterProps {
   name: string;
   control: any;
   maxQuantity?: number;
 }
 
-const Counter = ({ maxQuantity, name, control }: Props) => {
+const Counter = ({ maxQuantity, name, control }: CounterProps) => {
   const [counter, setCounter] = useState(0);
   const theme = useTheme();
 
@@ -37,11 +38,7 @@ const Counter = ({ maxQuantity, name, control }: Props) => {
             }}
           />
         </StyledBaseButton>
-        <StyledInputCounter
-          testID={`counter-${name}`}
-          value={String(counter)}
-          editable={false}
-        />
+        <StyledInputCounter value={String(counter)} editable={false} />
         <StyledBaseButton>
           <Icon
             testID="increment-button"
