@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { useTheme } from 'styled-components/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Dimensions } from 'react-native';
+
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+
+import BillIcon from '@assets/svgs/bill.svg';
+import FinancialIcon from '@assets/svgs/financial.svg';
+import StockIcon from '@assets/svgs/stock.svg';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
@@ -16,81 +26,146 @@ type NavPropsProducer = NativeStackNavigationProp<
   'BillHome' | 'FinancialHome' | 'StockHome'
 >;
 
-interface Props {
+interface TitleTabProps {
+  active: boolean;
+}
+
+interface ButtonTabProps {
   state: TabNavigationState<ParamListBase>;
 }
 
-export const ButtonTab: React.FC<Props> = ({ state }) => {
+const { width } = Dimensions.get('window');
+
+export const ButtonTab = ({ state }: ButtonTabProps) => {
+  const lineTranslateX = useSharedValue(width * 0.2 - 30);
+
   const { navigate } = useNavigation<NavPropsProducer>();
   const activeTab = state.routes[state.index].name;
   const theme = useTheme();
 
+  useEffect(() => {
+    if (activeTab === 'BillHome') {
+      lineTranslateX.value = withTiming(width * 0.2 - 30, { duration: 200 });
+    }
+
+    if (activeTab === 'StockHome') {
+      lineTranslateX.value = withTiming(width * 0.5 - 30, { duration: 200 });
+    }
+
+    if (activeTab === 'FinancialHome') {
+      lineTranslateX.value = withTiming(width * 0.8 - 30, { duration: 200 });
+    }
+  });
+
+  const animatedStyledLine = useAnimatedStyle(() => {
+    return {
+      left: lineTranslateX.value,
+    };
+  });
+
   const renderTab = (
-    iconName: string,
+    Icon: () => JSX.Element,
     title: string,
     route: keyof LoggedStackParamList,
   ) => (
-    <StyledButtonInactive onPress={() => navigate(route)}>
-      <Icon
-        name={iconName}
-        size={24}
-        color={
-          activeTab === route ? theme.colors.PRIMARY_600 : theme.colors.GRAY_800
-        }
-      />
-      {activeTab === route ? (
-        <StyledTextActive>{title}</StyledTextActive>
-      ) : (
-        <StyledTextInactive>{title}</StyledTextInactive>
-      )}
-    </StyledButtonInactive>
+    <StyledBaseButton onPress={() => navigate(route)}>
+      <Icon />
+      <StyledTitleTab active={activeTab === route}>{title}</StyledTitleTab>
+    </StyledBaseButton>
   );
 
   return (
-    <StyledBottonTabContainer>
+    <StyledBottonTabContainer style={{ elevation: 5 }}>
       <StyledButtonTabRow>
-        {renderTab('receipt-long', 'Comandas', 'BillHome')}
-        {renderTab('inventory', 'Estoque', 'StockHome')}
-        {renderTab('account-balance-wallet', 'Comandas', 'FinancialHome')}
+        {renderTab(
+          () => (
+            <BillIcon
+              fill={
+                activeTab === 'BillHome'
+                  ? theme.colors.PRIMARY_600
+                  : theme.colors.GRAY_800
+              }
+            />
+          ),
+          'Comandas',
+          'BillHome',
+        )}
+        {renderTab(
+          () => (
+            <StockIcon
+              fill={
+                activeTab === 'StockHome'
+                  ? theme.colors.PRIMARY_600
+                  : theme.colors.GRAY_800
+              }
+            />
+          ),
+          'Estoque',
+          'StockHome',
+        )}
+        {renderTab(
+          () => (
+            <FinancialIcon
+              fill={
+                activeTab === 'FinancialHome'
+                  ? theme.colors.PRIMARY_600
+                  : theme.colors.GRAY_800
+              }
+            />
+          ),
+          'Comandas',
+          'FinancialHome',
+        )}
       </StyledButtonTabRow>
+      <StyledLine style={animatedStyledLine} />
     </StyledBottonTabContainer>
   );
 };
 
-export const StyledBottonTabContainer = styled.SafeAreaView`
-  height: 49px;
-  background-color: ${({ theme }) => theme.colors.GRAY_100};
+const StyledBottonTabContainer = styled.SafeAreaView`
+  height: 75px;
 
-  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.12);
+  align-items: center;
+  justify-content: center;
+
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+
+  background-color: ${({ theme }) => theme.colors.GRAY_100};
 `;
 
-export const StyledButtonTabRow = styled.View`
+const StyledButtonTabRow = styled.View`
   width: 90%;
 
   flex-direction: row;
+
   justify-content: space-between;
   align-self: center;
 `;
 
-export const StyledButtonInactive = styled.TouchableOpacity`
-  width: 25%;
+const StyledBaseButton = styled.TouchableOpacity`
+  width: 33%;
 
   align-items: center;
   justify-content: flex-end;
 `;
 
-export const StyledTextInactive = styled.Text`
+const StyledTitleTab = styled.Text<TitleTabProps>`
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
 
-  color: ${({ theme }) => theme.colors.GRAY_800};
-
-  margin-top: 5px;
+  color: ${({ theme, active }) =>
+    active ? theme.colors.PRIMARY_600 : theme.colors.GRAY_800};
 `;
 
-export const StyledTextActive = styled(StyledTextInactive)`
-  background-color: ${({ theme }) => theme.colors.PRIMARY_100};
-  border-radius: 10px;
+const StyledLine = styled(Animated.View)`
+  position: absolute;
 
-  padding: 0 10px;
+  left: ${width * 0.2 - 30}px;
+  top: 58px;
+
+  width: 60px;
+  height: 2px;
+
+  background-color: ${({ theme }) => theme.colors.PRIMARY_500};
 `;
