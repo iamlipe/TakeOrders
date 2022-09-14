@@ -17,11 +17,12 @@ export const AppStack = () => {
 
   return (
     <App.Navigator screenOptions={{ headerShown: false }}>
-      {!auth ? (
+      {/* {!auth ? (
         <App.Screen name="AuthStack" component={AuthStack} />
       ) : (
         <App.Screen name="LoggedStack" component={LoggedStack} />
-      )}
+      )} */}
+      <App.Screen name="LoggedStack" component={LoggedStack} />
     </App.Navigator>
   );
 };
