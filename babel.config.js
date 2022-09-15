@@ -17,6 +17,7 @@ module.exports = {
           '@assets': './src/assets',
           '@i18n': './src/i18n',
           '@database': './src/database',
+          '@utils': './src/utils',
           '@__mocks__': './__mocks__',
           '@__tests__': './__tests__',
         },
