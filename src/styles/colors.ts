@@ -19,7 +19,7 @@ const COLORS = {
 
   // GRAY SCALE
   BLACK: '#000000',
-  GRAY_800: '#232323',
+  GRAY_800: '#262626',
   GRAY_600: '#C4C4C4',
   GRAY_300: '#ECECEC',
   GRAY_100: '#F2F2F2',
