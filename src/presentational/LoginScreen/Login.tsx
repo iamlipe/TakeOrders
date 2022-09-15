@@ -9,8 +9,13 @@ export const Login = () => {
   );
 };
 
-const StyledContainer = styled.View``;
+const StyledContainer = styled.View`
+  width: 90%;
+  height: 100%;
 
-const StyledButton = styled.Button``;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+`;
 
 const StyledText = styled.Text``;
