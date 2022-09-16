@@ -8,8 +8,8 @@ export interface Login {
 export interface Register {
   name: string;
   email: string;
-  phone?: string;
   password: string;
+  phone?: string;
 }
 
 export interface User {
@@ -24,6 +24,7 @@ interface UserState {
   error: null | string;
 
   auth: User | null;
+  defaultUser: User | null;
 }
 
 const initialState: UserState = {
@@ -31,6 +32,7 @@ const initialState: UserState = {
   error: null,
 
   auth: null,
+  defaultUser: null,
 };
 
 const userSlice = createSlice({
@@ -78,6 +80,32 @@ const userSlice = createSlice({
       isLoading: false,
       error,
     }),
+
+    GET_DEFAULT_USER: (state, _: PayloadAction<{ email: string }>) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+
+    GET_DEFAULT_USER_SUCCESS: (
+      state,
+      { payload: { user } }: PayloadAction<{ user: User }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+
+      defaultUser: user,
+    }),
+
+    GET_DEFAULT_USER_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
+    }),
   },
 });
 
@@ -92,6 +120,9 @@ export const {
   REGISTER,
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
+  GET_DEFAULT_USER,
+  GET_DEFAULT_USER_FAILURE,
+  GET_DEFAULT_USER_SUCCESS,
 } = actions;
 
 export default reducer;

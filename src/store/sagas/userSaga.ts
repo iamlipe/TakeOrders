@@ -8,6 +8,9 @@ import { InvoiceUseCase } from '@database/useCase/invoiceUseCase';
 import { User as UserModel } from '@database/models/userModel';
 
 import {
+  GET_DEFAULT_USER,
+  GET_DEFAULT_USER_FAILURE,
+  GET_DEFAULT_USER_SUCCESS,
   Login,
   LOGIN,
   LOGIN_FAILURE,
@@ -22,14 +25,18 @@ function* login({ payload }: PayloadAction<Login>) {
   try {
     const auth: UserModel[] = yield call(UserUseCase.get, payload);
 
-    const user = {
-      id: auth[0].id,
-      name: auth[0].name,
-      email: auth[0].email,
-      phone: auth[0].phone,
-    };
+    if (auth.length) {
+      const user = {
+        id: auth[0].id,
+        name: auth[0].name,
+        email: auth[0].email,
+        phone: auth[0].phone,
+      };
 
-    yield put(LOGIN_SUCCESS({ data: user }));
+      yield put(LOGIN_SUCCESS({ data: user }));
+    } else {
+      yield put(LOGIN_FAILURE({ error: 'unregistered user' }));
+    }
   } catch (error) {
     yield put(LOGIN_FAILURE({ error: 'something went wrong' }));
   }
@@ -57,6 +64,35 @@ function* register({ payload }: PayloadAction<Register>) {
   }
 }
 
+function* getUser({ payload }: PayloadAction<{ email: string }>) {
+  try {
+    const { email } = payload;
+
+    const data: UserModel[] = yield call(UserUseCase.getByEmail, { email });
+
+    if (data.length) {
+      const user = {
+        id: data[0].id,
+        name: data[0].name,
+        email: data[0].email,
+        phone: data[0].phone,
+      };
+
+      yield put(GET_DEFAULT_USER_SUCCESS({ user }));
+    } else {
+      yield put(
+        GET_DEFAULT_USER_FAILURE({ error: 'unregistered default user' }),
+      );
+    }
+  } catch (error) {
+    yield put(GET_DEFAULT_USER_FAILURE({ error: 'something went wrong' }));
+  }
+}
+
 export default function* watcher() {
-  yield all([takeLatest(LOGIN, login), takeLatest(REGISTER, register)]);
+  yield all([
+    takeLatest(LOGIN, login),
+    takeLatest(REGISTER, register),
+    takeLatest(GET_DEFAULT_USER, getUser),
+  ]);
 }
