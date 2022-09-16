@@ -68,10 +68,13 @@ interface Props {
   backgroundColor?: keyof typeof buttonBackgroundColor;
   align?: keyof typeof buttonAling;
   iconPosition?: keyof typeof buttonIconPosition;
+  title: string;
   icon?: {
     name: string;
     color: keyof typeof colors;
   };
+  onPress: () => void;
+  loading?: boolean;
 }
 
 const Button = ({
@@ -80,13 +83,25 @@ const Button = ({
   iconPosition = 'none',
   align = 'center',
   icon,
+  title,
+  loading,
+  onPress,
 }: Props) => {
   const theme = useTheme();
 
   return (
-    <StyledContainer background={backgroundColor} align={align}>
-      <StyledText color={fontColor}>Button</StyledText>
-      {icon && (
+    <StyledContainer
+      background={backgroundColor}
+      align={align}
+      onPress={onPress}
+    >
+      {loading && !icon ? (
+        <StyledLoading color="white" size="small" />
+      ) : (
+        <StyledText color={fontColor}>{title}</StyledText>
+      )}
+
+      {icon && !loading && (
         <StyledIcon
           name={icon.name}
           color={theme.colors[icon.color]}
@@ -94,6 +109,8 @@ const Button = ({
           position={iconPosition}
         />
       )}
+
+      {icon && loading && <StyledLoading color="white" size="small" />}
     </StyledContainer>
   );
 };
@@ -136,5 +153,7 @@ const StyledIcon = styled(Icon)<ButtonIconProps>`
 
   line-height: 16px;
 `;
+
+const StyledLoading = styled.ActivityIndicator``;
 
 export default memo(Button);
