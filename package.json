@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "4",
     "@hookform/resolvers": "^2.9.8",
     "@nozbe/watermelondb": "^0.24.0",
     "@react-navigation/bottom-tabs": "^6.3.3",
@@ -24,7 +25,10 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-dotenv": "^3.3.1",
     "react-native-element-dropdown": "^2.2.0",
+    "react-native-gesture-handler": "^2.6.1",
+    "react-native-linear-gradient": "^2.6.2",
     "react-native-localize": "^2.2.3",
+    "react-native-masked-text": "^1.13.0",
     "react-native-reanimated": "^2.10.0",
     "react-native-responsive-fontsize": "^0.5.1",
     "react-native-safe-area-context": "^4.3.3",

@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
+import { useTranslation } from 'react-i18next';
 
 import { GET_DEFAULT_USER, LOGIN, REGISTER } from '@store/slices/userSlice';
 
@@ -13,11 +14,13 @@ import Loading from '@presentational/LoginScreen/Loading';
 
 export const Login = () => {
   const [getUser, setGetUser] = useState(true);
-  const dispatch = useReduxDispatch();
 
+  const dispatch = useReduxDispatch();
   const { error, defaultUser, isLoading } = useReduxSelector(
     state => state.user,
   );
+
+  const { t } = useTranslation();
 
   const getDefaultUser = useCallback(() => {
     dispatch(GET_DEFAULT_USER({ email: 'default@email.com' }));
@@ -60,7 +63,7 @@ export const Login = () => {
 
       <StyledColumn>
         <Button
-          title="Entrar sem cadastro"
+          title={t('button.loginWithoutRegister')}
           icon={{ name: 'arrow-forward', color: 'WHITE' }}
           align="spaceBetween"
           onPress={getDefaultUser}
@@ -85,6 +88,5 @@ const StyledContainer = styled.View`
 const StyledColumn = styled.View`
   width: 100%;
 
-  padding: 16px 32px;
   margin-top: 100px;
 `;

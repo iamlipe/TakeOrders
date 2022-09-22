@@ -2,6 +2,7 @@ import { Q } from '@nozbe/watermelondb';
 import { database } from '@database/index';
 import { Order as OrderModel } from '@database/models/orderModel';
 import {
+  GetOrderById,
   NewOrder,
   OrdersResponse,
   RemovedOrder,
@@ -41,6 +42,18 @@ export class OrderUseCase {
     });
 
     return Promise.all(orders);
+  }
+
+  public static async getById({
+    billId,
+    orderId,
+  }: GetOrderById): Promise<OrderModel> {
+    const data = await database
+      .get<OrderModel>('orders')
+      .query(Q.and(Q.where('billId', billId), Q.where('id', orderId)))
+      .fetch();
+
+    return data[0];
   }
 
   public static async update({

@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import { useTranslation } from 'react-i18next';
+
 interface HeaderTitleProps {
   type: 'primary' | 'secundary';
 }
@@ -14,12 +16,16 @@ interface HeaderProps {
 const Header = ({ title, onPress }: HeaderProps) => {
   const theme = useTheme();
 
+  const { t } = useTranslation();
+
   return (
     <StyledContainer>
       {onPress && (
         <StyledBaseButton onPress={onPress}>
           <Icon name="angle-left" color={theme.colors.WHITE} size={16} />
-          <StyledTextButton>VOLTAR</StyledTextButton>
+          <StyledTextButton>
+            {t('components.header.backButton').toUpperCase()}
+          </StyledTextButton>
         </StyledBaseButton>
       )}
 
@@ -32,7 +38,7 @@ const Header = ({ title, onPress }: HeaderProps) => {
 
 const StyledContainer = styled.View`
   width: 100%;
-  height: 100px;
+  height: 120px;
 
   justify-content: space-evenly;
 

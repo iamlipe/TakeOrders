@@ -1,3 +1,94 @@
 {
-  "translation": {}
+  "translation": {
+    
+    
+    "errors": {
+      "required": "Requerida",
+      "validPhone": "Por favor, introduzca un número de móvil válido",
+      "minOne": "Agrega al menos 1"
+    },
+    
+    "components": {
+      "input": {
+        "name": "Nombre",
+        "phone": "Teléfono (opcional)"
+      },
+      
+      "searchInput": {
+        "bill": "Buscar cuenta",
+        "product": "Buscar producto"
+      },
+
+      "button": {
+        "loginWithoutRegister": "Iniciar sesión sin registro",
+        "add": "Agregar",
+        "close": "finalizar",
+        "addBill": "Agregar cuenta",
+        "addProductOrder": "Agregar producto",
+        "closeBill": "Finalizar cuenta",
+        "addProductStock": "Agregar producto en inventario"
+      },
+      
+      "card": {
+        "links": {
+          "details": "detalles",
+          "add": "agregar",
+          "delete": "eliminar"
+        },
+
+        "quantity": "cantidad"
+      },
+
+
+      "bottomTab": {
+        "bill": "Cuenta",
+        "stock": "Inventario",
+        "financial": "Financeiro"
+      },
+      
+      "header": {
+        "backButton": "regresar",
+        
+        "billHome": "Cuentas",
+        "billAddProducts": "Agregar products"
+      },
+
+      "counter": {
+        "quantity": "cantidad"
+      },
+
+      "loading": "Cargando..."
+    },
+
+    "screens": {
+      "billHome": {
+        "listBillEmpty": "Lista de cuentas vacía",
+
+        "addBillBottomSheet": {
+          "title": "Agregar cuenta"
+        }
+      },
+
+      "billDetails": {
+        "title": "Productos consumidos",
+        "listOrdersEmpty": "Esta cuenta no tiene pedidos",
+        "total": "total",
+
+        "closeBillBottomSheet": {
+          "title": "Cerrar cuenta",
+          "client": "Cliente",
+          "total": "Total"
+        }
+      },
+
+      "billAddProducts": {
+        "listProductsStockEmpty": "No tiene ningún producto registrado en su inventario, haga clic en el botón de abajo para comenzar a registrarse",
+
+        "addOrderBottomSheet": {
+          "title": "Agregar producto"
+        }
+      }
+    }
+    
+  }
 }

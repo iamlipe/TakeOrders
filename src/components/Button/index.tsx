@@ -8,18 +8,8 @@ const buttonIconPosition = {
 
   left: css`
     position: absolute;
-    top: 15.5px;
+    top: 14px;
     left: 12px;
-  `,
-};
-
-const buttonFontColor = {
-  light: css`
-    color: ${({ theme }) => theme.colors.GRAY_800};
-  `,
-
-  dark: css`
-    color: ${({ theme }) => theme.colors.WHITE};
   `,
 };
 
@@ -55,16 +45,16 @@ interface ButtonContainerProps {
   align: keyof typeof buttonAling;
 }
 
+interface ButtonTextProps {
+  color: keyof typeof colors;
+}
+
 interface ButtonIconProps {
   position: keyof typeof buttonIconPosition;
 }
 
-interface ButtonTextProps {
-  color: keyof typeof buttonFontColor;
-}
-
 interface Props {
-  fontColor?: keyof typeof buttonFontColor;
+  fontColor?: keyof typeof colors;
   backgroundColor?: keyof typeof buttonBackgroundColor;
   align?: keyof typeof buttonAling;
   iconPosition?: keyof typeof buttonIconPosition;
@@ -78,7 +68,7 @@ interface Props {
 }
 
 const Button = ({
-  fontColor = 'dark',
+  fontColor = 'WHITE',
   backgroundColor = 'dark',
   iconPosition = 'none',
   align = 'center',
@@ -122,8 +112,7 @@ const StyledContainer = styled.TouchableOpacity<ButtonContainerProps>`
       ${buttonAling[align]}
     `};
 
-  width: 100%;
-  height: 45px;
+  height: 44px;
 
   flex-direction: row;
   align-items: center;
@@ -131,16 +120,14 @@ const StyledContainer = styled.TouchableOpacity<ButtonContainerProps>`
   border-radius: 10px;
 
   padding: 8px 12px;
+  margin: 0 32px;
 `;
 
 const StyledText = styled.Text<ButtonTextProps>`
-  ${({ color }) =>
-    css`
-      ${buttonFontColor[color]},
-    `};
-
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
   font-size: ${({ theme }) => theme.sizing.SMALLER};
+
+  color: ${({ theme, color }) => theme.colors[color]};
 
   align-self: center;
 `;

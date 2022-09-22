@@ -9,14 +9,20 @@ import {
 
 export class ClientUseCase {
   public static async create({ userId, name, email, phone }: NewClient) {
+    const user: ClientModel[] = [];
+
     await database.write(async () => {
-      await database.get<ClientModel>('clients').create(data => {
+      const data = await database.get<ClientModel>('clients').create(data => {
         (data.userId = userId),
           (data.name = name),
           (data.email = email),
           (data.phone = phone);
       });
+
+      user.push(data);
     });
+
+    return user;
   }
 
   public static async get({

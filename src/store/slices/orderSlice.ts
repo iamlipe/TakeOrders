@@ -25,6 +25,11 @@ export interface UpdatedOrder extends RemovedOrder {
   };
 }
 
+export interface GetOrderById {
+  billId: string;
+  orderId: string;
+}
+
 export interface OrdersResponse {
   id: string;
   productId: string;
@@ -52,14 +57,14 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    GETL_ORDERS: (state, _: PayloadAction<GetOrder>) => ({
+    GET_ORDERS: (state, _: PayloadAction<GetOrder>) => ({
       ...state,
       isLoading: true,
 
       error: null,
     }),
 
-    GETL_ORDERS_SUCCESS: (
+    GET_ORDERS_SUCCESS: (
       state,
       {
         payload: { allOrdersClient },
@@ -71,7 +76,7 @@ const orderSlice = createSlice({
       allOrdersClient,
     }),
 
-    GETL_ORDERS_FAILURE: (
+    GET_ORDERS_FAILURE: (
       state,
       { payload: { error } }: PayloadAction<{ error: string }>,
     ) => ({
@@ -150,9 +155,9 @@ const { actions, reducer } = orderSlice;
 export const orderState = initialState;
 
 export const {
-  GETL_ORDERS,
-  GETL_ORDERS_SUCCESS,
-  GETL_ORDERS_FAILURE,
+  GET_ORDERS,
+  GET_ORDERS_SUCCESS,
+  GET_ORDERS_FAILURE,
   CREATE_ORDER,
   CREATE_ORDER_SUCCESS,
   CREATE_ORDER_FAILURE,
