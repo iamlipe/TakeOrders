@@ -12,6 +12,7 @@ import BillIcon from '@assets/svgs/bill.svg';
 import FinancialIcon from '@assets/svgs/financial.svg';
 import StockIcon from '@assets/svgs/stock.svg';
 
+import { useTranslation } from 'react-i18next';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   ParamListBase,
@@ -23,7 +24,7 @@ import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
-  'BillHome' | 'FinancialHome' | 'StockHome'
+  'BillStack' | 'FinancialHome' | 'StockHome'
 >;
 
 interface TitleTabProps {
@@ -40,11 +41,15 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
   const lineTranslateX = useSharedValue(width * 0.2 - 30);
 
   const { navigate } = useNavigation<NavPropsProducer>();
+
   const activeTab = state.routes[state.index].name;
+
+  const { t } = useTranslation();
+
   const theme = useTheme();
 
   useEffect(() => {
-    if (activeTab === 'BillHome') {
+    if (activeTab === 'BillStack') {
       lineTranslateX.value = withTiming(width * 0.2 - 30, { duration: 200 });
     }
 
@@ -81,14 +86,14 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
           () => (
             <BillIcon
               fill={
-                activeTab === 'BillHome'
+                activeTab === 'BillStack'
                   ? theme.colors.PRIMARY_600
                   : theme.colors.GRAY_800
               }
             />
           ),
-          'Comandas',
-          'BillHome',
+          t('components.bottomTab.bill'),
+          'BillStack',
         )}
         {renderTab(
           () => (
@@ -100,7 +105,7 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
               }
             />
           ),
-          'Estoque',
+          t('components.bottomTab.stock'),
           'StockHome',
         )}
         {renderTab(
@@ -113,7 +118,7 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
               }
             />
           ),
-          'Comandas',
+          t('components.bottomTab.financial'),
           'FinancialHome',
         )}
       </StyledButtonTabRow>
@@ -123,7 +128,7 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
 };
 
 const StyledBottonTabContainer = styled.SafeAreaView`
-  height: 75px;
+  height: 72px;
 
   align-items: center;
   justify-content: center;

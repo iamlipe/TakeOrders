@@ -1,3 +1,93 @@
 {
-  "translation": {}
+  "translation": {
+    
+    
+    "errors": {
+      "required": "Required",
+      "validPhone": "Please enter a valid mobile number",
+      "minOne": "Add at least 1"
+    },
+    
+    "components": {
+      "input": {
+        "name": "name",
+        "phone": "phone (optional)"
+      },
+      
+      "searchInput": {
+        "bill": "Search command",
+        "product": "Search product"
+      },
+
+      "button": {
+        "loginWithoutRegister": "Login without registration",
+        "add": "Add",
+        "close": "Close",
+        "addBill": "Add bill",
+        "addProductOrder": "Add product",
+        "closeBill": "Close bill",
+        "addProductStock": "Add product in stock"
+      },
+      
+      "card": {
+        "links": {
+          "details": "details",
+          "add": "add",
+          "delete": "delete"
+        },
+
+        "quantity": "quantity"
+      },
+
+
+      "bottomTab": {
+        "bill": "Bill",
+        "stock": "Stock",
+        "financial": "Financial"
+      },
+      
+      "header": {
+        "backButton": "back",
+
+        "billHome": "Bills",
+        "billAddProducts": "Add products"
+      },
+
+      "counter": {
+        "quantity": "quantity"
+      },
+
+      "loading": "Loading..."
+    },
+
+    "screens": {
+      "billHome": {
+        "listBillEmpty": "Empty bill list",
+
+        "addBillBottomSheet": {
+          "title": "Add product"
+        }
+      },
+
+      "billDetails": {
+        "title": "Products consumed",
+        "listOrdersEmpty": "This bill has no order",
+        "total": "total",
+
+        "closeBillBottomSheet": {
+          "title": "End bill",
+          "client": "Client",
+          "total": "Total"
+        }
+      },
+
+      "billAddProducts": {
+        "listProductsStockEmpty": "You don't have any products registered in your stock, click on the button below to start registering",
+
+        "addOrderBottomSheet": {
+          "title": "Add product"
+        }
+      }
+    }
+  }
 }

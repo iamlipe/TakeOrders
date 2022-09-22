@@ -8,9 +8,12 @@ import {
   CREATE_PRODUCT,
   CREATE_PRODUCT_FAILURE,
   CREATE_PRODUCT_SUCCESS,
+  GetProducsByName,
   GET_ALL_PRODUCTS,
   GET_ALL_PRODUCTS_FAILURE,
   GET_ALL_PRODUCTS_SUCCESS,
+  GET_PRODUCTS_BY_NAME,
+  GET_PRODUCTS_BY_NAME_SUCCESS,
   NewProduct,
   RemovedProduct,
   REMOVE_PRODUCT,
@@ -27,6 +30,19 @@ function* getAllProducts() {
     const allProducts: ProductModel[] = yield call(ProductUseCase.get);
 
     yield put(GET_ALL_PRODUCTS_SUCCESS({ allProducts }));
+  } catch (error) {
+    yield put(GET_ALL_PRODUCTS_FAILURE({ error: 'something went wrong' }));
+  }
+}
+
+function* getProductsByName({ payload }: PayloadAction<GetProducsByName>) {
+  try {
+    const foundProducts: ProductModel[] = yield call(
+      ProductUseCase.getByName,
+      payload,
+    );
+
+    yield put(GET_PRODUCTS_BY_NAME_SUCCESS({ foundProducts }));
   } catch (error) {
     yield put(GET_ALL_PRODUCTS_FAILURE({ error: 'something went wrong' }));
   }
@@ -77,6 +93,7 @@ function* removeProduct({ payload }: PayloadAction<RemovedProduct>) {
 export default function* watcher() {
   yield all([
     takeLatest(GET_ALL_PRODUCTS, getAllProducts),
+    takeLatest(GET_PRODUCTS_BY_NAME, getProductsByName),
     takeLatest(CREATE_PRODUCT, createProduct),
     takeLatest(UPDATE_PRODUCT, updateProduct),
     takeLatest(REMOVE_PRODUCT, removeProduct),

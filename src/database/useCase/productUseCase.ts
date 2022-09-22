@@ -39,10 +39,12 @@ export class ProductUseCase {
   }: {
     name: string;
   }): Promise<ProductModel[]> {
-    return database
+    const data = await database
       .get<ProductModel>('products')
       .query(Q.where('name', name))
       .fetch();
+
+    return data;
   }
 
   public static async update({

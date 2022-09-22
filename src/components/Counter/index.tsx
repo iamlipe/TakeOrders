@@ -1,29 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { useController } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface CounterProps {
   name: string;
   control: any;
+  error?: string;
   maxQuantity?: number;
 }
 
-const Counter = ({ maxQuantity, name, control }: CounterProps) => {
-  const [counter, setCounter] = useState(0);
+const Counter = ({ maxQuantity, name, control, error }: CounterProps) => {
+  const [counter, setCounter] = useState(1);
+
+  const { t } = useTranslation();
+
   const theme = useTheme();
 
   const {
     field: { onChange },
   } = useController({ name, control });
 
+  useEffect(() => {
+    onChange(1);
+  }, [onChange]);
+
   return (
-    <>
-      <StyledTitle>Quantidade</StyledTitle>
-      <StyledContainer>
+    <StyledContainer>
+      <StyledTitle>{t('components.counter.quantity')}</StyledTitle>
+      <StyledContent>
         <StyledBaseButton>
           <Icon
             testID="decrement-button"
@@ -31,7 +40,7 @@ const Counter = ({ maxQuantity, name, control }: CounterProps) => {
             color={theme.colors.PRIMARY_500}
             size={18}
             onPress={() => {
-              const newCounter = counter - 1 < 0 ? 0 : counter - 1;
+              const newCounter = counter - 1 < 1 ? 1 : counter - 1;
 
               setCounter(newCounter);
               onChange(newCounter);
@@ -61,12 +70,15 @@ const Counter = ({ maxQuantity, name, control }: CounterProps) => {
             }}
           />
         </StyledBaseButton>
-      </StyledContainer>
-    </>
+      </StyledContent>
+      {error && <StyledError>{error}</StyledError>}
+    </StyledContainer>
   );
 };
 
-const StyledContainer = styled.View`
+const StyledContainer = styled.View``;
+
+const StyledContent = styled.View`
   height: 40px;
   width: 118px;
 
@@ -107,6 +119,20 @@ const StyledTitle = styled.Text`
   text-align: center;
 
   margin-bottom: 4px;
+`;
+
+const StyledError = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+
+  color: ${({ theme }) => theme.colors.ERROR_500};
+
+  align-self: center;
+
+  line-height: 16px;
+
+  margin-top: 8px;
+  margin-bottom: -24px;
 `;
 
 export default memo(Counter);

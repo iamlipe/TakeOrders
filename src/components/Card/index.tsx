@@ -1,5 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components/native';
+
+import { useTranslation } from 'react-i18next';
+import { useIsFocused } from '@react-navigation/native';
+import { OrderUseCase } from '@database/useCase/orderUseCase';
+
+import formatedCurrency from '@utils/formatedCurrency';
 
 const cardSize = {
   small: css`
@@ -45,38 +51,86 @@ interface CardProps {
     image?: string;
     title: string;
     description: string;
+    quantity?: string;
+    linkTitle?: string;
     link?: () => void;
   };
 
+  type?: 'normal' | 'clients';
   cardSize?: 'small' | 'medium' | 'large';
+  noTouchable?: boolean;
+
+  onPress: () => void;
 }
 
 const Card = ({
-  item: { image, title, description, link },
+  item: { image, title, description, quantity, linkTitle, link },
+  type = 'normal',
   cardSize = 'medium',
+  noTouchable = false,
+  onPress,
 }: CardProps) => {
+  const [price, setPrice] = useState(0);
+
+  const { t } = useTranslation();
+
+  const isFocused = useIsFocused();
+
+  const handleOrders = useCallback(async () => {
+    const orders = await OrderUseCase.get({ billId: description });
+
+    if (orders.length) {
+      const priceOrder = orders.reduce(
+        (prev, curr) => prev + curr.quantity * curr.product.price,
+        0,
+      );
+
+      setPrice(priceOrder);
+    }
+  }, [description]);
+
+  useEffect(() => {
+    if (type === 'clients' && isFocused) {
+      handleOrders();
+    }
+  }, [handleOrders, isFocused, type]);
+
   return (
-    <StyledContainer size={cardSize} style={{ elevation: 5 }}>
+    <StyledContainer
+      size={cardSize}
+      style={{ elevation: 2 }}
+      onPress={onPress}
+      disabled={noTouchable}
+    >
       <StyledImage size={cardSize} source={image} />
 
       <StyledColumn>
         <StyledTitle>{title}</StyledTitle>
-        <StyledDescription>{description}</StyledDescription>
+        <StyledRow>
+          {quantity && (
+            <StyledDescriptionQuantity>{`${t(
+              'components.card.quantity',
+            )}: ${quantity}`}</StyledDescriptionQuantity>
+          )}
+          <StyledDescription>
+            {type === 'clients' ? formatedCurrency(price) : description}
+          </StyledDescription>
+        </StyledRow>
       </StyledColumn>
 
       {link && (
         <StyledBaseButton onPress={link}>
-          <StyledLink>Adicionar</StyledLink>
+          <StyledLink>
+            {linkTitle ? linkTitle : t('components.card.links.add')}
+          </StyledLink>
         </StyledBaseButton>
       )}
     </StyledContainer>
   );
 };
 
-const StyledContainer = styled.View<CardContainerProps>`
+const StyledContainer = styled.TouchableOpacity<CardContainerProps>`
   ${({ size }) => cardSize[size]}
-
-  width: 100%;
 
   flex-direction: row;
 
@@ -84,6 +138,11 @@ const StyledContainer = styled.View<CardContainerProps>`
   background-color: ${({ theme }) => theme.colors.WHITE};
 
   padding-right: 16px;
+  margin: 4px 32px;
+`;
+
+const StyledRow = styled.View`
+  flex-direction: row;
 `;
 
 const StyledColumn = styled.View`
@@ -105,6 +164,10 @@ const StyledTitle = styled.Text`
 
 const StyledDescription = styled(StyledTitle)`
   font-size: ${({ theme }) => theme.sizing.MINOR};
+`;
+
+const StyledDescriptionQuantity = styled(StyledDescription)`
+  margin-right: 8px;
 `;
 
 const StyledImage = styled.Image<CardImageProps>`

@@ -5,8 +5,12 @@ export interface NewProduct {
   stockId: string;
   name: string;
   type: string;
-  image: string;
+  image?: string;
   price: number;
+}
+
+export interface GetProducsByName {
+  name: string;
 }
 
 export interface RemovedProduct {
@@ -28,7 +32,7 @@ interface ProductState {
   error: null | string;
 
   allProducts: ProductModel[] | null;
-  product: ProductModel | null;
+  foundProducts: ProductModel[] | null;
 }
 
 const initialState: ProductState = {
@@ -36,7 +40,7 @@ const initialState: ProductState = {
   error: null,
 
   allProducts: null,
-  product: null,
+  foundProducts: null,
 };
 
 const productSlice = createSlice({
@@ -69,6 +73,34 @@ const productSlice = createSlice({
       error: error,
 
       allProducts: null,
+    }),
+
+    GET_PRODUCTS_BY_NAME: (state, _: PayloadAction<GetProducsByName>) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+    }),
+
+    GET_PRODUCTS_BY_NAME_SUCCESS: (
+      state,
+      {
+        payload: { foundProducts },
+      }: PayloadAction<{ foundProducts: ProductModel[] }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+
+      foundProducts,
+    }),
+
+    GET_PRODUCTS_BY_NAME_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
     }),
 
     CREATE_PRODUCT: (state, _: PayloadAction<NewProduct>) => ({
@@ -144,6 +176,9 @@ export const {
   GET_ALL_PRODUCTS,
   GET_ALL_PRODUCTS_FAILURE,
   GET_ALL_PRODUCTS_SUCCESS,
+  GET_PRODUCTS_BY_NAME,
+  GET_PRODUCTS_BY_NAME_SUCCESS,
+  GET_PRODUCTS_BY_NAME_FAILURE,
   CREATE_PRODUCT,
   CREATE_PRODUCT_SUCCESS,
   CREATE_PRODUCT_FAILURE,

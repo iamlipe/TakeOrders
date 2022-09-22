@@ -1,15 +1,19 @@
 import { Model } from '@nozbe/watermelondb';
-import { field, relation } from '@nozbe/watermelondb/decorators';
-import { Client } from './clientModal';
+import { field } from '@nozbe/watermelondb/decorators';
+import { Associations } from '@nozbe/watermelondb/Model';
 
 export class Bill extends Model {
   static table = 'bills';
 
-  @field('status') status!: boolean;
+  @field('name') name!: string;
 
-  @field('clientId') clientId!: string;
+  @field('email') email?: string;
+
+  @field('phone') phone?: string;
+
+  @field('status') status!: boolean;
 
   @field('invoiceId') invoiceId!: string;
 
-  @relation('clients', 'clientId') client!: Client;
+  @field('userId') userId!: string;
 }

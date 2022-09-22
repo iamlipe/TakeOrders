@@ -5,9 +5,9 @@ import { OrderUseCase } from '@database/useCase/orderUseCase';
 
 import {
   GetOrder,
-  GETL_ORDERS,
-  GETL_ORDERS_SUCCESS,
-  GETL_ORDERS_FAILURE,
+  GET_ORDERS,
+  GET_ORDERS_SUCCESS,
+  GET_ORDERS_FAILURE,
   NewOrder,
   CREATE_ORDER_FAILURE,
   CREATE_ORDER_SUCCESS,
@@ -29,9 +29,9 @@ function* getOrders({ payload }: PayloadAction<GetOrder>) {
       billId: payload.billId,
     });
 
-    yield put(GETL_ORDERS_SUCCESS({ allOrdersClient }));
+    yield put(GET_ORDERS_SUCCESS({ allOrdersClient }));
   } catch (error) {
-    yield put(GETL_ORDERS_FAILURE({ error: 'something went wrong' }));
+    yield put(GET_ORDERS_FAILURE({ error: 'something went wrong' }));
   }
 }
 
@@ -67,7 +67,7 @@ function* removeOrder({ payload }: PayloadAction<RemovedOrder>) {
 
 export default function* watcher() {
   yield all([
-    takeLatest(GETL_ORDERS, getOrders),
+    takeLatest(GET_ORDERS, getOrders),
     takeLatest(CREATE_ORDER, addNewOrder),
     takeLatest(UPDATE_ORDER, updateOrder),
     takeLatest(REMOVE_ORDER, removeOrder),

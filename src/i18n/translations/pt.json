@@ -1,3 +1,91 @@
 {
-  "translation": {}
+  "translation": {
+    "errors": {
+      "required": "Preenchimento obrigatório",
+      "validPhone": "Insira um número de celular válido",
+      "minOne": "Adicione ao menos 1"
+    },
+    
+    "components": {
+      "input": {
+        "name": "nome",
+        "phone": "celular (opcional)"
+      },
+      
+      "searchInput": {
+        "bill": "Buscar comanda",
+        "product": "Buscar produto"
+      },
+
+      "button": {
+        "loginWithoutRegister": "Entrar sem cadastro",
+        "add": "adicionar",
+        "close": "Fechar",
+        "addBill": "Adicionar comandas",
+        "addProductOrder": "Adicionar produto",
+        "closeBill": "Fechar comanda",
+        "addProductStock": "Adicionar produto no estoque"
+      },
+      
+      "card": {
+        "links": {
+          "details": "detalhes",
+          "add": "adicionar",
+          "delete": "excluir"
+        },
+
+        "quantity": "quantidade"
+      },
+
+
+      "bottomTab": {
+        "bill": "Comandas",
+        "stock": "Estoque",
+        "financial": "Financeiro"
+      },
+      
+      "header": {
+        "backButton": "voltar",
+
+        "billHome": "Comandas",
+        "billAddProducts": "Adicionar produtos"
+      },
+
+      "counter": {
+        "quantity": "quantidade"
+      },
+
+      "loading": "Carregando..."
+    },
+    
+    "screens": {
+      "billHome": {
+        "listBillEmpty": "Lista de comandas vazia",
+
+        "addBillBottomSheet": {
+          "title": "Adicionar produto"
+        }
+      },
+
+      "billDetails": {
+        "title": "Produtos consumidos",
+        "listOrdersEmpty": "Esta conta não tem ordem",
+        "total": "total",
+
+        "closeBillBottomSheet": {
+          "title": "Finalizar comanda",
+          "client": "Cliente",
+          "total": "Total"
+        }
+      },
+
+      "billAddProducts": {
+        "listProductsStockEmpty": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+
+        "addOrderBottomSheet": {
+          "title": "Adicionar produto"
+        }
+      }
+    }
+  }
 }

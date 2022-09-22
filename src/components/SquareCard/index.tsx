@@ -3,23 +3,21 @@ import styled from 'styled-components/native';
 
 interface SquareCardProps {
   item: {
-    title: string;
-    description: string;
-
-    link: () => void;
+    name: string;
+    price: string;
   };
+
+  onPress: () => void;
 }
 
-const SquareCard = ({
-  item: { title, description, link },
-}: SquareCardProps) => {
+const SquareCard = ({ item: { name, price }, onPress }: SquareCardProps) => {
   return (
     <StyledContainer style={{ elevation: 5 }}>
       <StyledImage />
-      <StyledTitle>{title}</StyledTitle>
-      <StyledDescription>{description}</StyledDescription>
+      <StyledTitle>{name}</StyledTitle>
+      <StyledDescription>{price}</StyledDescription>
 
-      <StyledBaseButton onPress={link}>
+      <StyledBaseButton onPress={onPress}>
         <StyledLink>Adicionar</StyledLink>
       </StyledBaseButton>
     </StyledContainer>
@@ -27,7 +25,7 @@ const SquareCard = ({
 };
 
 const StyledContainer = styled.View`
-  width: 49%;
+  width: 48%;
 
   border-radius: 5px;
 
@@ -37,6 +35,7 @@ const StyledContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.WHITE};
 
   padding: 16px 8px;
+  margin: 1%;
 `;
 
 const StyledImage = styled.Image`
