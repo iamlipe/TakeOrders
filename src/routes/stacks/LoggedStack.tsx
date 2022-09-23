@@ -7,14 +7,14 @@ import {
 
 import { BillStack } from './BillStack';
 import { FinancialHome } from '@presentational/FinancialScreen/FinancialHome';
-import { StockHome } from '@presentational/StockScreen/StockHome';
+import { StockStack } from './StockStack';
 
 import { ButtonTab } from '@routes/BottomTab';
 
 export type LoggedStackParamList = {
   BillStack: undefined;
   FinancialHome: undefined;
-  StockHome: undefined;
+  StockStack: undefined;
 };
 
 const TabBar = (props: BottomTabBarProps) => <ButtonTab state={props.state} />;
@@ -28,6 +28,6 @@ export const LoggedStack = () => (
   >
     <Logged.Screen name="BillStack" component={BillStack} />
     <Logged.Screen name="FinancialHome" component={FinancialHome} />
-    <Logged.Screen name="StockHome" component={StockHome} />
+    <Logged.Screen name="StockStack" component={StockStack} />
   </Logged.Navigator>
 );

@@ -7,10 +7,15 @@ export interface NewProduct {
   type: string;
   image?: string;
   price: number;
+  quantity: number;
 }
 
 export interface GetProducsByName {
   name: string;
+}
+
+export interface GetProductById {
+  productId: string;
 }
 
 export interface RemovedProduct {
@@ -24,6 +29,7 @@ export interface UpdatedProduct extends RemovedProduct {
     type?: string;
     image?: string;
     price?: number;
+    quantity?: number;
   };
 }
 
@@ -33,6 +39,7 @@ interface ProductState {
 
   allProducts: ProductModel[] | null;
   foundProducts: ProductModel[] | null;
+  selectedProduct: ProductModel | null;
 }
 
 const initialState: ProductState = {
@@ -41,6 +48,7 @@ const initialState: ProductState = {
 
   allProducts: null,
   foundProducts: null,
+  selectedProduct: null,
 };
 
 const productSlice = createSlice({
@@ -95,6 +103,34 @@ const productSlice = createSlice({
     }),
 
     GET_PRODUCTS_BY_NAME_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
+    }),
+
+    GET_PRODUCT_BY_ID: (state, _: PayloadAction<GetProductById>) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+
+    GET_PRODUCT_BY_ID_SUCCESS: (
+      state,
+      {
+        payload: { selectedProduct },
+      }: PayloadAction<{ selectedProduct: ProductModel }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+
+      selectedProduct,
+    }),
+
+    GET_PRODUCT_BY_ID_FAILURE: (
       state,
       { payload: { error } }: PayloadAction<{ error: string }>,
     ) => ({
@@ -179,6 +215,9 @@ export const {
   GET_PRODUCTS_BY_NAME,
   GET_PRODUCTS_BY_NAME_SUCCESS,
   GET_PRODUCTS_BY_NAME_FAILURE,
+  GET_PRODUCT_BY_ID,
+  GET_PRODUCT_BY_ID_SUCCESS,
+  GET_PRODUCT_BY_ID_FAILURE,
   CREATE_PRODUCT,
   CREATE_PRODUCT_SUCCESS,
   CREATE_PRODUCT_FAILURE,

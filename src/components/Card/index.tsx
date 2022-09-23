@@ -58,16 +58,14 @@ interface CardProps {
 
   type?: 'normal' | 'clients';
   cardSize?: 'small' | 'medium' | 'large';
-  noTouchable?: boolean;
 
-  onPress: () => void;
+  onPress?: () => void;
 }
 
 const Card = ({
   item: { image, title, description, quantity, linkTitle, link },
   type = 'normal',
   cardSize = 'medium',
-  noTouchable = false,
   onPress,
 }: CardProps) => {
   const [price, setPrice] = useState(0);
@@ -100,7 +98,7 @@ const Card = ({
       size={cardSize}
       style={{ elevation: 2 }}
       onPress={onPress}
-      disabled={noTouchable}
+      disabled={!onPress}
     >
       <StyledImage size={cardSize} source={image} />
 

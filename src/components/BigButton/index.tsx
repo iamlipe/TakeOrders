@@ -27,7 +27,6 @@ const BigButton = ({ title, icon, onPress }: BigButtomProps) => {
 };
 
 const StyledContainer = styled.TouchableOpacity`
-  width: 100%;
   height: 100px;
 
   align-items: center;
@@ -36,6 +35,8 @@ const StyledContainer = styled.TouchableOpacity`
   border-radius: 10px;
 
   background-color: ${({ theme }) => theme.colors.PRIMARY_600};
+
+  margin: 0 32px;
 `;
 
 const StyledText = styled.Text`

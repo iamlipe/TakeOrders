@@ -2,6 +2,7 @@ import { Q } from '@nozbe/watermelondb';
 import { database } from '@database/index';
 import { Product as ProductModel } from '@database/models/productModel';
 import {
+  GetProductById,
   NewProduct,
   RemovedProduct,
   UpdatedProduct,
@@ -14,6 +15,7 @@ export class ProductUseCase {
     type,
     image,
     price,
+    quantity,
   }: NewProduct): Promise<void> {
     await database.write(async () => {
       await database.get<ProductModel>('products').create(data => {
@@ -21,7 +23,8 @@ export class ProductUseCase {
           (data.name = name),
           (data.type = type),
           (data.image = image),
-          (data.price = price);
+          (data.price = price),
+          (data.quantity = quantity);
       });
     });
   }
@@ -30,8 +33,10 @@ export class ProductUseCase {
     return database.get<ProductModel>('products').query().fetch();
   }
 
-  public static async getById({ id }: { id: string }): Promise<ProductModel> {
-    return database.get<ProductModel>('products').find(id);
+  public static async getById({
+    productId,
+  }: GetProductById): Promise<ProductModel> {
+    return database.get<ProductModel>('products').find(productId);
   }
 
   public static async getByName({
@@ -48,7 +53,7 @@ export class ProductUseCase {
   }
 
   public static async update({
-    updatedProduct: { image, name, price, stockId, type },
+    updatedProduct: { image, name, price, stockId, type, quantity },
     product,
   }: UpdatedProduct): Promise<void> {
     await database.write(async () => {
@@ -57,7 +62,8 @@ export class ProductUseCase {
           (data.name = name || product.name),
           (data.type = type || product.type),
           (data.image = image || product.image),
-          (data.price = price || product.price);
+          (data.price = price || product.price),
+          (data.quantity = quantity || product.quantity);
       });
     });
   }

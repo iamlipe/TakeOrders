@@ -107,7 +107,7 @@ const StyledContainer = styled.View`
 
 const StyledContent = styled.View`
   width: 100%;
-  height: 45px;
+  height: 44px;
 
   justify-content: center;
 

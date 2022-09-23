@@ -24,7 +24,7 @@ import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
-  'BillStack' | 'FinancialHome' | 'StockHome'
+  'BillStack' | 'FinancialHome' | 'StockStack'
 >;
 
 interface TitleTabProps {
@@ -53,7 +53,7 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
       lineTranslateX.value = withTiming(width * 0.2 - 30, { duration: 200 });
     }
 
-    if (activeTab === 'StockHome') {
+    if (activeTab === 'StockStack') {
       lineTranslateX.value = withTiming(width * 0.5 - 30, { duration: 200 });
     }
 
@@ -99,14 +99,14 @@ export const ButtonTab = ({ state }: ButtonTabProps) => {
           () => (
             <StockIcon
               fill={
-                activeTab === 'StockHome'
+                activeTab === 'StockStack'
                   ? theme.colors.PRIMARY_600
                   : theme.colors.GRAY_800
               }
             />
           ),
           t('components.bottomTab.stock'),
-          'StockHome',
+          'StockStack',
         )}
         {renderTab(
           () => (

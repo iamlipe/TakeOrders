@@ -25,14 +25,17 @@ const CloseBillBottomSheetModal = forwardRef<
 
   const { goBack } = useNavigation();
 
-  const snapPointHeigth = 16 + 32 + 32 + 40 + 80 + 32 + 44 + 32;
+  const snapPointHeigth = useMemo(
+    () => [16 + 32 + 32 + 40 + 80 + 32 + 44 + 32],
+    [],
+  );
 
   const closeBill = () => {
     dispatch(CLOSE_BILL({ bill }));
   };
 
   return (
-    <BottomSheetModal ref={ref} snapPoints={[snapPointHeigth]}>
+    <BottomSheetModal ref={ref} snapPoints={snapPointHeigth}>
       <StyledContainer>
         <StyledTitle>Finalizar Comanda</StyledTitle>
 
