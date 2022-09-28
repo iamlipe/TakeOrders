@@ -55,6 +55,12 @@
 	<array>
 		<string>Heebo-Medium.ttf</string>
 		<string>Heebo-Regular.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Feather.ttf</string>
 	</array>
 </dict>
 </plist>
