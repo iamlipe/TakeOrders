@@ -16,9 +16,11 @@ export class ProductUseCase {
     image,
     price,
     quantity,
-  }: NewProduct): Promise<void> {
+  }: NewProduct): Promise<ProductModel | null> {
+    let product: ProductModel | null = null;
+
     await database.write(async () => {
-      await database.get<ProductModel>('products').create(data => {
+      const data = await database.get<ProductModel>('products').create(data => {
         (data.stockId = stockId),
           (data.name = name),
           (data.type = type),
@@ -26,7 +28,11 @@ export class ProductUseCase {
           (data.price = price),
           (data.quantity = quantity);
       });
+
+      product = data;
     });
+
+    return product;
   }
 
   public static async get(): Promise<ProductModel[]> {

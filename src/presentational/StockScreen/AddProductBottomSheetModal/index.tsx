@@ -1,27 +1,39 @@
 /* eslint-disable react/display-name */
-import React, { forwardRef, memo, useEffect, useMemo } from 'react';
-import styled from 'styled-components/native';
+import React, {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import styled, { useTheme } from 'styled-components/native';
+
 import * as Yup from 'yup';
 
-import { useForm } from 'react-hook-form';
-
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Product } from '@database/models/productModel';
-
-import Input from '@components/Input';
-import Button from '@components/Button';
+import { useForm } from 'react-hook-form';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
+
 import { CREATE_PRODUCT_PURCHASE } from '@store/slices/purchaseSlice';
 import { GET_PRODUCT_BY_ID, UPDATE_PRODUCT } from '@store/slices/productSlice';
 
+import { Keyboard } from 'react-native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import Input from '@components/Input';
+import Button from '@components/Button';
+
 interface AddProductBottomSheetModalProps {
   productId: string | null;
+  closeBottomSheet: () => void;
 }
 
 interface FormAddNewPurchase {
-  quntity: string;
+  quantity: string;
   totalPrice: string;
 }
 
@@ -33,11 +45,14 @@ const schema = Yup.object().shape({
 const AddProductBottomSheetModal = forwardRef<
   BottomSheetModal,
   AddProductBottomSheetModalProps
->(({ productId }, ref) => {
+>(({ productId, closeBottomSheet }, ref) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useReduxDispatch();
   const { selectedProduct } = useReduxSelector(state => state.product);
-  const { allPurchases } = useReduxSelector(state => state.purchase);
   const { spentId } = useReduxSelector(state => state.spent);
+
+  const theme = useTheme();
 
   const {
     control,
@@ -53,32 +68,69 @@ const AddProductBottomSheetModal = forwardRef<
     [],
   );
 
-  const onSubmit = (data: FormAddNewPurchase) => {
-    if (spentId && selectedProduct) {
-      dispatch(
-        CREATE_PRODUCT_PURCHASE({
-          productId: selectedProduct.id,
-          spentId,
-          totalPrice: Number(data.totalPrice),
-        }),
-      );
+  const getProductById = useCallback(() => {
+    if (productId) {
+      dispatch(GET_PRODUCT_BY_ID({ productId }));
+    }
+  }, [dispatch, productId]);
 
-      setTimeout(() => {
+  const createPurchase = useCallback(
+    (totalPrice: number) => {
+      if (spentId && selectedProduct) {
+        dispatch(
+          CREATE_PRODUCT_PURCHASE({
+            productId: selectedProduct.id,
+            spentId,
+            totalPrice: totalPrice,
+          }),
+        );
+      }
+    },
+    [dispatch, selectedProduct, spentId],
+  );
+
+  const updateQuantityProducInStock = useCallback(
+    (quantity: number) => {
+      if (selectedProduct) {
         dispatch(
           UPDATE_PRODUCT({
             product: selectedProduct,
             updatedProduct: {
-              quantity: selectedProduct.quantity + Number(data.quntity),
+              quantity: selectedProduct.quantity + quantity,
             },
           }),
         );
-      }, 1000);
-    }
+      }
+    },
+    [dispatch, selectedProduct],
+  );
+
+  const onSubmit = (data: FormAddNewPurchase) => {
+    Keyboard.dismiss();
+    setIsLoading(true);
+
+    createPurchase(Number(data.totalPrice));
+
+    setTimeout(() => updateQuantityProducInStock(Number(data.quantity)), 1000);
+
+    setTimeout(() => getProductById(), 2000);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      closeBottomSheet();
+    }, 3000);
   };
 
   useEffect(() => {
-    if (productId) {
-      dispatch(GET_PRODUCT_BY_ID({ productId }));
+    getProductById();
+  }, [getProductById]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        quantity: undefined,
+        totalPrice: undefined,
+      });
     }
   });
 
@@ -89,7 +141,21 @@ const AddProductBottomSheetModal = forwardRef<
 
         {selectedProduct && (
           <StyledContainerProductInfo>
-            <StyledImage />
+            {selectedProduct.image ? (
+              <StyledImage
+                source={{ uri: selectedProduct.image }}
+                resizeMode="contain"
+              />
+            ) : (
+              <StyledDefaultImage>
+                <Icon
+                  name="image-not-supported"
+                  color={theme.colors.WHITE}
+                  size={20}
+                />
+              </StyledDefaultImage>
+            )}
+
             <StyledColumnInfoProduct>
               <StyledTitleProduct>{selectedProduct.name}</StyledTitleProduct>
               <StyledDescriptionProduct>{`Quantidade em stock: ${selectedProduct.quantity}`}</StyledDescriptionProduct>
@@ -98,11 +164,25 @@ const AddProductBottomSheetModal = forwardRef<
         )}
 
         <StyledContainerForm>
-          <Input name="quantity" control={control} label="Quantidade" />
-          <Input name="totalPrice" control={control} label="Preço total" />
+          <Input
+            name="quantity"
+            control={control}
+            label="Quantidade"
+            error={isSubmitted ? errors.quantity?.message : ''}
+          />
+          <Input
+            name="totalPrice"
+            control={control}
+            label="Preço total"
+            error={isSubmitted ? errors.totalPrice?.message : ''}
+          />
         </StyledContainerForm>
 
-        <Button title="Adicionar" onPress={handleSubmit(onSubmit)} />
+        <Button
+          title="Adicionar"
+          onPress={handleSubmit(onSubmit)}
+          loading={isLoading}
+        />
       </StyledContainer>
     </BottomSheetModal>
   );
@@ -141,6 +221,17 @@ const StyledImage = styled.Image`
   width: 80px;
   height: 80px;
 
+  background-color: ${({ theme }) => theme.colors.WHITE};
+`;
+
+const StyledDefaultImage = styled.View`
+  width: 80px;
+  height: 80px;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.colors.SECUNDARY_200};
 `;
 

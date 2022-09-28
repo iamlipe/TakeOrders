@@ -40,6 +40,7 @@ interface ProductState {
   allProducts: ProductModel[] | null;
   foundProducts: ProductModel[] | null;
   selectedProduct: ProductModel | null;
+  latestProductCreated: ProductModel | null;
 }
 
 const initialState: ProductState = {
@@ -49,6 +50,7 @@ const initialState: ProductState = {
   allProducts: null,
   foundProducts: null,
   selectedProduct: null,
+  latestProductCreated: null,
 };
 
 const productSlice = createSlice({
@@ -143,12 +145,21 @@ const productSlice = createSlice({
       ...state,
       isLoading: true,
       error: null,
+
+      latestProductCreated: null,
     }),
 
-    CREATE_PRODUCT_SUCCESS: state => ({
+    CREATE_PRODUCT_SUCCESS: (
+      state,
+      {
+        payload: { latestProductCreated },
+      }: PayloadAction<{ latestProductCreated: ProductModel }>,
+    ) => ({
       ...state,
       isLoading: false,
       error: null,
+
+      latestProductCreated,
     }),
 
     CREATE_PRODUCT_FAILURE: (

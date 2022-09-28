@@ -112,7 +112,7 @@ export const BillHome = () => {
               type="bills"
             />
 
-            {foundBills || allBills ? (
+            {foundBills?.length || allBills?.length ? (
               <FlatList
                 data={
                   foundBills && foundBills.length > 0 ? foundBills : allBills

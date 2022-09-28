@@ -1,19 +1,38 @@
 import React, { memo } from 'react';
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface SquareCardProps {
   item: {
     name: string;
     price: string;
+    image?: string;
   };
 
   onPress: () => void;
 }
 
-const SquareCard = ({ item: { name, price }, onPress }: SquareCardProps) => {
+const SquareCard = ({
+  item: { name, price, image },
+  onPress,
+}: SquareCardProps) => {
+  const theme = useTheme();
+
   return (
     <StyledContainer style={{ elevation: 5 }}>
-      <StyledImage />
+      {image ? (
+        <StyledImage source={{ uri: image }} resizeMode="stretch" />
+      ) : (
+        <StyledDefaultImage>
+          <Icon
+            name="image-not-supported"
+            color={theme.colors.WHITE}
+            size={24}
+          />
+        </StyledDefaultImage>
+      )}
+
       <StyledTitle>{name}</StyledTitle>
       <StyledDescription>{price}</StyledDescription>
 
@@ -35,12 +54,22 @@ const StyledContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.WHITE};
 
   padding: 16px 8px;
-  margin: 1%;
+  margin-bottom: 8px;
 `;
 
 const StyledImage = styled.Image`
+  width: 60px;
+  height: 80px;
+
+  background-color: ${({ theme }) => theme.colors.WHITE};
+`;
+
+const StyledDefaultImage = styled.View`
   width: 80px;
   height: 80px;
+
+  align-items: center;
+  justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.SECUNDARY_200};
 `;

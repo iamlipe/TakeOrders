@@ -99,7 +99,14 @@ const AddOrderBottomSheetModal = forwardRef<
         {product && (
           <>
             <StyledColumnProduct>
-              <StyledImage source={product.image} />
+              {product.image ? (
+                <StyledImage
+                  source={{ uri: product.image }}
+                  resizeMode="stretch"
+                />
+              ) : (
+                <StyledDefaultImage />
+              )}
 
               <StyledColumnProductInfo>
                 <StyledTitleProduct>{product.name}</StyledTitleProduct>
@@ -181,6 +188,15 @@ const StyledPriceProduct = styled(StyledTitleProduct)`
 `;
 
 const StyledImage = styled.Image`
+  width: 60px;
+  height: 80px;
+
+  background-color: ${({ theme }) => theme.colors.SECUNDARY_200};
+
+  margin-bottom: 16px;
+`;
+
+const StyledDefaultImage = styled.View`
   width: 80px;
   height: 80px;
 

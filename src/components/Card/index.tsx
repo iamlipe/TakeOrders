@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import styled, { css } from 'styled-components/native';
+import styled, { css, useTheme } from 'styled-components/native';
 
 import { useTranslation } from 'react-i18next';
 import { useIsFocused } from '@react-navigation/native';
@@ -7,13 +7,15 @@ import { OrderUseCase } from '@database/useCase/orderUseCase';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 const cardSize = {
   small: css`
-    height: 30px;
+    height: 32px;
   `,
 
   medium: css`
-    height: 45px;
+    height: 44px;
   `,
 
   large: css`
@@ -21,20 +23,43 @@ const cardSize = {
   `,
 };
 
-const imageSize = {
+const imageDefaultSize = {
   small: css`
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
   `,
 
   medium: css`
-    width: 45px;
-    height: 45px;
+    width: 44px;
+    height: 44px;
   `,
 
   large: css`
     width: 60px;
     height: 60px;
+  `,
+};
+
+const imageSize = {
+  small: css`
+    width: 24px;
+    height: 24px;
+
+    margin: 3px;
+  `,
+
+  medium: css`
+    width: 36px;
+    height: 36px;
+
+    margin: 4px;
+  `,
+
+  large: css`
+    width: 48px;
+    height: 48px;
+
+    margin: 6px;
   `,
 };
 
@@ -74,6 +99,8 @@ const Card = ({
 
   const isFocused = useIsFocused();
 
+  const theme = useTheme();
+
   const handleOrders = useCallback(async () => {
     const orders = await OrderUseCase.get({ billId: description });
 
@@ -100,7 +127,21 @@ const Card = ({
       onPress={onPress}
       disabled={!onPress}
     >
-      <StyledImage size={cardSize} source={image} />
+      {image ? (
+        <StyledImage
+          size={cardSize}
+          source={{ uri: image }}
+          resizeMode="contain"
+        />
+      ) : (
+        <StyledDefaultImage size={cardSize}>
+          <Icon
+            name="image-not-supported"
+            color={theme.colors.WHITE}
+            size={20}
+          />
+        </StyledDefaultImage>
+      )}
 
       <StyledColumn>
         <StyledTitle>{title}</StyledTitle>
@@ -170,6 +211,22 @@ const StyledDescriptionQuantity = styled(StyledDescription)`
 
 const StyledImage = styled.Image<CardImageProps>`
   ${({ size }) => imageSize[size]}
+
+  align-self: center;
+
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+
+  background-color: ${({ theme }) => theme.colors.WHITE};
+`;
+
+const StyledDefaultImage = styled.View<CardImageProps>`
+  ${({ size }) => imageDefaultSize[size]}
+
+  align-self: center;
+
+  align-items: center;
+  justify-content: center;
 
   border-bottom-left-radius: 5px;
   border-top-left-radius: 5px;

@@ -1,7 +1,5 @@
 {
   "translation": {
-    
-    
     "errors": {
       "required": "Requerida",
       "validPhone": "Por favor, introduzca un número de móvil válido",
@@ -11,7 +9,12 @@
     "components": {
       "input": {
         "name": "Nombre",
-        "phone": "Teléfono (opcional)"
+        "phone": "Teléfono (opcional)",
+        "type": "Tipo",
+        "quantity": "Cantidad",
+        "totalPrice": "Precio total de compra",
+        "price": "Precio de venta (unidad)",
+        "image": "Imagen"
       },
       
       "searchInput": {
@@ -26,7 +29,12 @@
         "addBill": "Agregar cuenta",
         "addProductOrder": "Agregar producto",
         "closeBill": "Finalizar cuenta",
-        "addProductStock": "Agregar producto en inventario"
+        "addProductStock": "Agregar producto en inventario",
+        "register": "Registrar"
+      },
+
+      "bigButton": {
+        "registerNewProduct": "Registrar nuevo producto"
       },
       
       "card": {
@@ -50,7 +58,11 @@
         "backButton": "regresar",
         
         "billHome": "Cuentas",
-        "billAddProducts": "Agregar products"
+        "billAddProducts": "Agregar products",
+
+        "stockHome": "Inventario",
+        "stockRegisterProduct": "Registrar producto",
+        "stockDetailsProduct": "Detalles del producto"
       },
 
       "counter": {
@@ -86,6 +98,35 @@
 
         "addOrderBottomSheet": {
           "title": "Agregar producto"
+        }
+      },
+
+      "stockHome": {
+        "titleListProductsInStock": "Produtos em estoque",
+
+        "addProductBottomSheet": {
+          "title":"Adicionar produto"
+        }
+      },
+
+      "stockRegisterProduct": {},
+
+      "stockDetailsProduct": {
+        "warning": "Advertencia",
+        "stock": "Inventario",
+        "sales": "Ventas",
+
+        "comingSoon": "Pronto",
+
+        "titleStock": {
+          "quantityInStock": "Cantidad en inventario",
+          "avaregeMonth": "Promedio de ventas/\nmes"
+        },
+
+        "titleSales": {
+          "7days": "7 días",
+          "30days": "30 días",
+          "lastMonth": "El mes pasado"
         }
       }
     }

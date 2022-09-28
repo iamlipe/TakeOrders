@@ -28,6 +28,7 @@ import {
   UPDATE_PRODUCT_FAILURE,
   UPDATE_PRODUCT_SUCCESS,
 } from '@store/slices/productSlice';
+import { PurchaseUseCase } from '@database/useCase/purchaseUseCase';
 
 function* getAllProducts() {
   try {
@@ -72,9 +73,12 @@ function* createProduct({ payload }: PayloadAction<NewProduct>) {
     });
 
     if (!exist.length) {
-      yield call(ProductUseCase.create, payload);
+      const latestProductCreated: ProductModel = yield call(
+        ProductUseCase.create,
+        payload,
+      );
 
-      yield put(CREATE_PRODUCT_SUCCESS());
+      yield put(CREATE_PRODUCT_SUCCESS({ latestProductCreated }));
     } else {
       yield put(
         CREATE_PRODUCT_FAILURE({

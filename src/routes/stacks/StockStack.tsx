@@ -8,7 +8,7 @@ import { StockDetailsProduct } from '@presentational/StockScreen/StockDetailsPro
 export type StockStackParamList = {
   StockHome: undefined;
   StockRegisterProduct: undefined;
-  StockDetailsProduct: undefined;
+  StockDetailsProduct: { productId: string };
 };
 
 const Stock = createNativeStackNavigator<StockStackParamList>();

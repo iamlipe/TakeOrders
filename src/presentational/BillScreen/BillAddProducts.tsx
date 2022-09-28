@@ -127,6 +127,7 @@ export const BillAddProduct = () => {
                       key={item.id}
                       item={{
                         name: item.name,
+                        image: item.image,
                         price: formatedCurrency(item.price),
                       }}
                       onPress={() => {
@@ -141,7 +142,10 @@ export const BillAddProduct = () => {
                       ? heigthList - StatusBar.currentHeight
                       : heigthList,
                     marginTop: 16,
-                    marginHorizontal: 32,
+                  }}
+                  columnWrapperStyle={{
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 32,
                   }}
                   showsVerticalScrollIndicator={false}
                 />
