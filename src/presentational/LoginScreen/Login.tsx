@@ -63,7 +63,7 @@ export const Login = () => {
 
       <StyledColumn>
         <Button
-          title={t('button.loginWithoutRegister')}
+          title={t('components.button.loginWithoutRegister')}
           icon={{ name: 'arrow-forward', color: 'WHITE' }}
           align="spaceBetween"
           onPress={getDefaultUser}

@@ -135,8 +135,6 @@ export const BillDetails = () => {
                         removeOrder({ orderId: item.id });
                       },
                     }}
-                    noTouchable
-                    onPress={() => null}
                   />
                 )}
                 keyExtractor={item => item.id}

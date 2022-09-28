@@ -60,7 +60,10 @@ const AddBillBottomSheetModal = forwardRef<
     resolver: yupResolver(schema),
   });
 
-  const snapPoints = useMemo(() => ['50%'], []);
+  const snapPoints = useMemo(
+    () => [16 + 16 + 32 + 24 + 120 + 40 + 44 + 48],
+    [],
+  );
 
   const createBill = useCallback(
     (data: FormAddNewBill) => {
@@ -103,7 +106,7 @@ const AddBillBottomSheetModal = forwardRef<
           {t('screens.billHome.addBillBottomSheet.title')}
         </StyledTitle>
 
-        <StyledColumn>
+        <StyledContainerForm>
           <Input
             name={t('components.input.name')}
             control={control}
@@ -116,7 +119,7 @@ const AddBillBottomSheetModal = forwardRef<
             label="Celular (Opcional)"
             error={isSubmitted ? errors.phone?.message : ''}
           />
-        </StyledColumn>
+        </StyledContainerForm>
 
         <Button
           title={t('components.button.add')}
@@ -140,10 +143,16 @@ const StyledTitle = styled.Text`
   color: ${({ theme }) => theme.colors.GRAY_800};
 
   text-align: center;
+
+  line-height: 32px;
+
+  margin-bottom: 24px;
 `;
 
-const StyledColumn = styled.View`
-  margin: 32px 0;
+const StyledContainerForm = styled.View`
+  height: 120px;
+
+  margin-bottom: 40px;
 `;
 
 export default memo(AddBillBottomSheetModal);

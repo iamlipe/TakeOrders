@@ -39,7 +39,7 @@ type StackParamsList = {
 const { height } = Dimensions.get('window');
 
 export const BillAddProduct = () => {
-  const [productSelected, setProductSelected] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [showContent, setShowContent] = useState(false);
 
@@ -60,14 +60,9 @@ export const BillAddProduct = () => {
 
   const addOrderBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const handleShowAddOrderBottomSheet = useCallback(
-    ({ product }: { product: Product }) => {
-      setProductSelected(product);
-
-      addOrderBottomSheetModalRef.current?.present();
-    },
-    [],
-  );
+  const handleShowAddOrderBottomSheet = useCallback(() => {
+    addOrderBottomSheetModalRef.current?.present();
+  }, []);
 
   const handleColseAddOrderBottomSheet = useCallback(() => {
     addOrderBottomSheetModalRef.current?.dismiss();
@@ -81,11 +76,12 @@ export const BillAddProduct = () => {
     if (stockId) {
       dispatch(
         CREATE_PRODUCT({
-          name: 'Skoll Litrão',
+          name: 'Skoll 600ml',
           type: 'Bebidas',
-          price: 13,
+          price: 10,
           image: undefined,
           stockId,
+          quantity: 200,
         }),
       );
 
@@ -131,11 +127,13 @@ export const BillAddProduct = () => {
                       key={item.id}
                       item={{
                         name: item.name,
+                        image: item.image,
                         price: formatedCurrency(item.price),
                       }}
-                      onPress={() =>
-                        handleShowAddOrderBottomSheet({ product: item })
-                      }
+                      onPress={() => {
+                        setSelectedProduct(item);
+                        handleShowAddOrderBottomSheet();
+                      }}
                     />
                   )}
                   keyExtractor={item => item.id}
@@ -144,7 +142,10 @@ export const BillAddProduct = () => {
                       ? heigthList - StatusBar.currentHeight
                       : heigthList,
                     marginTop: 16,
-                    marginHorizontal: 32,
+                  }}
+                  columnWrapperStyle={{
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 32,
                   }}
                   showsVerticalScrollIndicator={false}
                 />
@@ -152,9 +153,7 @@ export const BillAddProduct = () => {
             ) : (
               <StyledContainerNoProductsInStock>
                 <StyledTitleNoProductsInStock>
-                  {t(
-                    'screens.billAddProducts.listProductsStockEmptylistProductsStockEmpty',
-                  )}
+                  {t('screens.billAddProducts.listProductsStockEmpty')}
                 </StyledTitleNoProductsInStock>
                 <Button
                   title={t('components.button.addProductStock')}
@@ -190,7 +189,7 @@ export const BillAddProduct = () => {
       ])}
 
       <AddOrderBottomSheetModal
-        product={productSelected}
+        product={selectedProduct}
         billId={bill.id}
         closeBottomSheet={handleColseAddOrderBottomSheet}
         ref={addOrderBottomSheetModalRef}

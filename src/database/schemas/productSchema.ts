@@ -8,5 +8,6 @@ export const productSchema = tableSchema({
     { name: 'type', type: 'string' },
     { name: 'image', type: 'string' },
     { name: 'price', type: 'number' },
+    { name: 'quantity', type: 'number' },
   ],
 });

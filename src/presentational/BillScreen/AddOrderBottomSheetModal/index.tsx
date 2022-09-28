@@ -1,17 +1,11 @@
 /* eslint-disable react/display-name */
 
-import React, {
-  forwardRef,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { forwardRef, memo, useEffect, useMemo } from 'react';
 import styled from 'styled-components/native';
 import * as Yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { CREATE_ORDER, NewOrder } from '@store/slices/orderSlice';
+import { CREATE_ORDER } from '@store/slices/orderSlice';
 import { Product } from '@database/models/productModel';
 import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +17,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import Counter from '@components/Counter';
 import Button from '@components/Button';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { UPDATE_PRODUCT } from '@store/slices/productSlice';
 
 const schema = Yup.object().shape({
   quantity: Yup.number()
@@ -57,22 +52,31 @@ const AddOrderBottomSheetModal = forwardRef<
 
   const { goBack } = useNavigation();
 
-  const snapPointHeigth = 16 + 32 + 32 + 24 + 136 + 24 + 60 + 40 + 45 + 32;
-
-  const createOrder = useCallback(
-    (order: NewOrder) => {
-      dispatch(CREATE_ORDER(order));
-    },
-    [dispatch],
+  const snapPointHeigth = useMemo(
+    () => [16 + 32 + 32 + 24 + 136 + 24 + 60 + 40 + 45 + 32],
+    [],
   );
 
   const onSubmit = (data: FormAddNewOrder) => {
     if (product) {
-      createOrder({
-        quantity: Number(data.quantity),
-        billId,
-        productId: product.id,
-      });
+      dispatch(
+        CREATE_ORDER({
+          quantity: Number(data.quantity),
+          billId,
+          productId: product.id,
+        }),
+      );
+
+      setTimeout(() => {
+        dispatch(
+          UPDATE_PRODUCT({
+            product,
+            updatedProduct: {
+              quantity: product.quantity - Number(data.quantity),
+            },
+          }),
+        );
+      }, 1000);
     }
   };
 
@@ -88,14 +92,21 @@ const AddOrderBottomSheetModal = forwardRef<
   }, [closeBottomSheet, goBack, isSubmitSuccessful, reset]);
 
   return (
-    <BottomSheetModal ref={ref} snapPoints={[snapPointHeigth]}>
+    <BottomSheetModal ref={ref} snapPoints={snapPointHeigth}>
       <StyledContainer>
         <StyledTitle>Adicionar Produto</StyledTitle>
 
         {product && (
           <>
             <StyledColumnProduct>
-              <StyledImage source={product.image} />
+              {product.image ? (
+                <StyledImage
+                  source={{ uri: product.image }}
+                  resizeMode="stretch"
+                />
+              ) : (
+                <StyledDefaultImage />
+              )}
 
               <StyledColumnProductInfo>
                 <StyledTitleProduct>{product.name}</StyledTitleProduct>
@@ -177,6 +188,15 @@ const StyledPriceProduct = styled(StyledTitleProduct)`
 `;
 
 const StyledImage = styled.Image`
+  width: 60px;
+  height: 80px;
+
+  background-color: ${({ theme }) => theme.colors.SECUNDARY_200};
+
+  margin-bottom: 16px;
+`;
+
+const StyledDefaultImage = styled.View`
   width: 80px;
   height: 80px;
 

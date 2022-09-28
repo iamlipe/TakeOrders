@@ -1,7 +1,5 @@
 {
   "translation": {
-    
-    
     "errors": {
       "required": "Required",
       "validPhone": "Please enter a valid mobile number",
@@ -10,8 +8,13 @@
     
     "components": {
       "input": {
-        "name": "name",
-        "phone": "phone (optional)"
+        "name": "Name",
+        "phone": "Phone (optional)",
+        "type": "Type",
+        "quantity": "Quantity",
+        "totalPrice": "Total purchase price",
+        "price": "Sale price (unit)",
+        "image": "image"
       },
       
       "searchInput": {
@@ -26,7 +29,12 @@
         "addBill": "Add bill",
         "addProductOrder": "Add product",
         "closeBill": "Close bill",
-        "addProductStock": "Add product in stock"
+        "addProductStock": "Add product in stock",
+        "register": "Register"
+      },
+
+      "bigButton": {
+        "registerNewProduct": "Register new product"
       },
       
       "card": {
@@ -39,7 +47,6 @@
         "quantity": "quantity"
       },
 
-
       "bottomTab": {
         "bill": "Bill",
         "stock": "Stock",
@@ -50,7 +57,11 @@
         "backButton": "back",
 
         "billHome": "Bills",
-        "billAddProducts": "Add products"
+        "billAddProducts": "Add products",
+
+        "stockHome": "Stock",
+        "stockRegisterProduct": "Register product",
+        "stockDetailsProduct": "Product details"
       },
 
       "counter": {
@@ -65,7 +76,7 @@
         "listBillEmpty": "Empty bill list",
 
         "addBillBottomSheet": {
-          "title": "Add product"
+          "title": "Add Bill"
         }
       },
 
@@ -86,6 +97,35 @@
 
         "addOrderBottomSheet": {
           "title": "Add product"
+        }
+      },
+
+      "stockHome": {
+        "titleListProductsInStock": "Products in stock",
+
+        "addProductBottomSheet": {
+          "title":"Add product"
+        }
+      },
+
+      "stockRegisterProduct": {},
+
+      "stockDetailsProduct": {
+        "warning": "Warning",
+        "stock": "Stock",
+        "sales": "Sales",
+
+        "comingSoon": "Coming soon",
+
+        "titleStock": {
+          "quantityInStock": "Quantity in stock",
+          "avaregeMonth": "Average sales/\nmonth"
+        },
+
+        "titleSales": {
+          "7days": "7 days",
+          "30days": "30 days",
+          "lastMonth": "Last Month"
         }
       }
     }

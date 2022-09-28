@@ -9,7 +9,12 @@
     "components": {
       "input": {
         "name": "nome",
-        "phone": "celular (opcional)"
+        "phone": "celular (opcional)",
+        "type": "Tipo",
+        "quantity": "quantidade",
+        "totalPrice": "Preço total da compra",
+        "price": "Preço da venda (unidade)",
+        "image": "imagem"
       },
       
       "searchInput": {
@@ -24,7 +29,12 @@
         "addBill": "Adicionar comandas",
         "addProductOrder": "Adicionar produto",
         "closeBill": "Fechar comanda",
-        "addProductStock": "Adicionar produto no estoque"
+        "addProductStock": "Adicionar produto no estoque",
+        "register": "Cadastrar"
+      },
+
+      "bigButton": {
+        "registerNewProduct": "Cadastrar novo produto"
       },
       
       "card": {
@@ -48,7 +58,11 @@
         "backButton": "voltar",
 
         "billHome": "Comandas",
-        "billAddProducts": "Adicionar produtos"
+        "billAddProducts": "Adicionar produtos",
+
+        "stockHome": "Estoque",
+        "stockRegisterProduct": "Cadastrar produto",
+        "stockDetailsProduct": "Detalhes do produto"
       },
 
       "counter": {
@@ -84,6 +98,35 @@
 
         "addOrderBottomSheet": {
           "title": "Adicionar produto"
+        }
+      },
+
+      "stockHome": {
+        "titleListProductsInStock": "Produtos em estoque",
+
+        "addProductBottomSheet": {
+          "title":"Adicionar produto"
+        }
+      },
+
+      "stockRegisterProduct": {},
+
+      "stockDetailsProduct": {
+        "warning": "Aviso",
+        "stock": "Estoque",
+        "sales": "Vendas",
+
+        "comingSoon": "Em breve",
+
+        "titleStock": {
+          "quantityInStock": "Quantidade em estoque",
+          "avaregeMonth": "Média de venda/\nmês"
+        },
+
+        "titleSales": {
+          "7days": "7 dias",
+          "30days": "30 dias",
+          "lastMonth": "Último mês"
         }
       }
     }
