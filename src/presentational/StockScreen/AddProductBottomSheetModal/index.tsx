@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import React, {
   forwardRef,
   memo,
@@ -15,6 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
+import { useTranslation } from 'react-i18next';
 
 import { CREATE_PRODUCT_PURCHASE } from '@store/slices/purchaseSlice';
 import { GET_PRODUCT_BY_ID, UPDATE_PRODUCT } from '@store/slices/productSlice';
@@ -37,11 +37,6 @@ interface FormAddNewPurchase {
   totalPrice: string;
 }
 
-const schema = Yup.object().shape({
-  quantity: Yup.string().required('Preenchimento obrigatório'),
-  totalPrice: Yup.string().required('Preenchimento obrigatório'),
-});
-
 const AddProductBottomSheetModal = forwardRef<
   BottomSheetModal,
   AddProductBottomSheetModalProps
@@ -53,6 +48,17 @@ const AddProductBottomSheetModal = forwardRef<
   const { spentId } = useReduxSelector(state => state.spent);
 
   const theme = useTheme();
+
+  const { t } = useTranslation();
+
+  const schema = useMemo(
+    () =>
+      Yup.object().shape({
+        quantity: Yup.string().required(t('errors.required')),
+        totalPrice: Yup.string().required(t('errors.required')),
+      }),
+    [t],
+  );
 
   const {
     control,
@@ -74,14 +80,15 @@ const AddProductBottomSheetModal = forwardRef<
     }
   }, [dispatch, productId]);
 
-  const createPurchase = useCallback(
-    (totalPrice: number) => {
+  const createProductPurchase = useCallback(
+    (totalPrice: string) => {
       if (spentId && selectedProduct) {
         dispatch(
           CREATE_PRODUCT_PURCHASE({
             productId: selectedProduct.id,
             spentId,
-            totalPrice: totalPrice,
+            totalPrice:
+              -Number(totalPrice.substring(2).replace(/[^0-9]/g, '')) / 100,
           }),
         );
       }
@@ -109,7 +116,7 @@ const AddProductBottomSheetModal = forwardRef<
     Keyboard.dismiss();
     setIsLoading(true);
 
-    createPurchase(Number(data.totalPrice));
+    createProductPurchase(data.totalPrice);
 
     setTimeout(() => updateQuantityProducInStock(Number(data.quantity)), 1000);
 
@@ -167,13 +174,14 @@ const AddProductBottomSheetModal = forwardRef<
           <Input
             name="quantity"
             control={control}
-            label="Quantidade"
+            label={t('components.input.quantity')}
             error={isSubmitted ? errors.quantity?.message : ''}
           />
           <Input
             name="totalPrice"
             control={control}
-            label="Preço total"
+            label={t('components.input.totalPrice')}
+            type="money"
             error={isSubmitted ? errors.totalPrice?.message : ''}
           />
         </StyledContainerForm>

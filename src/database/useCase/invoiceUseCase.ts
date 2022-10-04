@@ -4,7 +4,11 @@ import { Q } from '@nozbe/watermelondb';
 import { RemovedInvoice, UpdatedInvoice } from '@store/slices/invoiceSlice';
 
 export class InvoiceUseCase {
-  public static async get({ userId }: { userId: string }): Promise<string> {
+  public static async getInvoiceId({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<string> {
     const invoice = await database
       .get<InvoiceModel>('invoicing')
       .query(Q.where('userId', userId))

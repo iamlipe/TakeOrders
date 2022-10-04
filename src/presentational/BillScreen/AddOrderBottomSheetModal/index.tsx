@@ -1,5 +1,3 @@
-/* eslint-disable react/display-name */
-
 import React, { forwardRef, memo, useEffect, useMemo } from 'react';
 import styled from 'styled-components/native';
 import * as Yup from 'yup';
@@ -9,21 +7,18 @@ import { CREATE_ORDER } from '@store/slices/orderSlice';
 import { Product } from '@database/models/productModel';
 import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
+import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { useTranslation } from 'react-i18next';
+
+import { UPDATE_PRODUCT } from '@store/slices/productSlice';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
 import { Keyboard } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+
 import Counter from '@components/Counter';
 import Button from '@components/Button';
-import { useReduxDispatch } from '@hooks/useReduxDispatch';
-import { UPDATE_PRODUCT } from '@store/slices/productSlice';
-
-const schema = Yup.object().shape({
-  quantity: Yup.number()
-    .min(1, 'Adicione ao menos 1')
-    .required('Preenchimento obrigatório'),
-});
 
 interface FormAddNewOrder {
   quantity: string;
@@ -40,6 +35,18 @@ const AddOrderBottomSheetModal = forwardRef<
   AddOrderBottomSheetModalProps
 >(({ product, billId, closeBottomSheet }, ref) => {
   const dispatch = useReduxDispatch();
+
+  const { t } = useTranslation();
+
+  const schema = useMemo(
+    () =>
+      Yup.object().shape({
+        quantity: Yup.number()
+          .min(1, t('errors.minOne'))
+          .required(t('errors.required')),
+      }),
+    [t],
+  );
 
   const {
     control,
@@ -94,7 +101,9 @@ const AddOrderBottomSheetModal = forwardRef<
   return (
     <BottomSheetModal ref={ref} snapPoints={snapPointHeigth}>
       <StyledContainer>
-        <StyledTitle>Adicionar Produto</StyledTitle>
+        <StyledTitle>
+          {t('screens.billAddProducts.addOrderBottomSheet.title')}
+        </StyledTitle>
 
         {product && (
           <>
@@ -120,11 +129,15 @@ const AddOrderBottomSheetModal = forwardRef<
               <Counter
                 name="quantity"
                 control={control}
+                maxQuantity={product.quantity}
                 error={isSubmitted ? errors.quantity?.message : ''}
               />
             </StyledContainerForm>
 
-            <Button title="Adicionar" onPress={handleSubmit(onSubmit)} />
+            <Button
+              title={t('components.button.add')}
+              onPress={handleSubmit(onSubmit)}
+            />
           </>
         )}
       </StyledContainer>
@@ -191,7 +204,7 @@ const StyledImage = styled.Image`
   width: 60px;
   height: 80px;
 
-  background-color: ${({ theme }) => theme.colors.SECUNDARY_200};
+  background-color: ${({ theme }) => theme.colors.WHITE};
 
   margin-bottom: 16px;
 `;

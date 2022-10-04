@@ -64,6 +64,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     strict: 0,
     'import/no-named-as-default': 0,
+    'react/display-name': 'off',
   },
   overrides: [
     {

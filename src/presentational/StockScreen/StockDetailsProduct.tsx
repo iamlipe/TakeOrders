@@ -4,9 +4,12 @@ import styled, { useTheme } from 'styled-components/native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
+import { useTranslation } from 'react-i18next';
 
 import { GET_PRODUCT_BY_ID } from '@store/slices/productSlice';
 import { GET_ORDERS_BY_PRODUCT } from '@store/slices/orderSlice';
+
+import { filterByDate } from '@utils/filterByDate';
 
 import { Dimensions, StatusBar } from 'react-native';
 
@@ -15,9 +18,6 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import Header from '@components/Header';
 import Loading from '@components/Loading';
-import { filterByDate } from '@utils/filterByDate';
-import { Order } from '@database/models/orderModel';
-import { useTranslation } from 'react-i18next';
 
 interface ContainerInfoProps {
   noPadding?: boolean;
@@ -331,4 +331,7 @@ const StyledTitleInfoSales = styled(StyledTitleInfoStock)`
 
 const StyledDescriptionInfoSales = styled(StyledDescriptionInfoStock)``;
 
-const StyledTextWarningStock = styled.Text``;
+const StyledTextWarningStock = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLER};
+`;

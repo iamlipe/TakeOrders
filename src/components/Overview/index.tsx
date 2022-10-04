@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import {
   Dimensions,
@@ -20,17 +20,22 @@ interface OverviewProps {
     months: string;
     earnings: number;
   }[];
+
+  type: 'invoicing' | 'spending' | 'profit';
 }
 
 const { width } = Dimensions.get('window');
 
-const Overview = ({ data }: OverviewProps) => {
+const Overview = ({ data, type }: OverviewProps) => {
   const [pageActive, setPageActive] = useState(0);
 
   const average = formatedCurrency(
     data.reduce((prev, curr) => prev + curr.earnings, 0) / data.length,
   );
-  const prevMonth = formatedCurrency(data[data.length - 2].earnings);
+  const prevMonth =
+    data.length >= 2
+      ? formatedCurrency(data[data.length - 2].earnings)
+      : 'R$ 0.00';
   const currMonth = formatedCurrency(data[data.length - 1].earnings);
 
   const theme = useTheme();
@@ -45,7 +50,18 @@ const Overview = ({ data }: OverviewProps) => {
     }
   };
 
-  const Chart = () => {
+  const returnTitleText = useCallback(() => {
+    switch (type) {
+      case 'invoicing':
+        return 'Faturamento';
+      case 'spending':
+        return 'Gastos';
+      case 'profit':
+        return 'Lucro';
+    }
+  }, [type]);
+
+  const renderChart = () => {
     return (
       <VictoryChart
         width={width - 64}
@@ -113,21 +129,21 @@ const Overview = ({ data }: OverviewProps) => {
     );
   };
 
-  const Report = () => {
+  const renderReport = () => {
     return (
       <StyledContainerReport>
         <StyledColumn>
-          <StyledTitleReport>Gastos mêdio</StyledTitleReport>
+          <StyledTitleReport>{`${returnTitleText()} mêdio`}</StyledTitleReport>
           <StyledDescriptionReport>{average}</StyledDescriptionReport>
         </StyledColumn>
 
         <StyledColumn>
-          <StyledTitleReport>Gastos mês anterior</StyledTitleReport>
+          <StyledTitleReport>{`${returnTitleText()} mês anterior`}</StyledTitleReport>
           <StyledDescriptionReport>{prevMonth}</StyledDescriptionReport>
         </StyledColumn>
 
         <StyledColumn>
-          <StyledTitleReport>Gastos mês</StyledTitleReport>
+          <StyledTitleReport>{`${returnTitleText()} mês`}</StyledTitleReport>
           <StyledDescriptionReport>{currMonth}</StyledDescriptionReport>
         </StyledColumn>
       </StyledContainerReport>
@@ -145,8 +161,20 @@ const Overview = ({ data }: OverviewProps) => {
           pagingEnabled
           horizontal
         >
-          {useMemo(Report, [average, currMonth, prevMonth])}
-          {useMemo(Chart, [data, theme])}
+          {useMemo(renderReport, [
+            average,
+            currMonth,
+            prevMonth,
+            returnTitleText,
+          ])}
+
+          {useMemo(renderChart, [
+            data,
+            theme.colors.GRAY_600,
+            theme.colors.PRIMARY_500,
+            theme.fonts.HEEBO_MEDIUM,
+            theme.sizing.MINOR,
+          ])}
         </StyledSwiper>
         <StyledContainerSwiperDot>
           <StyledSwiperDot active={pageActive === 0}>●</StyledSwiperDot>
@@ -158,7 +186,6 @@ const Overview = ({ data }: OverviewProps) => {
 };
 
 const StyledContainer = styled.View`
-  width: 100%;
   height: 220px;
 
   align-items: center;
@@ -166,6 +193,8 @@ const StyledContainer = styled.View`
 
   border-radius: 10px;
   background-color: ${({ theme }) => theme.colors.WHITE};
+
+  margin: 0 32px;
 `;
 
 const StyledContainerReport = styled.View`

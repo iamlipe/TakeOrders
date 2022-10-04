@@ -16,7 +16,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BillStackParamList } from '@routes/stacks/BillStack';
 
 import { GET_BILLS } from '@store/slices/billSlice';
-import { GET_INVOICE } from '@store/slices/invoiceSlice';
+import { GET_INVOICE_ID } from '@store/slices/invoiceSlice';
 import { GET_STOCK } from '@store/slices/stockSlice';
 import { GET_SPENT } from '@store/slices/spentSlice';
 
@@ -24,6 +24,8 @@ import emptyBillsImg from '@assets/imgs/empty-bills.png';
 
 import { Dimensions, FlatList, StatusBar } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+
+import EmptyBills from '@assets/svgs/empty-bills.svg';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -38,8 +40,6 @@ import Loading from '@components/Loading';
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 
 const { height } = Dimensions.get('window');
-
-const heigthList = height - (120 + 32 + 56 + 16 + 16 + 44 + 32 + 72);
 
 export const BillHome = () => {
   const [showContent, setShowContent] = useState(false);
@@ -59,13 +59,18 @@ export const BillHome = () => {
 
   const theme = useTheme();
 
+  const heightList = useMemo(
+    () => height - 120 - 32 - 56 - 16 - 16 - 44 - 16 - 72,
+    [],
+  );
+
   const getBills = useCallback(() => {
     dispatch(GET_BILLS());
   }, [dispatch]);
 
   const getInvoiceId = useCallback(() => {
     if (auth?.id) {
-      dispatch(GET_INVOICE({ userId: auth?.id }));
+      dispatch(GET_INVOICE_ID({ userId: auth?.id }));
     }
   }, [auth?.id, dispatch]);
 
@@ -136,15 +141,15 @@ export const BillHome = () => {
                 keyExtractor={item => item.id}
                 style={{
                   height: StatusBar.currentHeight
-                    ? heigthList - StatusBar.currentHeight
-                    : heigthList,
+                    ? heightList - StatusBar.currentHeight
+                    : heightList,
                   marginVertical: 16,
                 }}
                 showsVerticalScrollIndicator={false}
               />
             ) : (
-              <StyledContainerEmptyBills>
-                <StyledImageEmptyBills source={emptyBillsImg} />
+              <StyledContainerEmptyBills style={{ height: heightList }}>
+                <EmptyBills width={132} height={132} />
                 <StyledTextEmptyBills>
                   {t('screens.billHome.listBillEmpty')}
                 </StyledTextEmptyBills>
@@ -180,6 +185,7 @@ export const BillHome = () => {
         allBills,
         foundBills,
         handleShowAddBillBottomSheet,
+        heightList,
         navigate,
         showContent,
         t,
@@ -206,15 +212,15 @@ const StyledContent = styled.View`
 const StyledContainerEmptyBills = styled.View`
   justify-content: center;
   align-items: center;
-
-  height: ${heigthList}px;
-`;
-
-const StyledImageEmptyBills = styled.Image`
-  height: 120px;
-  width: 120px;
 `;
 
 const StyledTextEmptyBills = styled.Text`
+  width: 80%;
+
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
+
+  color: ${({ theme }) => theme.colors.GRAY_800};
+
+  text-align: center;
 `;

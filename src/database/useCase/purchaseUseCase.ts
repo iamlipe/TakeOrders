@@ -23,7 +23,9 @@ export class PurchaseUseCase {
           (data.productId = productId),
           (data.expanse = undefined),
           (data.description = description),
-          (data.totalPrice = totalPrice);
+          (data.totalPrice = totalPrice),
+          (data.createdAt = Date.now()),
+          (data.updatedAt = Date.now());
       });
     });
   }
@@ -40,7 +42,9 @@ export class PurchaseUseCase {
           (data.productId = undefined),
           (data.expanse = expanse),
           (data.description = description),
-          (data.totalPrice = totalPrice);
+          (data.totalPrice = totalPrice),
+          (data.createdAt = Date.now() - 60 * 24 * 3600 * 1000),
+          (data.updatedAt = Date.now());
       });
     });
   }
@@ -56,6 +60,9 @@ export class PurchaseUseCase {
         expanse: purchase.expanse,
         description: purchase.description,
         totalPrice: purchase.totalPrice,
+        createdAt: purchase.createdAt,
+        updatedAt: purchase.updatedAt,
+
         product: await purchase.product,
       };
     });

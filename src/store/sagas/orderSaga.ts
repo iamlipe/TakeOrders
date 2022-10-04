@@ -54,7 +54,7 @@ function* getAllByProduct({ payload }: PayloadAction<GetOrderByProduct>) {
   }
 }
 
-function* addNewOrder({ payload }: PayloadAction<NewOrder>) {
+function* createOrder({ payload }: PayloadAction<NewOrder>) {
   try {
     yield call(OrderUseCase.create, payload);
 
@@ -88,7 +88,7 @@ export default function* watcher() {
   yield all([
     takeLatest(GET_ORDERS, getOrders),
     takeLatest(GET_ORDERS_BY_PRODUCT, getAllByProduct),
-    takeLatest(CREATE_ORDER, addNewOrder),
+    takeLatest(CREATE_ORDER, createOrder),
     takeLatest(UPDATE_ORDER, updateOrder),
     takeLatest(REMOVE_ORDER, removeOrder),
   ]);

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Bill as BillModel } from '@database/models/billModel';
-import { State } from 'react-native-gesture-handler';
 
 export interface NewBill {
   client: {

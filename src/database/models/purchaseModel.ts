@@ -15,5 +15,9 @@ export class Purchase extends Model {
 
   @field('totalPrice') totalPrice!: number;
 
+  @field('createdAt') createdAt!: number;
+
+  @field('updatedAt') updatedAt!: number;
+
   @relation('products', 'productId') product!: Product;
 }

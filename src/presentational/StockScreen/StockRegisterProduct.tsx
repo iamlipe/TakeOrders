@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import * as Yup from 'yup';
@@ -12,10 +12,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StockStackParamList } from '@routes/stacks/StockStack';
 
 import { CREATE_PRODUCT, NewProduct } from '@store/slices/productSlice';
-import {
-  CREATE_PRODUCT_PURCHASE,
-  NewProductPurchase,
-} from '@store/slices/purchaseSlice';
 
 import {
   Dimensions,
@@ -36,24 +32,9 @@ import { useTranslation } from 'react-i18next';
 interface FormReisterNewProduct {
   name: string;
   type: string;
-  quantity: string;
-  totalPrice: string;
   price: string;
   image?: string;
 }
-
-const schema = Yup.object().shape({
-  name: Yup.string().required('Preenchimento obrigatório'),
-  type: Yup.string().required('Preenchimento obrigatório'),
-  image: Yup.string(),
-  quantity: Yup.string()
-    .min(1, 'minimo 1')
-    .required('Preenchimento obrigatório'),
-  totalPrice: Yup.string()
-    .min(1, 'minimo 1')
-    .required('Preenchimento obrigatório'),
-  price: Yup.string().min(1, 'minimo 1').required('Preenchimento obrigatório'),
-});
 
 type NavProps = NativeStackNavigationProp<StockStackParamList, 'StockHome'>;
 
@@ -62,21 +43,29 @@ const { height } = Dimensions.get('window');
 export const StockRegisterProduct = () => {
   const [showContent, setShowContent] = useState(false);
   const [loadingRegisterProduct, setLoadingRegisterProduct] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(0);
 
   const dispatch = useReduxDispatch();
   const { spentId } = useReduxSelector(state => state.spent);
   const { stockId } = useReduxSelector(state => state.stock);
-  const { latestProductCreated, isLoading } = useReduxSelector(
-    state => state.product,
-  );
 
   const { navigate } = useNavigation<NavProps>();
-  const { goBack } = useNavigation();
 
   const { t } = useTranslation();
 
   const theme = useTheme();
+
+  const schema = useMemo(
+    () =>
+      Yup.object().shape({
+        name: Yup.string().required(t('errors.required.')),
+        type: Yup.string().required(t('errors.required.')),
+        image: Yup.string(),
+        price: Yup.string()
+          .min(1, t('errors.minOne'))
+          .required(t('errors.required.')),
+      }),
+    [t],
+  );
 
   const {
     control,
@@ -94,57 +83,25 @@ export const StockRegisterProduct = () => {
     [dispatch],
   );
 
-  const createPurchase = useCallback(
-    (purchase: NewProductPurchase) => {
-      dispatch(CREATE_PRODUCT_PURCHASE(purchase));
-    },
-    [dispatch],
-  );
-
   const onSubmit = (data: FormReisterNewProduct) => {
     if (stockId) {
       setLoadingRegisterProduct(true);
 
       createProduct({
         name: data.name,
-        price: Number(data.price.substring(2).replace(/[^0-9]/g, '')),
-        quantity: Number(data.quantity.substring(2).replace(/[^0-9]/g, '')),
+        price: Number(data.price.substring(2).replace(/[^0-9]/g, '')) / 100,
+        quantity: 0,
         stockId,
         type: data.type,
         image: data.image,
       });
 
-      setTimeout(
-        () =>
-          setTotalPrice(
-            Number(data.totalPrice.substring(2).replace(/[^0-9]/g, '')),
-          ),
-        1000,
-      );
+      setTimeout(() => {
+        setLoadingRegisterProduct(false);
+        navigate('StockHome');
+      }, 1000);
     }
   };
-
-  useEffect(() => {
-    if (latestProductCreated && !isLoading && spentId && totalPrice) {
-      createPurchase({
-        productId: latestProductCreated.id,
-        spentId,
-        totalPrice,
-        description: '',
-      });
-
-      setTotalPrice(0);
-      setLoadingRegisterProduct(false);
-      navigate('StockHome');
-    }
-  }, [
-    createPurchase,
-    navigate,
-    isLoading,
-    latestProductCreated,
-    spentId,
-    totalPrice,
-  ]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -152,8 +109,6 @@ export const StockRegisterProduct = () => {
         image: '',
         name: '',
         price: undefined,
-        quantity: undefined,
-        totalPrice: undefined,
         type: '',
       });
     }
@@ -176,7 +131,7 @@ export const StockRegisterProduct = () => {
     >
       <Header
         title={t('components.header.stockRegisterProduct')}
-        onPress={goBack}
+        onPress={() => navigate('StockHome')}
       />
 
       {showContent ? (
@@ -205,21 +160,6 @@ export const StockRegisterProduct = () => {
                 control={control}
                 label={t('components.input.type')}
                 error={isSubmitted ? errors.type?.message : ''}
-              />
-              <Input
-                name="quantity"
-                control={control}
-                label={t('components.input.quantity')}
-                error={isSubmitted ? errors.quantity?.message : ''}
-                type="custom"
-                options={{ mask: '9999' }}
-              />
-              <Input
-                name="totalPrice"
-                control={control}
-                label={t('components.input.totalPrice')}
-                error={isSubmitted ? errors.totalPrice?.message : ''}
-                type="money"
               />
               <Input
                 name="price"
@@ -255,5 +195,9 @@ const StyledContent = styled.ScrollView`
 `;
 
 const StyledContainerForm = styled.View`
+  min-height: ${StatusBar.currentHeight
+    ? height - StatusBar.currentHeight - 120 - 32 - 40 - 44 - 32 - 72
+    : height - 120 - 32 - 40 - 44 - 32 - 72}px;
+
   margin-bottom: 40px;
 `;

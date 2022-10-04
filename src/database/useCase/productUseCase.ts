@@ -68,8 +68,12 @@ export class ProductUseCase {
           (data.name = name || product.name),
           (data.type = type || product.type),
           (data.image = image || product.image),
-          (data.price = price || product.price),
-          (data.quantity = quantity || product.quantity);
+          (data.price =
+            typeof price === 'number' ? price : price || product.price),
+          (data.quantity =
+            typeof quantity === 'number'
+              ? quantity
+              : quantity || product.quantity);
       });
     });
   }

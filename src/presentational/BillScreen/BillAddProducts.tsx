@@ -9,14 +9,20 @@ import styled, { useTheme } from 'styled-components/native';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
-import { Product } from '@database/models/productModel';
+import { Product as ProductModel } from '@database/models/productModel';
+import { Bill as BillModel } from '@database/models/billModel';
+
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useTranslation } from 'react-i18next';
-import { Bill as BillModel } from '@database/models/billModel';
+import { StackActions } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import { CREATE_PRODUCT, GET_ALL_PRODUCTS } from '@store/slices/productSlice';
+import { GET_ALL_PRODUCTS } from '@store/slices/productSlice';
+
+import EmptyProductsInStock from '@assets/svgs/empty-products-in-stock.svg';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Dimensions, FlatList, StatusBar } from 'react-native';
@@ -36,27 +42,35 @@ type StackParamsList = {
   };
 };
 
+type NavProps = NativeStackNavigationProp<LoggedStackParamList, 'StockStack'>;
+
 const { height } = Dimensions.get('window');
 
 export const BillAddProduct = () => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
+  const [selectedProduct, setSelectedProduct] = useState<ProductModel | null>(
+    null,
+  );
   const [showContent, setShowContent] = useState(false);
 
   const dispatch = useReduxDispatch();
+
   const { stockId } = useReduxSelector(state => state.stock);
   const { allProducts, foundProducts, isLoading } = useReduxSelector(
     state => state.product,
   );
 
   const { bill } = useRoute<RouteProp<StackParamsList, 'Info'>>().params;
-  const { goBack } = useNavigation();
 
-  const heigthList = height - (120 + 32 + 56 + 24 + 72);
+  const { navigate } = useNavigation<NavProps>();
+  const { goBack, dispatch: navigateDispatch } = useNavigation();
+
+  const heightList = useMemo(() => height - 120 - 32 - 56 - 24 - 72, []);
 
   const { t } = useTranslation();
 
   const theme = useTheme();
+
+  const pushAction = StackActions.push('StockRegisterProduct', undefined);
 
   const addOrderBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -72,25 +86,6 @@ export const BillAddProduct = () => {
     dispatch(GET_ALL_PRODUCTS());
   }, [dispatch]);
 
-  const addOnePrduct = useCallback(() => {
-    if (stockId) {
-      dispatch(
-        CREATE_PRODUCT({
-          name: 'Skoll 600ml',
-          type: 'Bebidas',
-          price: 10,
-          image: undefined,
-          stockId,
-          quantity: 200,
-        }),
-      );
-
-      setTimeout(() => {
-        getProducts();
-      }, 1000);
-    }
-  }, [dispatch, getProducts, stockId]);
-
   useEffect(() => {
     getProducts();
   }, [getProducts]);
@@ -104,69 +99,85 @@ export const BillAddProduct = () => {
   }, [allProducts, isLoading]);
 
   const renderContent = () => {
-    return (
-      <>
-        {showContent ? (
-          <>
-            {allProducts?.length ? (
-              <StyledContainerProducts>
-                <SearchInput
-                  placeholder={t('components.searchInput.product')}
-                  type="products"
-                />
+    const filteredProducts = allProducts?.filter(item => item.quantity > 0);
 
-                <FlatList
-                  data={
-                    foundProducts && foundProducts.length
-                      ? foundProducts
-                      : allProducts
-                  }
-                  numColumns={2}
-                  renderItem={({ item }) => (
-                    <SquareCard
-                      key={item.id}
-                      item={{
-                        name: item.name,
-                        image: item.image,
-                        price: formatedCurrency(item.price),
-                      }}
-                      onPress={() => {
-                        setSelectedProduct(item);
-                        handleShowAddOrderBottomSheet();
-                      }}
-                    />
-                  )}
-                  keyExtractor={item => item.id}
-                  style={{
-                    height: StatusBar.currentHeight
-                      ? heigthList - StatusBar.currentHeight
-                      : heigthList,
-                    marginTop: 16,
+    if (showContent && filteredProducts?.length) {
+      return (
+        <StyledContainerProducts>
+          <SearchInput
+            placeholder={t('components.searchInput.product')}
+            type="products"
+          />
+
+          <FlatList
+            data={
+              foundProducts && foundProducts.length
+                ? foundProducts
+                : filteredProducts
+            }
+            numColumns={2}
+            renderItem={({ item }) => {
+              return (
+                <SquareCard
+                  key={item.id}
+                  item={{
+                    name: item.name,
+                    image: item.image,
+                    price: formatedCurrency(item.price),
                   }}
-                  columnWrapperStyle={{
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 32,
+                  onPress={() => {
+                    setSelectedProduct(item);
+                    handleShowAddOrderBottomSheet();
                   }}
-                  showsVerticalScrollIndicator={false}
                 />
-              </StyledContainerProducts>
-            ) : (
-              <StyledContainerNoProductsInStock>
-                <StyledTitleNoProductsInStock>
-                  {t('screens.billAddProducts.listProductsStockEmpty')}
-                </StyledTitleNoProductsInStock>
-                <Button
-                  title={t('components.button.addProductStock')}
-                  onPress={addOnePrduct}
-                />
-              </StyledContainerNoProductsInStock>
-            )}
-          </>
-        ) : (
-          <Loading />
-        )}
-      </>
-    );
+              );
+            }}
+            keyExtractor={item => item.id}
+            style={{
+              height: StatusBar.currentHeight
+                ? heightList - StatusBar.currentHeight
+                : heightList,
+              marginTop: 16,
+            }}
+            columnWrapperStyle={{
+              justifyContent: 'space-between',
+              paddingHorizontal: 32,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </StyledContainerProducts>
+      );
+    }
+
+    if (showContent && allProducts?.length && !filteredProducts?.length) {
+      return (
+        <StyledContainerNoProductsInStock>
+          <EmptyProductsInStock width={132} height={132} />
+          <StyledTextNoProductsInStock>
+            Todos produtos do estoque está em falta
+          </StyledTextNoProductsInStock>
+        </StyledContainerNoProductsInStock>
+      );
+    }
+
+    if (showContent && !allProducts?.length) {
+      return (
+        <StyledContainerNoProductsRegistredInStock>
+          <StyledTitleNoProductsRegistredInStock>
+            {t('screens.billAddProducts.listProductsStockEmpty')}
+          </StyledTitleNoProductsRegistredInStock>
+          <Button
+            title={t('components.button.addProductStock')}
+            onPress={() => {
+              navigate('StockStack');
+              setTimeout(() => navigateDispatch(pushAction), 1000);
+            }}
+          />
+        </StyledContainerNoProductsRegistredInStock>
+      );
+    }
+
+    return <Loading />;
   };
 
   return (
@@ -179,11 +190,13 @@ export const BillAddProduct = () => {
       <Header title={t('components.header.billAddProducts')} onPress={goBack} />
 
       {useMemo(renderContent, [
-        addOnePrduct,
         allProducts,
         foundProducts,
         handleShowAddOrderBottomSheet,
-        heigthList,
+        heightList,
+        navigate,
+        navigateDispatch,
+        pushAction,
         showContent,
         t,
       ])}
@@ -206,18 +219,40 @@ const StyledContainerProducts = styled.View`
   padding: 32px 0;
 `;
 
-const StyledContainerNoProductsInStock = styled.View`
+const StyledContainerNoProductsRegistredInStock = styled.View`
   align-items: center;
   justify-content: center;
 
   padding: 64px 32px;
 `;
 
-const StyledTitleNoProductsInStock = styled.Text`
+const StyledTitleNoProductsRegistredInStock = styled.Text`
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
 
   text-align: center;
 
   margin-bottom: 16px;
+`;
+
+const StyledContainerNoProductsInStock = styled.View`
+  height: ${StatusBar.currentHeight
+    ? height - StatusBar.currentHeight - 120 - 72
+    : height - 120 - 72}px;
+
+  justify-content: center;
+  align-items: center;
+
+  margin-top: -32px;
+`;
+
+const StyledTextNoProductsInStock = styled.Text`
+  width: 80%;
+
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+
+  color: ${({ theme }) => theme.colors.GRAY_800};
+
+  text-align: center;
 `;
