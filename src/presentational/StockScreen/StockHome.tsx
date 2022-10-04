@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { StockStackParamList } from '@routes/stacks/StockStack';
@@ -7,8 +13,11 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { useTranslation } from 'react-i18next';
 
 import { GET_ALL_PRODUCTS } from '@store/slices/productSlice';
+
+import EmptyProduct from '@assets/svgs/empty-products.svg';
 
 import { FlatList } from 'react-native-gesture-handler';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -21,7 +30,10 @@ import BigButton from '@components/BigButton';
 import Card from '@components/Card';
 import AddProductBottomSheetModal from './AddProductBottomSheetModal';
 import Loading from '@components/Loading';
-import { useTranslation } from 'react-i18next';
+
+interface ContainerEmptyProduct {
+  height: number;
+}
 
 type NavProps = NativeStackNavigationProp<
   StockStackParamList,
@@ -29,8 +41,6 @@ type NavProps = NativeStackNavigationProp<
 >;
 
 const { height } = Dimensions.get('window');
-
-const heigthList = height - (120 + 32 + 100 + 24 + 24 + 32 + 72);
 
 export const StockHome = () => {
   const [showContent, setShowContent] = useState(false);
@@ -40,11 +50,17 @@ export const StockHome = () => {
   const { allProducts, isLoading } = useReduxSelector(state => state.product);
 
   const isFocused = useIsFocused();
+
   const { navigate } = useNavigation<NavProps>();
 
   const theme = useTheme();
 
   const { t } = useTranslation();
+
+  const heightList = useMemo(
+    () => height - 120 - 32 - 100 - 24 - 24 - 32 - 72,
+    [],
+  );
 
   const addProductBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -92,40 +108,58 @@ export const StockHome = () => {
           <StyledTitleList>
             {t('screens.stockHome.titleListProductsInStock')}
           </StyledTitleList>
-
-          <FlatList
-            data={allProducts}
-            renderItem={({ item }) => (
-              <Card
-                key={item.id}
-                type="normal"
-                cardSize="large"
-                item={{
-                  title:
-                    item.name[0].toUpperCase() +
-                    item.name.substring(1).toLowerCase(),
-                  image: item.image,
-                  description: `${t('components.card.quantity')}: ${String(
-                    item.quantity,
-                  )}`,
-                  link: () => {
-                    setSelectedProduct(item.id);
-                    handleShowAddProductBottomSheet();
-                  },
+          {allProducts?.length ? (
+            <>
+              <FlatList
+                data={allProducts}
+                renderItem={({ item }) => (
+                  <Card
+                    key={item.id}
+                    type="normal"
+                    cardSize="large"
+                    item={{
+                      title:
+                        item.name[0].toUpperCase() +
+                        item.name.substring(1).toLowerCase(),
+                      image: item.image,
+                      description: `${t('components.card.quantity')}: ${String(
+                        item.quantity,
+                      )}`,
+                      link: () => {
+                        setSelectedProduct(item.id);
+                        handleShowAddProductBottomSheet();
+                      },
+                    }}
+                    onPress={() =>
+                      navigate('StockDetailsProduct', { productId: item.id })
+                    }
+                  />
+                )}
+                keyExtractor={item => item.id}
+                style={{
+                  height: StatusBar.currentHeight
+                    ? heightList - StatusBar.currentHeight
+                    : heightList,
                 }}
-                onPress={() =>
-                  navigate('StockDetailsProduct', { productId: item.id })
-                }
+                showsVerticalScrollIndicator={false}
               />
-            )}
-            keyExtractor={item => item.id}
-            style={{
-              height: StatusBar.currentHeight
-                ? heigthList - StatusBar.currentHeight
-                : heigthList,
-            }}
-            showsVerticalScrollIndicator={false}
-          />
+            </>
+          ) : (
+            <StyledContainerEmptyProduct
+              height={
+                StatusBar.currentHeight
+                  ? heightList - StatusBar.currentHeight
+                  : heightList
+              }
+            >
+              <EmptyProduct width={120} height={120} />
+
+              <StyledTextEmptyProduct>
+                Você ainda não tem nenhum produto cadastrado em seu estoque,
+                clique em cadastrar produto
+              </StyledTextEmptyProduct>
+            </StyledContainerEmptyProduct>
+          )}
 
           <AddProductBottomSheetModal
             ref={addProductBottomSheetModalRef}
@@ -158,4 +192,17 @@ const StyledTitleList = styled.Text`
 
   padding: 0 32px;
   margin-top: 24px;
+`;
+
+const StyledContainerEmptyProduct = styled.View<ContainerEmptyProduct>`
+  height: ${({ height }) => height}px;
+
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledTextEmptyProduct = styled.Text`
+  width: 80%;
+
+  text-align: center;
 `;

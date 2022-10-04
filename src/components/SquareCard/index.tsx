@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useTranslation } from 'react-i18next';
 
 interface SquareCardProps {
   item: {
@@ -17,6 +18,8 @@ const SquareCard = ({
   item: { name, price, image },
   onPress,
 }: SquareCardProps) => {
+  const { t } = useTranslation();
+
   const theme = useTheme();
 
   return (
@@ -37,7 +40,7 @@ const SquareCard = ({
       <StyledDescription>{price}</StyledDescription>
 
       <StyledBaseButton onPress={onPress}>
-        <StyledLink>Adicionar</StyledLink>
+        <StyledLink>{t('components.squareCard.button.add')}</StyledLink>
       </StyledBaseButton>
     </StyledContainer>
   );

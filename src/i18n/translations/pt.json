@@ -24,13 +24,15 @@
 
       "button": {
         "loginWithoutRegister": "Entrar sem cadastro",
-        "add": "adicionar",
+        "add": "Adicionar",
         "close": "Fechar",
         "addBill": "Adicionar comandas",
         "addProductOrder": "Adicionar produto",
         "closeBill": "Fechar comanda",
         "addProductStock": "Adicionar produto no estoque",
-        "register": "Cadastrar"
+        "register": "Cadastrar",
+        "addExpense": "Adicionar despesa"
+
       },
 
       "bigButton": {
@@ -47,6 +49,11 @@
         "quantity": "quantidade"
       },
 
+      "squareCard": {
+        "button": {
+          "add": "Adicionar"
+        }
+      },
 
       "bottomTab": {
         "bill": "Comandas",
@@ -62,7 +69,18 @@
 
         "stockHome": "Estoque",
         "stockRegisterProduct": "Cadastrar produto",
-        "stockDetailsProduct": "Detalhes do produto"
+        "stockDetailsProduct": "Detalhes do produto",
+
+        "financialHome": "Financeiro",
+        "financialInvoicing": "Faturamento",
+        "financialProfit": "Lucro",
+        "financialSpending": "Gastos"
+      },
+
+      "scrollableButton": {
+        "spending": "Gastos",
+        "invoicing": "Faturamento",
+        "profit": "Lucro"
       },
 
       "counter": {
@@ -128,6 +146,22 @@
           "30days": "30 dias",
           "lastMonth": "Último mês"
         }
+      },
+
+      "financialHome": {
+        "extract": "Extrato"
+      },
+
+      "financialInvoicing": {
+        "overview": "Visão geral"
+      },
+
+      "financialProfit": {
+        "overview": "Visão geral"
+      },
+
+      "financialSpending": {
+        "overview": "Visão geral"
       }
     }
   }

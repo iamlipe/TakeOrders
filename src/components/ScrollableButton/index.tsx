@@ -47,14 +47,14 @@ const ScrollableButton = ({
 
 const StyledContainer = styled.ScrollView``;
 
-const StyledContainerButton = styled.View`
+const StyledContainerButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 
-  margin: 0 8px;
+  margin-right: 16px;
 `;
 
-const StyledCircle = styled.TouchableOpacity<ContainerCircleButton>`
+const StyledCircle = styled.View<ContainerCircleButton>`
   width: 50px;
   height: 50px;
 

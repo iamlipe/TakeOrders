@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
+
+import { useTranslation } from 'react-i18next';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {
+  ParamListBase,
+  TabNavigationState,
+  useNavigation,
+} from '@react-navigation/native';
+import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
+
 import { Dimensions, Keyboard, Platform } from 'react-native';
 
 import Animated, {
@@ -12,19 +22,9 @@ import BillIcon from '@assets/svgs/bill.svg';
 import FinancialIcon from '@assets/svgs/financial.svg';
 import StockIcon from '@assets/svgs/stock.svg';
 
-import { useTranslation } from 'react-i18next';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {
-  ParamListBase,
-  TabNavigationState,
-  useNavigation,
-} from '@react-navigation/native';
-
-import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
-
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
-  'BillStack' | 'FinancialHome' | 'StockStack'
+  'BillStack' | 'FinancialStack' | 'StockStack'
 >;
 
 interface TitleTabProps {
@@ -90,7 +90,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
       lineTranslateX.value = withTiming(width * 0.5 - 30, { duration: 200 });
     }
 
-    if (activeTab === 'FinancialHome') {
+    if (activeTab === 'FinancialStack') {
       lineTranslateX.value = withTiming(width * 0.8 - 30, { duration: 200 });
     }
   });
@@ -170,14 +170,14 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           () => (
             <FinancialIcon
               fill={
-                activeTab === 'FinancialHome'
+                activeTab === 'FinancialStack'
                   ? theme.colors.PRIMARY_600
                   : theme.colors.GRAY_800
               }
             />
           ),
           t('components.bottomTab.financial'),
-          'FinancialHome',
+          'FinancialStack',
         )}
       </StyledButtonTabRow>
       <StyledLine style={animatedStyledLine} />

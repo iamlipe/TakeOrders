@@ -1,5 +1,3 @@
-/* eslint-disable react/display-name */
-
 import React, {
   forwardRef,
   memo,
@@ -24,14 +22,6 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import Input from '@components/Input';
 import Button from '@components/Button';
 
-const schema = Yup.object().shape({
-  name: Yup.string().required('Preenchimento obrigatório'),
-  phone: Yup.string().matches(
-    /^\(([0-9]{2})\) ([0-9]{4,5})-([0-9]{4})$/,
-    'Insira um numero de celular valido',
-  ),
-});
-
 interface FormAddNewBill {
   name: string;
   phone?: string;
@@ -51,14 +41,24 @@ const AddBillBottomSheetModal = forwardRef<
 
   const { t } = useTranslation();
 
+  const schema = useMemo(
+    () =>
+      Yup.object().shape({
+        name: Yup.string().required(t('errors.required')),
+        phone: Yup.string().matches(
+          /^\(([0-9]{2})\) ([0-9]{4,5})-([0-9]{4})$/,
+          t('erros.validPhone'),
+        ),
+      }),
+    [t],
+  );
+
   const {
     control,
     reset,
     handleSubmit,
     formState: { errors, isSubmitted, isSubmitSuccessful },
-  } = useForm<FormAddNewBill>({
-    resolver: yupResolver(schema),
-  });
+  } = useForm<FormAddNewBill>({ resolver: yupResolver(schema) });
 
   const snapPoints = useMemo(
     () => [16 + 16 + 32 + 24 + 120 + 40 + 44 + 48],
@@ -82,8 +82,13 @@ const AddBillBottomSheetModal = forwardRef<
     [auth, dispatch, invoiceId],
   );
 
+  const getBills = useCallback(() => {
+    dispatch(GET_BILLS());
+  }, [dispatch]);
+
   const onSubmit = (data: FormAddNewBill) => {
     createBill(data);
+    getBills();
     closeBottomSheet();
     Keyboard.dismiss();
   };
@@ -108,16 +113,17 @@ const AddBillBottomSheetModal = forwardRef<
 
         <StyledContainerForm>
           <Input
-            name={t('components.input.name')}
+            name="name"
             control={control}
-            label="Nome"
+            label={t('components.input.name')}
             error={isSubmitted ? errors.name?.message : ''}
           />
           <Input
-            name={t('components.input.phone')}
+            name="phone"
             control={control}
-            label="Celular (Opcional)"
+            label={t('components.input.phone')}
             error={isSubmitted ? errors.phone?.message : ''}
+            type="cel-phone"
           />
         </StyledContainerForm>
 

@@ -6,14 +6,14 @@ import {
 } from '@react-navigation/bottom-tabs';
 
 import { BillStack } from './BillStack';
-import { FinancialHome } from '@presentational/FinancialScreen/FinancialHome';
+import { FinancialStack } from './FinancialStack';
 import { StockStack } from './StockStack';
 
 import { BottonTab } from '@routes/BottomTab';
 
 export type LoggedStackParamList = {
   BillStack: undefined;
-  FinancialHome: undefined;
+  FinancialStack: undefined;
   StockStack: undefined;
 };
 
@@ -31,7 +31,7 @@ export const LoggedStack = () => (
     }}
   >
     <Logged.Screen name="BillStack" component={BillStack} />
-    <Logged.Screen name="FinancialHome" component={FinancialHome} />
+    <Logged.Screen name="FinancialStack" component={FinancialStack} />
     <Logged.Screen name="StockStack" component={StockStack} />
   </Logged.Navigator>
 );

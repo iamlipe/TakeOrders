@@ -44,3 +44,45 @@ export const filterByDate = ({ date, period }: FilterByDateProps) => {
       break;
   }
 };
+
+export const filterAllByMonth = ({
+  data,
+}: {
+  data: { createdAt: number }[];
+}) => {
+  const arr: any[][] = [];
+
+  if (data) {
+    let currDate = new Date(data[data.length - 1].createdAt);
+
+    const date = new Date();
+
+    while (
+      currDate.getMonth() <= date.getMonth() &&
+      currDate.getFullYear() <= date.getFullYear()
+    ) {
+      const arrMonth = data.filter(item => {
+        const dateInvoice = new Date(item.createdAt);
+
+        if (
+          currDate.getMonth() === dateInvoice.getMonth() &&
+          currDate.getFullYear() === dateInvoice.getFullYear()
+        ) {
+          return item;
+        }
+      });
+
+      arr.push(arrMonth);
+
+      if (currDate.getMonth() < 11) {
+        currDate = new Date(currDate.getFullYear(), currDate.getMonth() + 1);
+      }
+
+      if (currDate.getMonth() === 11) {
+        currDate = new Date(currDate.getFullYear() + 1, 0);
+      }
+    }
+  }
+
+  return arr;
+};

@@ -4,16 +4,18 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface FinancialCardProps {
   item: {
-    data: string;
-    title: string;
+    date: number;
+    title?: string;
     price: number;
   };
 }
 
 const FinancialCard = ({
-  item: { data, title, price },
+  item: { date, title, price },
 }: FinancialCardProps) => {
   const theme = useTheme();
+
+  const formatedDate = new Date(date).toLocaleDateString('pt-br');
 
   return (
     <StyledContainer>
@@ -25,12 +27,12 @@ const FinancialCard = ({
         />
       </StyledCircle>
       <StyledColumn>
-        <StyledData>{data}</StyledData>
+        <StyledData>{formatedDate}</StyledData>
         <StyledTitle>{title}</StyledTitle>
       </StyledColumn>
 
       <StyledPrice>
-        {`R$ ${price.toLocaleString('pt-BR', {
+        {`${price.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
           minimumFractionDigits: 2,
@@ -41,13 +43,12 @@ const FinancialCard = ({
 };
 
 const StyledContainer = styled.View`
-  height: 30px;
-
   flex-direction: row;
 
   align-items: center;
   justify-content: space-between;
 
+  padding: 2px 0;
   margin-bottom: 16px;
 `;
 

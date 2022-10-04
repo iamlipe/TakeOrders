@@ -8,5 +8,7 @@ export const purchaseSchema = tableSchema({
     { name: 'expanse', type: 'string', isOptional: true },
     { name: 'description', type: 'string', isOptional: true },
     { name: 'totalPrice', type: 'number' },
+    { name: 'createdAt', type: 'number' },
+    { name: 'updatedAt', type: 'number' },
   ],
 });

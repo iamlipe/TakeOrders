@@ -9,6 +9,8 @@ export interface PurchaseResponse {
   expanse?: string;
   description?: string;
   totalPrice: number;
+  createdAt: number;
+  updatedAt: number;
 
   product: ProductModel;
 }
