@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Ref, RefCallback, useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,13 @@ import {
 } from '@react-navigation/native';
 import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import { Dimensions, Keyboard, Platform } from 'react-native';
+import {
+  Dimensions,
+  Keyboard,
+  Platform,
+  StatusBar,
+  MeasureLayoutOnSuccessCallback,
+} from 'react-native';
 
 import Animated, {
   useAnimatedStyle,
@@ -21,6 +27,7 @@ import Animated, {
 import BillIcon from '@assets/svgs/bill.svg';
 import FinancialIcon from '@assets/svgs/financial.svg';
 import StockIcon from '@assets/svgs/stock.svg';
+import MenuIcon from '@assets/svgs/menu.svg';
 
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
@@ -83,15 +90,27 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
 
   useEffect(() => {
     if (activeTab === 'BillStack') {
-      lineTranslateX.value = withTiming(width * 0.2 - 30, { duration: 200 });
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+
+      lineTranslateX.value = withTiming(width * 0.168 - 30, { duration: 400 });
     }
 
     if (activeTab === 'StockStack') {
-      lineTranslateX.value = withTiming(width * 0.5 - 30, { duration: 200 });
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+
+      lineTranslateX.value = withTiming(width * 0.392 - 30, { duration: 400 });
     }
 
     if (activeTab === 'FinancialStack') {
-      lineTranslateX.value = withTiming(width * 0.8 - 30, { duration: 200 });
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+
+      lineTranslateX.value = withTiming(width * 0.616 - 30, { duration: 400 });
+    }
+
+    if (activeTab === 'MenuStack') {
+      StatusBar.setBackgroundColor(theme.colors.SECUNDARY_600);
+
+      lineTranslateX.value = withTiming(width * 0.838 - 30, { duration: 400 });
     }
   });
 
@@ -114,6 +133,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
   });
 
   const renderTab = (
+    index: number,
     Icon: () => JSX.Element,
     title: string,
     route: keyof LoggedStackParamList,
@@ -141,6 +161,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
     >
       <StyledButtonTabRow>
         {renderTab(
+          0,
           () => (
             <BillIcon
               fill={
@@ -154,6 +175,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           'BillStack',
         )}
         {renderTab(
+          1,
           () => (
             <StockIcon
               fill={
@@ -167,6 +189,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           'StockStack',
         )}
         {renderTab(
+          2,
           () => (
             <FinancialIcon
               fill={
@@ -178,6 +201,21 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           ),
           t('components.bottomTab.financial'),
           'FinancialStack',
+        )}
+        {renderTab(
+          3,
+          () => (
+            <MenuIcon
+              style={{ paddingVertical: 1 }}
+              fill={
+                activeTab === 'MenuStack'
+                  ? theme.colors.PRIMARY_600
+                  : theme.colors.GRAY_800
+              }
+            />
+          ),
+          t('components.bottomTab.menu'),
+          'MenuStack',
         )}
       </StyledButtonTabRow>
       <StyledLine style={animatedStyledLine} />
@@ -204,8 +242,8 @@ const StyledButtonTabRow = styled.View`
   align-self: center;
 `;
 
-const StyledBaseButton = styled.TouchableOpacity`
-  width: 33%;
+const StyledBaseButton = styled.Pressable`
+  width: 25%;
 
   align-items: center;
   justify-content: flex-end;

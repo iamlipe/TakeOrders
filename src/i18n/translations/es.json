@@ -58,7 +58,8 @@
       "bottomTab": {
         "bill": "Cuenta",
         "stock": "Inventario",
-        "financial": "Financeiro"
+        "financial": "Financeiro",
+        "menu": "Menu"
       },
       
       "header": {
@@ -74,7 +75,10 @@
         "financialHome": "Financiero",
         "financialInvoicing": "Facturación",
         "financialProfit": "Lucro",
-        "financialSpending": "Gasto"
+        "financialSpending": "Gasto",
+
+        "menuHome": "Menu",
+        "menuHelper": "Ayuda"
       },
 
       "scrollableButton": {
@@ -112,7 +116,8 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "No tiene ningún producto registrado en su inventario, haga clic en el botón de abajo para comenzar a registrarse",
+        "textNoProductsRegistredInStock": "No tiene ningún producto registrado en su inventario, haga clic en el botón de abajo para comenzar a registrarse",
+        "textNoProductInStock": "Todos los productos en stock están agotados",
 
         "addOrderBottomSheet": {
           "title": "Agregar producto"
@@ -121,9 +126,10 @@
 
       "stockHome": {
         "titleListProductsInStock": "Produtos em estoque",
+        "textEmptyProductInStock": "Aún no tienes ningún producto registrado en tu stock, haz click en registrar producto",
 
         "addProductBottomSheet": {
-          "title":"Adicionar produto"
+          "title":"Agregar producto"
         }
       },
 
@@ -149,21 +155,33 @@
       },
 
       "financialHome": {
-        "extract": "Extracto"
+        "extract": "Extracto",
+        "textEmptyExtract": "Todavía no tienes ningún registro de tu extracto..."
       },
 
       "financialInvoicing": {
-        "overview": "visión general"
+        "overview": "Visión general",
+        "textEmptyIncoing": "Todavía no tienes ningún registro de tu facturación..."
       },
 
       "financialProfit": {
-        "overview": "visión general"
+        "overview": "Visión general",
+        "textEmptyIncoing": "Todavía no tienes ningún registro de tus ganancias..."
       },
 
       "financialSpending": {
-        "overview": "visión general"
+        "overview": "Visión general",
+        "textEmptyIncoing": "Todavía no tienes ningún registro de tus gastos..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Idioma",
+          "help": "Necesita ayuda ?"
+        },
+
+        "logout": "Salir"
       }
     }
-    
   }
 }

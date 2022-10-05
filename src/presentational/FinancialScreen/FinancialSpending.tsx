@@ -160,7 +160,7 @@ export const FinancialSpending = () => {
             <StyledContainerEmptySpending>
               <EmptyChart width={132} height={132} />
               <StyledTextEmptySpending>
-                Ainda não tem nenhum registro da suas dispesas...
+                {t('screens.financialSpending.textEmptySpending')}
               </StyledTextEmptySpending>
             </StyledContainerEmptySpending>
           )}

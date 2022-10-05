@@ -141,7 +141,7 @@ export const FinancialProfit = () => {
             <StyledContainerEmptyProfit>
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyProfit>
-                Ainda não tem nenhum registro do seu lucro...
+                {t('screens.financialProfit.textEmptyProfit')}
               </StyledTextEmptyProfit>
             </StyledContainerEmptyProfit>
           )}

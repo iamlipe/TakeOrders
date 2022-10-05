@@ -137,7 +137,7 @@ export const FinancialHome = () => {
             >
               <EmptyExtract width={132} height={132} />
               <StyledTextEmptyExtract>
-                Ainda não tem nenhum registro do seu extrato...
+                {t('screens.financialHome.textEmptyExtract')}
               </StyledTextEmptyExtract>
             </StyledContainerEmptyExtract>
           )}

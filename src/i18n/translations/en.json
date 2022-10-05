@@ -57,7 +57,8 @@
       "bottomTab": {
         "bill": "Bill",
         "stock": "Stock",
-        "financial": "Financial"
+        "financial": "Financial",
+        "menu": "Menu"
       },
       
       "header": {
@@ -73,7 +74,10 @@
         "financialHome": "Financial",
         "financialInvoicing": "Invoicing",
         "financialProfit": "Profit",
-        "financialSpending": "Spending"
+        "financialSpending": "Spending",
+
+        "menuHome": "Menu",
+        "menuHelper": "Help"
       },
 
       "scrollableButton": {
@@ -111,7 +115,8 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "You don't have any products registered in your stock, click on the button below to start registering",
+        "textNoProductsRegistredInStock": "You don't have any products registered in your stock, click on the button below to start registering",
+        "textNoProductInStock": "All items in stock are out of stock",
 
         "addOrderBottomSheet": {
           "title": "Add product"
@@ -120,6 +125,7 @@
 
       "stockHome": {
         "titleListProductsInStock": "Products in stock",
+        "textEmptyProductInStock": "You still don't have any products registered in your stock, click on register product",
 
         "addProductBottomSheet": {
           "title":"Add product"
@@ -148,19 +154,32 @@
       },
 
       "financialHome": {
-        "extract": "Extract"
+        "extract": "Extract",
+        "textEmptyExtract": "You still don't have any record of your extract..."
       },
 
       "financialInvoicing": {
-        "overview": "Overview"
+        "overview": "Overview",
+        "textEmptyIncoing": "You still don't have any record of your invoicing..."
       },
 
       "financialProfit": {
-        "overview": "Overview"
+        "overview": "Overview",
+        "textEmptyIncoing": "You still don't have any record of your profit..."
       },
 
       "financialSpending": {
-        "overview": "Overview"
+        "overview": "Overview",
+        "textEmptyIncoing": "You still don't have any record of your expenses..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Language",
+          "help": "Help"
+        },
+
+        "logout": "Logout"
       }
     }
   }

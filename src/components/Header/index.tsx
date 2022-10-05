@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import colors from '@styles/colors';
 
 import { useTranslation } from 'react-i18next';
 
@@ -8,18 +9,23 @@ interface HeaderTitleProps {
   type: 'primary' | 'secundary';
 }
 
+interface ContainerProps {
+  background?: keyof typeof colors;
+}
+
 interface HeaderProps {
   title: string;
+  backgroundColor?: keyof typeof colors;
   onPress?: () => void;
 }
 
-const Header = ({ title, onPress }: HeaderProps) => {
+const Header = ({ title, backgroundColor, onPress }: HeaderProps) => {
   const theme = useTheme();
 
   const { t } = useTranslation();
 
   return (
-    <StyledContainer>
+    <StyledContainer background={backgroundColor}>
       {onPress && (
         <StyledBaseButton onPress={onPress}>
           <Icon name="angle-left" color={theme.colors.WHITE} size={16} />
@@ -36,13 +42,14 @@ const Header = ({ title, onPress }: HeaderProps) => {
   );
 };
 
-const StyledContainer = styled.View`
+const StyledContainer = styled.View<ContainerProps>`
   width: 100%;
   height: 120px;
 
   justify-content: space-evenly;
 
-  background-color: ${({ theme }) => theme.colors.PRIMARY_600};
+  background-color: ${({ theme, background }) =>
+    background ? theme.colors[background] : theme.colors.PRIMARY_600};
 
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;

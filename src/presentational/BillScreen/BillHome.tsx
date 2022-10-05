@@ -36,6 +36,7 @@ import SearchInput from '@components/SearchInput';
 import Button from '@components/Button';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
+import i18next from 'i18next';
 
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 

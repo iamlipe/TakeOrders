@@ -144,7 +144,7 @@ export const FinancialInvoicing = () => {
             <StyledContainerEmptyInvoicing>
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyInvoicing>
-                Ainda não tem nenhum registro do seu faturamento...
+                {t('screens.financialInvoicing.textEmptyInvoicing')}
               </StyledTextEmptyInvoicing>
             </StyledContainerEmptyInvoicing>
           )}

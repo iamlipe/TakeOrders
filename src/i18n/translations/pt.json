@@ -58,7 +58,8 @@
       "bottomTab": {
         "bill": "Comandas",
         "stock": "Estoque",
-        "financial": "Financeiro"
+        "financial": "Financeiro",
+        "menu": "Menu"
       },
       
       "header": {
@@ -74,7 +75,10 @@
         "financialHome": "Financeiro",
         "financialInvoicing": "Faturamento",
         "financialProfit": "Lucro",
-        "financialSpending": "Gastos"
+        "financialSpending": "Gastos",
+
+        "menuHome": "Menu",
+        "menuHelper": "Ajuda"
       },
 
       "scrollableButton": {
@@ -112,7 +116,8 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+        "textNoProductsRegistredInStock": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+        "textNoProductInStock": "Todos produtos do estoque está em falta",
 
         "addOrderBottomSheet": {
           "title": "Adicionar produto"
@@ -121,6 +126,7 @@
 
       "stockHome": {
         "titleListProductsInStock": "Produtos em estoque",
+        "textEmptyProductInStock": "Você ainda não tem nenhum produto cadastrado em seu estoque, clique em cadastrar produto",
 
         "addProductBottomSheet": {
           "title":"Adicionar produto"
@@ -149,19 +155,32 @@
       },
 
       "financialHome": {
-        "extract": "Extrato"
+        "extract": "Extrato",
+        "textEmptyExtract": "Ainda não tem nenhum registro do seu extrato..."
       },
 
       "financialInvoicing": {
-        "overview": "Visão geral"
+        "overview": "Visão geral",
+        "textEmptyIncoing": "Ainda não tem nenhum registro do seu faturamento..."
       },
 
       "financialProfit": {
-        "overview": "Visão geral"
+        "overview": "Visão geral",
+        "textEmptyIncoing": "Ainda não tem nenhum registro do seu lucro..."
       },
 
       "financialSpending": {
-        "overview": "Visão geral"
+        "overview": "Visão geral",
+        "textEmptyIncoing": "Ainda não tem nenhum registro da suas dispesas..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Idioma",
+          "help": "Precisa de ajuda ?"
+        },
+
+        "logout": "Sair"
       }
     }
   }
