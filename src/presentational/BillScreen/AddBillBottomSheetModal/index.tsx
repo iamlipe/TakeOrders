@@ -21,6 +21,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Input from '@components/Input';
 import Button from '@components/Button';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface FormAddNewBill {
   name: string;
@@ -61,7 +62,7 @@ const AddBillBottomSheetModal = forwardRef<
   } = useForm<FormAddNewBill>({ resolver: yupResolver(schema) });
 
   const snapPoints = useMemo(
-    () => [16 + 16 + 32 + 24 + 120 + 40 + 44 + 48],
+    () => [16 + 16 + RFValue(32) + 24 + 120 + 40 + 44 + 48],
     [],
   );
 
@@ -150,7 +151,7 @@ const StyledTitle = styled.Text`
 
   text-align: center;
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   margin-bottom: 24px;
 `;

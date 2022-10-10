@@ -21,6 +21,7 @@ import { BottomSheetScrollView, BottomSheetModal } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Input from '@components/Input';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface PadNumberProps {
   text?: string;
@@ -206,7 +207,7 @@ const StyledTitle = styled.Text`
 
   text-align: center;
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   margin-bottom: 40px;
 `;

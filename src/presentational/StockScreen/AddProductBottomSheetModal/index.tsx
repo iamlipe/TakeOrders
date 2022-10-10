@@ -26,6 +26,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Input from '@components/Input';
 import Button from '@components/Button';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface AddProductBottomSheetModalProps {
   productId: string | null;
@@ -70,7 +71,7 @@ const AddProductBottomSheetModal = forwardRef<
   });
 
   const snapPointHeigth = useMemo(
-    () => [16 + 16 + 32 + 24 + 80 + 24 + 120 + 40 + 44 + 48],
+    () => [16 + 16 + RFValue(32) + 24 + 80 + 24 + 120 + 40 + 44 + 48],
     [],
   );
 
@@ -208,7 +209,7 @@ const StyledTitle = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   text-align: center;
 
