@@ -49,7 +49,7 @@ const StyledContainer = styled.View<ContainerProps>`
   justify-content: space-evenly;
 
   background-color: ${({ theme, background }) =>
-    background ? theme.colors[background] : theme.colors.PRIMARY_600};
+    background ? theme.colors[background] : theme.colors.PRIMARY_500};
 
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;

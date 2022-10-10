@@ -159,8 +159,6 @@ export const BillHome = () => {
 
             <Button
               title={t('components.button.addBill')}
-              iconPosition="left"
-              icon={{ name: 'add', color: 'GRAY_800' }}
               backgroundColor="trasparent"
               fontColor="GRAY_800"
               onPress={handleShowAddBillBottomSheet}

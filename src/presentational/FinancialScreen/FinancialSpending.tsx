@@ -32,6 +32,7 @@ import Button from '@components/Button';
 import Loading from '@components/Loading';
 import AddPurchaseBottomSheetModal from './AddPurchaseBottomSheetModal';
 import Overview from '@components/Overview';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const { height } = Dimensions.get('window');
 
@@ -54,7 +55,7 @@ export const FinancialSpending = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 24 - 8 - 220 - 32 - 16 - 44 - 16 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 16 - 44 - 16 - 72,
     [],
   );
 
@@ -196,7 +197,7 @@ const StyledTitleOverview = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 24px;
+  line-height: ${RFValue(24)}px;
 
   padding: 0 32px;
   margin-bottom: 8px;

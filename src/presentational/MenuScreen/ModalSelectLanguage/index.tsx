@@ -2,12 +2,18 @@ import React, { memo, forwardRef, Dispatch, SetStateAction } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Overlay } from 'react-native-elements';
+
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Dimensions } from 'react-native';
 
 interface ModalSelectLanguageProps {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   handleLanguage: (language: 'pt' | 'en' | 'es') => void;
 }
+
+const { width, height } = Dimensions.get('window');
 
 const ModalSelectLanguage = ({
   visible,
@@ -17,42 +23,44 @@ const ModalSelectLanguage = ({
   const theme = useTheme();
 
   return (
-    <StyledModal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      statusBarTranslucent
-    >
-      <StyledBackground>
-        <StyledContainerModal>
-          <StyledBaseButtonClose onPress={() => setVisible(false)}>
-            <Icon name="close" size={16} color={theme.colors.GRAY_800} />
-          </StyledBaseButtonClose>
-          <StyledTitle>Selecione seu idioma</StyledTitle>
+    <>
+      <StyledBackground />
+      <StyledOverlay
+        isVisible={!!visible}
+        onBackdropPress={() => setVisible(false)}
+        backdropStyle={{ backgroundColor: theme.colors.BACKGROUND_MODAL }}
+        statusBarTranslucent
+        fullScreen={false}
+        overlayStyle={{
+          height: 24 + 16 + 36 + 36 + 36 + 24 + RFValue(24),
+          width: width * 0.9,
+          padding: 24,
+          borderRadius: 20,
+          backgroundColor: theme.colors.WHITE,
+        }}
+      >
+        <StyledBaseButtonClose onPress={() => setVisible(false)}>
+          <Icon name="close" size={RFValue(16)} color={theme.colors.GRAY_800} />
+        </StyledBaseButtonClose>
+        <StyledTitle>Selecione seu idioma</StyledTitle>
 
-          <StyledBaseButton onPress={() => handleLanguage('pt')}>
-            <StyledTextButtton>Portugues</StyledTextButtton>
-          </StyledBaseButton>
-          <StyledBaseButton onPress={() => handleLanguage('en')}>
-            <StyledTextButtton>Ingles</StyledTextButtton>
-          </StyledBaseButton>
-          <StyledBaseButton onPress={() => handleLanguage('es')}>
-            <StyledTextButtton>Espanhol</StyledTextButtton>
-          </StyledBaseButton>
-        </StyledContainerModal>
-      </StyledBackground>
-    </StyledModal>
+        <StyledBaseButton onPress={() => handleLanguage('pt')}>
+          <StyledTextButtton>Portugues</StyledTextButtton>
+        </StyledBaseButton>
+        <StyledBaseButton onPress={() => handleLanguage('en')}>
+          <StyledTextButtton>Ingles</StyledTextButtton>
+        </StyledBaseButton>
+        <StyledBaseButton onPress={() => handleLanguage('es')}>
+          <StyledTextButtton>Espanhol</StyledTextButtton>
+        </StyledBaseButton>
+      </StyledOverlay>
+    </>
   );
 };
 
-const StyledModal = styled.Modal`
-  flex: 1;
+const StyledOverlay = styled(Overlay)``;
 
-  align-items: center;
-  justify-content: center;
-`;
-
-const StyledBackground = styled.View`
+const StyledBackground = styled.Pressable`
   flex: 1;
 
   align-items: center;
@@ -61,31 +69,24 @@ const StyledBackground = styled.View`
   background-color: ${({ theme }) => theme.colors.BACKGROUND_MODAL};
 `;
 
-const StyledContainerModal = styled.View`
-  height: 212px;
-  width: 90%;
-
-  background-color: ${({ theme }) => theme.colors.WHITE};
-
-  border-radius: 20px;
-
-  padding: 32px 16px;
-`;
-
 const StyledBaseButtonClose = styled.TouchableOpacity`
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 24px;
+  right: 16px;
 
-  width: 32px;
-  height: 32px;
+  z-index: 1;
+
+  width: ${RFValue(24)}px;
+  height: ${RFValue(24)}px;
 
   align-self: flex-end;
 
   justify-content: center;
   align-items: center;
 
-  border-radius: 16px;
+  border-radius: ${RFValue(12)}px;
+
+  background-color: ${({ theme }) => theme.colors.GRAY_100};
 `;
 
 const StyledTitle = styled.Text`
@@ -96,7 +97,7 @@ const StyledTitle = styled.Text`
 
   text-align: center;
 
-  line-height: 24px;
+  line-height: ${RFValue(24)}px;
 
   margin-bottom: 16px;
 `;
@@ -104,6 +105,7 @@ const StyledTitle = styled.Text`
 const StyledBaseButton = styled.TouchableOpacity`
   height: 36px;
 
+  align-items: center;
   justify-content: center;
 `;
 

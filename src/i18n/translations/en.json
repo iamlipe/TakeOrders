@@ -5,6 +5,21 @@
       "validPhone": "Please enter a valid mobile number",
       "minOne": "Add at least 1"
     },
+
+    "doubts": {
+      "questions": {
+        "saveData": "Does the app save data to some cloud service?",
+        "whatHappenWithMyData": "What happens to the registered data if I uninstall or clear the cache of the app?",
+        "limitBills": "Is there any limit of commands that I can open?",
+        "limitProductInStock": "Is there a limit of products in stock that I can have registered?"
+      },
+      "answers": {
+        "saveData": "No, all data is only saved on the device",
+        "whatHappenWithMyData": "All data is lost",
+        "limitBills": "There is no restriction on the number of open commands.",
+        "limitProductInStock": "No, you can have as many products as you want registered in stock."
+      }
+    },
     
     "components": {
       "input": {
@@ -160,17 +175,17 @@
 
       "financialInvoicing": {
         "overview": "Overview",
-        "textEmptyIncoing": "You still don't have any record of your invoicing..."
+        "textEmptyInvoicing": "You still don't have any record of your invoicing..."
       },
 
       "financialProfit": {
         "overview": "Overview",
-        "textEmptyIncoing": "You still don't have any record of your profit..."
+        "textEmptyProfit": "You still don't have any record of your profit..."
       },
 
       "financialSpending": {
         "overview": "Overview",
-        "textEmptyIncoing": "You still don't have any record of your expenses..."
+        "textEmptySpending": "You still don't have any record of your expenses..."
       },
 
       "menuHome": {

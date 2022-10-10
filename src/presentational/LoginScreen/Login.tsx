@@ -52,12 +52,12 @@ export const Login = () => {
         password: 'default@123',
       }),
     );
-
-    setTimeout(() => login(), 1000);
-  }, [dispatch, login]);
+  }, [dispatch]);
 
   const getDefaultUser = useCallback(() => {
     dispatch(GET_DEFAULT_USER({ email: 'default@email.com' }));
+
+    setTimeout(() => setGetUser(false), 1000);
   }, [dispatch]);
 
   const rememberLogin = useCallback(async () => {

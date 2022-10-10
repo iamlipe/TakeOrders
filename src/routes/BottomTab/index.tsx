@@ -47,9 +47,12 @@ const { width } = Dimensions.get('window');
 export const BottonTab = ({ state }: ButtonTabProps) => {
   const [showIcons, setShowIcons] = useState(true);
 
+  const refTextTab = useRef<any>([]);
+
   const opacityIcons = useSharedValue(1);
   const heightBottomTab = useSharedValue(72);
   const lineTranslateX = useSharedValue(width * 0.2 - 30);
+  const lineWidht = useSharedValue(0);
 
   const { navigate } = useNavigation<NavPropsProducer>();
 
@@ -90,33 +93,84 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
 
   useEffect(() => {
     if (activeTab === 'BillStack') {
-      StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
 
-      lineTranslateX.value = withTiming(width * 0.168 - 30, { duration: 400 });
+      refTextTab.current[0]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 + width * 0.05 - (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
 
     if (activeTab === 'StockStack') {
-      StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
 
-      lineTranslateX.value = withTiming(width * 0.392 - 30, { duration: 400 });
+      refTextTab.current[1]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 +
+              (width * 0.05 + (width * 0.9) / 4) -
+              (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
 
     if (activeTab === 'FinancialStack') {
-      StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
 
-      lineTranslateX.value = withTiming(width * 0.616 - 30, { duration: 400 });
+      refTextTab.current[2]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 +
+              (width * 0.05 + (width * 0.9) / 2) -
+              (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
 
     if (activeTab === 'MenuStack') {
       StatusBar.setBackgroundColor(theme.colors.SECUNDARY_600);
 
-      lineTranslateX.value = withTiming(width * 0.838 - 30, { duration: 400 });
+      refTextTab.current[3]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 +
+              (width * 0.05 + 3 * ((width * 0.9) / 4)) -
+              (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
   });
 
   const animatedStyledLine = useAnimatedStyle(() => {
     return {
       left: lineTranslateX.value,
+      width: lineWidht.value,
     };
   });
 
@@ -150,7 +204,12 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
         ]}
       >
         <Icon />
-        <StyledTitleTab active={activeTab === route}>{title}</StyledTitleTab>
+        <StyledTitleTab
+          ref={(ref: any) => (refTextTab.current[index] = ref)}
+          active={activeTab === route}
+        >
+          {title}
+        </StyledTitleTab>
       </Animated.View>
     </StyledBaseButton>
   );
@@ -234,7 +293,7 @@ const StyledBottonTabContainer = styled(Animated.View)`
 `;
 
 const StyledButtonTabRow = styled.View`
-  width: 90%;
+  width: ${width * 0.9}px;
 
   flex-direction: row;
 
@@ -263,7 +322,6 @@ const StyledLine = styled(Animated.View)`
   left: ${width * 0.2 - 30}px;
   top: 58px;
 
-  width: 60px;
   height: 2px;
 
   background-color: ${({ theme }) => theme.colors.PRIMARY_500};

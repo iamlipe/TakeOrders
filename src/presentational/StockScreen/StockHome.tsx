@@ -30,6 +30,7 @@ import BigButton from '@components/BigButton';
 import Card from '@components/Card';
 import AddProductBottomSheetModal from './AddProductBottomSheetModal';
 import Loading from '@components/Loading';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface ContainerEmptyProduct {
   height: number;
@@ -58,7 +59,7 @@ export const StockHome = () => {
   const { t } = useTranslation();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 100 - 24 - 24 - 32 - 72,
+    () => height - 120 - 32 - 100 - RFValue(24) - 24 - 32 - 72,
     [],
   );
 
@@ -155,8 +156,7 @@ export const StockHome = () => {
               <EmptyProduct width={120} height={120} />
 
               <StyledTextEmptyProduct>
-                Você ainda não tem nenhum produto cadastrado em seu estoque,
-                clique em cadastrar produto
+                {t('screens.stockHome.textEmptyProductInStock')}
               </StyledTextEmptyProduct>
             </StyledContainerEmptyProduct>
           )}
@@ -188,7 +188,7 @@ const StyledTitleList = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 24px;
+  line-height: ${RFValue(24)}px;
 
   padding: 0 32px;
   margin-top: 24px;
@@ -202,7 +202,14 @@ const StyledContainerEmptyProduct = styled.View<ContainerEmptyProduct>`
 `;
 
 const StyledTextEmptyProduct = styled.Text`
-  width: 80%;
+  width: 60%;
+
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+
+  color: ${({ theme }) => theme.colors.GRAY_800};
 
   text-align: center;
+
+  margin-top: 16px;
 `;

@@ -6,6 +6,7 @@ import { useReduxDispatch } from '@hooks/useReduxDispatch';
 
 import { GET_BILLS_BY_NAME } from '@store/slices/billSlice';
 import { GET_PRODUCTS_BY_NAME } from '@store/slices/productSlice';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface SearchInputProps {
   placeholder: string;
@@ -49,7 +50,11 @@ const SearchInput = ({ placeholder, type }: SearchInputProps) => {
           <StyledLoading color={theme.colors.GRAY_800} size="small" />
         ) : (
           <StyledBaseButton onPress={handleSearch}>
-            <Icon name="search" color={theme.colors.GRAY_800} size={16} />
+            <Icon
+              name="search"
+              color={theme.colors.GRAY_800}
+              size={RFValue(16)}
+            />
           </StyledBaseButton>
         )}
       </StyledContainerIcon>
@@ -64,8 +69,6 @@ const SearchInput = ({ placeholder, type }: SearchInputProps) => {
 };
 
 const StyledContainer = styled.View`
-  height: 56px;
-
   flex-direction: row;
   align-items: center;
 
@@ -84,9 +87,6 @@ const StyledInputText = styled.TextInput`
 `;
 
 const StyledContainerIcon = styled.View`
-  width: 24px;
-  height: 24px;
-
   justify-content: center;
   align-items: center;
 

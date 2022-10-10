@@ -5,6 +5,21 @@
       "validPhone": "Por favor, introduzca un número de móvil válido",
       "minOne": "Agrega al menos 1"
     },
+
+    "doubts": {
+      "questions": {
+        "saveData": "¿La aplicación guarda datos en algún servicio en la nube?",
+        "whatHappenWithMyData": "¿Qué ocurre con los datos registrados si desinstalo o borro la caché de la aplicación?",
+        "limitBills": "¿Hay algún límite de comandos que puedo abrir?",
+        "limitProductInStock": "¿Hay un límite de productos en stock que puedo tener registrados?"
+      },
+      "answers": {
+        "saveData": "No, todos los datos solo se guardan en el dispositivo",
+        "whatHappenWithMyData": "Todos los datos se pierden",
+        "limitBills": "No hay restricción en el número de comandos abiertos.",
+        "limitProductInStock": "No, puedes tener registrados en stock tantos productos como quieras."
+      }
+    },
     
     "components": {
       "input": {
@@ -161,17 +176,17 @@
 
       "financialInvoicing": {
         "overview": "Visión general",
-        "textEmptyIncoing": "Todavía no tienes ningún registro de tu facturación..."
+        "textEmptyInvoicing": "Todavía no tienes ningún registro de tu facturación..."
       },
 
       "financialProfit": {
         "overview": "Visión general",
-        "textEmptyIncoing": "Todavía no tienes ningún registro de tus ganancias..."
+        "textEmptyProfit": "Todavía no tienes ningún registro de tus ganancias..."
       },
 
       "financialSpending": {
         "overview": "Visión general",
-        "textEmptyIncoing": "Todavía no tienes ningún registro de tus gastos..."
+        "textEmptySpending": "Todavía no tienes ningún registro de tus gastos..."
       },
 
       "menuHome": {
