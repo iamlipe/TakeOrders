@@ -27,10 +27,19 @@ export class BillUseCase {
     });
   }
 
-  public static async get(): Promise<BillModel[]> {
+  public static async getOpenBills(): Promise<BillModel[]> {
     const data = await database
       .get<BillModel>('bills')
       .query(Q.where('status', true))
+      .fetch();
+
+    return data;
+  }
+
+  public static async getClosedBills(): Promise<BillModel[]> {
+    const data = await database
+      .get<BillModel>('bills')
+      .query(Q.where('status', false))
       .fetch();
 
     return data;

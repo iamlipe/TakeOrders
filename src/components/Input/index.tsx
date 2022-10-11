@@ -95,7 +95,7 @@ const Input = forwardRef<TextInputMask, InputProps>(
             )}
           </StyledRow>
         </StyledContent>
-        <StyledError>{error}</StyledError>
+        {error && <StyledError>{error}</StyledError>}
       </StyledContainer>
     );
   },
@@ -103,11 +103,13 @@ const Input = forwardRef<TextInputMask, InputProps>(
 
 const StyledContainer = styled.View`
   margin: 0 32px;
+
+  margin-bottom: 12px;
 `;
 
 const StyledContent = styled.View`
   width: 100%;
-  height: 45px;
+  height: 44px;
 
   justify-content: center;
 
@@ -166,6 +168,8 @@ const StyledError = styled.Text`
   color: ${({ theme }) => theme.colors.ERROR_500};
 
   align-self: flex-end;
+
+  margin: 0;
 `;
 
 const StyledIconError = styled(Icon)`

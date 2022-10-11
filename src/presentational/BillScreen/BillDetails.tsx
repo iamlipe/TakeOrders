@@ -20,10 +20,15 @@ import { BillStackParamList } from '@routes/stacks/BillStack';
 import { Bill as BillModel } from '@database/models/billModel';
 import { OrderUseCase } from '@database/useCase/orderUseCase';
 import { useTranslation } from 'react-i18next';
+import { Order } from '@database/models/orderModel';
+import { ProductUseCase } from '@database/useCase/productUseCase';
 
 import { GET_ORDERS, REMOVE_ORDER } from '@store/slices/orderSlice';
+import { UPDATE_PRODUCT } from '@store/slices/productSlice';
 
 import emptyOrdersImg from '@assets/imgs/empty-orders.png';
+
+import EmptyOrders from '@assets/svgs/empty-orders.svg';
 
 import { StatusBar } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -48,23 +53,29 @@ type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillAddProduct'>;
 
 const { height } = Dimensions.get('window');
 
-const heigthList = height - (120 + 32 + 32 + 16 + 16 + 32 + 98 + 32 + 72);
-
 export const BillDetails = () => {
   const [showContent, setShowContent] = useState(false);
   const [totalPriceBill, setTotalPriceBill] = useState(0);
 
   const { allOrdersClient, isLoading } = useReduxSelector(state => state.order);
+
   const dispatch = useReduxDispatch();
 
   const isFocused = useIsFocused();
+
   const { bill } = useRoute<RouteProp<StackParamsList, 'Info'>>().params;
+
   const { goBack } = useNavigation();
   const { navigate } = useNavigation<NavProps>();
 
   const theme = useTheme();
 
   const { t } = useTranslation();
+
+  const heightList = useMemo(
+    () => height - 120 - 32 - 32 - 16 - 16 - 32 - 98 - 16 - 72,
+    [],
+  );
 
   const closeBillBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -77,10 +88,30 @@ export const BillDetails = () => {
   }, [bill, dispatch]);
 
   const removeOrder = useCallback(
-    async ({ orderId }: { orderId: string }) => {
-      const order = await OrderUseCase.getById({ billId: bill.id, orderId });
+    async ({ orderId, quantity }: { orderId: string; quantity: number }) => {
+      const order = await OrderUseCase.getById({
+        billId: bill.id,
+        orderId,
+      });
+
+      const product = await ProductUseCase.getById({
+        productId: order.product.id,
+      });
 
       dispatch(REMOVE_ORDER({ order }));
+
+      setTimeout(
+        () =>
+          dispatch(
+            UPDATE_PRODUCT({
+              product,
+              updatedProduct: {
+                quantity: product.quantity + quantity,
+              },
+            }),
+          ),
+        1000,
+      );
     },
     [bill.id, dispatch],
   );
@@ -132,25 +163,26 @@ export const BillDetails = () => {
                       quantity: String(item.quantity),
                       linkTitle: t('components.card.links.delete'),
                       link: () => {
-                        removeOrder({ orderId: item.id });
+                        removeOrder({
+                          orderId: item.id,
+                          quantity: item.quantity,
+                        });
                       },
                     }}
-                    noTouchable
-                    onPress={() => null}
                   />
                 )}
                 keyExtractor={item => item.id}
                 style={{
                   height: StatusBar.currentHeight
-                    ? heigthList - StatusBar.currentHeight
-                    : heigthList,
+                    ? heightList - StatusBar.currentHeight
+                    : heightList,
                   marginVertical: 16,
                 }}
                 showsVerticalScrollIndicator={false}
               />
             ) : (
-              <StyledContainerEmptyOrders>
-                <StyledImageEmptyOrders source={emptyOrdersImg} />
+              <StyledContainerEmptyOrders style={{ height: heightList }}>
+                <EmptyOrders width={132} height={132} />
                 <StyledTextEmptyOrders>
                   {t('screens.billDetails.listOrdersEmpty')}
                 </StyledTextEmptyOrders>
@@ -212,6 +244,7 @@ export const BillDetails = () => {
         allOrdersClient,
         bill,
         handleShowcloseBillBottomSheet,
+        heightList,
         navigate,
         removeOrder,
         showContent,
@@ -272,15 +305,15 @@ const StyledTotalPriceBill = styled(StyledTitleTotalPriceBill)`
 const StyledContainerEmptyOrders = styled.View`
   justify-content: center;
   align-items: center;
-
-  height: ${heigthList}px;
-`;
-
-const StyledImageEmptyOrders = styled.Image`
-  height: 120px;
-  width: 120px;
 `;
 
 const StyledTextEmptyOrders = styled(StyledTitle)`
+  width: 80%;
+
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
+
+  color: ${({ theme }) => theme.colors.GRAY_800};
+
+  text-align: center;
 `;

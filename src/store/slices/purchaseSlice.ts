@@ -9,6 +9,8 @@ export interface PurchaseResponse {
   expanse?: string;
   description?: string;
   totalPrice: number;
+  createdAt: number;
+  updatedAt: number;
 
   product: ProductModel;
 }
@@ -92,22 +94,40 @@ const purchaseSlice = createSlice({
       error,
     }),
 
-    CREATE_PURCHASE: (
-      state,
-      _: PayloadAction<NewProductPurchase | NewExpansePurchase>,
-    ) => ({
+    CREATE_PRODUCT_PURCHASE: (state, _: PayloadAction<NewProductPurchase>) => ({
       ...state,
       isLoading: true,
       error: null,
     }),
 
-    CREATE_PURCHASE_SUCCESS: state => ({
+    CREATE_PRODUCT_PURCHASE_SUCCESS: state => ({
       ...state,
       isLoading: false,
       error: null,
     }),
 
-    CREATE_PURCHASE_FAILURE: (
+    CREATE__PRODUCT_PURCHASE_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
+    }),
+
+    CREATE_EXPANSE_PURCHASE: (state, _: PayloadAction<NewExpansePurchase>) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+
+    CREATE_EXPANSE_PURCHASE_SUCCESS: state => ({
+      ...state,
+      isLoading: false,
+      error: null,
+    }),
+
+    CREATE_EXPANSE_PURCHASE_FAILURE: (
       state,
       { payload: { error } }: PayloadAction<{ error: string }>,
     ) => ({
@@ -171,9 +191,12 @@ export const {
   GET_PURCHASES,
   GET_PURCHASES_SUCCESS,
   GET_PURCHASES_FAILURE,
-  CREATE_PURCHASE,
-  CREATE_PURCHASE_SUCCESS,
-  CREATE_PURCHASE_FAILURE,
+  CREATE_EXPANSE_PURCHASE,
+  CREATE_EXPANSE_PURCHASE_SUCCESS,
+  CREATE_EXPANSE_PURCHASE_FAILURE,
+  CREATE_PRODUCT_PURCHASE,
+  CREATE_PRODUCT_PURCHASE_SUCCESS,
+  CREATE__PRODUCT_PURCHASE_FAILURE,
   UPDATE_PURCHASE,
   UPDATE_PURCHASE_SUCCESS,
   UPDATE_PURCHASE_FAILURE,

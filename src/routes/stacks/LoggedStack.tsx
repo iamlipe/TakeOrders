@@ -6,28 +6,35 @@ import {
 } from '@react-navigation/bottom-tabs';
 
 import { BillStack } from './BillStack';
-import { FinancialHome } from '@presentational/FinancialScreen/FinancialHome';
-import { StockHome } from '@presentational/StockScreen/StockHome';
+import { FinancialStack } from './FinancialStack';
+import { StockStack } from './StockStack';
+import { MenuStack } from './MenuStack';
 
-import { ButtonTab } from '@routes/BottomTab';
+import { BottonTab } from '@routes/BottomTab';
 
 export type LoggedStackParamList = {
   BillStack: undefined;
-  FinancialHome: undefined;
-  StockHome: undefined;
+  FinancialStack: undefined;
+  StockStack: undefined;
+  MenuStack: undefined;
 };
 
-const TabBar = (props: BottomTabBarProps) => <ButtonTab state={props.state} />;
+const TabBar = (props: BottomTabBarProps) => <BottonTab state={props.state} />;
 
 const Logged = createBottomTabNavigator<LoggedStackParamList>();
 
 export const LoggedStack = () => (
   <Logged.Navigator
     tabBar={props => TabBar(props)}
-    screenOptions={{ headerShown: false }}
+    screenOptions={{
+      tabBarHideOnKeyboard: true,
+      headerShown: false,
+      tabBarStyle: { position: 'absolute' },
+    }}
   >
     <Logged.Screen name="BillStack" component={BillStack} />
-    <Logged.Screen name="FinancialHome" component={FinancialHome} />
-    <Logged.Screen name="StockHome" component={StockHome} />
+    <Logged.Screen name="FinancialStack" component={FinancialStack} />
+    <Logged.Screen name="StockStack" component={StockStack} />
+    <Logged.Screen name="MenuStack" component={MenuStack} />
   </Logged.Navigator>
 );

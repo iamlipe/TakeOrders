@@ -6,6 +6,7 @@ import { StockUseCase } from '@database/useCase/stockUseCase';
 import { SpentUseCase } from '@database/useCase/spentUseCase';
 import { InvoiceUseCase } from '@database/useCase/invoiceUseCase';
 import { User as UserModel } from '@database/models/userModel';
+import { useUserStorage } from '@hooks/useUserStorage';
 
 import {
   GET_DEFAULT_USER,
@@ -15,6 +16,9 @@ import {
   LOGIN,
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
+  LOGOUT,
+  LOGOUT_FAILURE,
+  LOGOUT_SUCCESS,
   Register,
   REGISTER,
   REGISTER_FAILURE,
@@ -23,6 +27,9 @@ import {
 
 function* login({ payload }: PayloadAction<Login>) {
   try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const userStorage = useUserStorage();
+
     const auth: UserModel[] = yield call(UserUseCase.get, payload);
 
     if (auth.length) {
@@ -33,6 +40,7 @@ function* login({ payload }: PayloadAction<Login>) {
         phone: auth[0].phone,
       };
 
+      yield call(userStorage.save, 'user', user);
       yield put(LOGIN_SUCCESS({ data: user }));
     } else {
       yield put(LOGIN_FAILURE({ error: 'unregistered user' }));
@@ -64,7 +72,7 @@ function* register({ payload }: PayloadAction<Register>) {
   }
 }
 
-function* getUser({ payload }: PayloadAction<{ email: string }>) {
+function* getDefaultUser({ payload }: PayloadAction<{ email: string }>) {
   try {
     const { email } = payload;
 
@@ -89,10 +97,23 @@ function* getUser({ payload }: PayloadAction<{ email: string }>) {
   }
 }
 
+export function* logout() {
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const userStorage = useUserStorage();
+
+    yield call(userStorage.remove, 'user');
+    yield put(LOGOUT_SUCCESS());
+  } catch (error) {
+    yield put(LOGOUT_FAILURE({ error: 'something went wrong' }));
+  }
+}
+
 export default function* watcher() {
   yield all([
     takeLatest(LOGIN, login),
     takeLatest(REGISTER, register),
-    takeLatest(GET_DEFAULT_USER, getUser),
+    takeLatest(GET_DEFAULT_USER, getDefaultUser),
+    takeLatest(LOGOUT, logout),
   ]);
 }

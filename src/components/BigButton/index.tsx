@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '@styles/colors';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface BigButtomProps {
   title: string;
@@ -20,14 +21,17 @@ const BigButton = ({ title, icon, onPress }: BigButtomProps) => {
       <StyledText>{title}</StyledText>
 
       {icon && (
-        <Icon name={icon.name} color={theme.colors[icon.color]} size={24} />
+        <Icon
+          name={icon.name}
+          color={theme.colors[icon.color]}
+          size={RFValue(24)}
+        />
       )}
     </StyledContainer>
   );
 };
 
 const StyledContainer = styled.TouchableOpacity`
-  width: 100%;
   height: 100px;
 
   align-items: center;
@@ -36,6 +40,8 @@ const StyledContainer = styled.TouchableOpacity`
   border-radius: 10px;
 
   background-color: ${({ theme }) => theme.colors.PRIMARY_600};
+
+  margin: 0 32px;
 `;
 
 const StyledText = styled.Text`

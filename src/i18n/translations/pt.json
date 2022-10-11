@@ -6,10 +6,30 @@
       "minOne": "Adicione ao menos 1"
     },
     
+    "doubts": {
+      "questions": {
+        "saveData": "O app salva os dados em algum serviço de nuvem ?",
+        "whatHappenWithMyData": "O que acontece com os dados cadastrados, se eu desinstalar ou lipar o cache do app ?",
+        "limitBills": "Existe algum limite de comandas que posso abrir ?",
+        "limitProductInStock": "Existe algum limite de produtos em estoque que posso ter cadastrado ?"
+      },
+      "answers": {
+        "saveData": "Não, todos os dados são salvos apenas no dispositivo",
+        "whatHappenWithMyData": "Todos os dados são perdidos",
+        "limitBills": "Não existe nenhum tipo de restrição na quantidade de comandas abertas",
+        "limitProductInStock": "Não, você pode ter quantos produtos quiser cadastrado no estoque"
+      }
+    },
+
     "components": {
       "input": {
         "name": "nome",
-        "phone": "celular (opcional)"
+        "phone": "celular (opcional)",
+        "type": "Tipo",
+        "quantity": "quantidade",
+        "totalPrice": "Preço total da compra",
+        "price": "Preço da venda (unidade)",
+        "image": "imagem"
       },
       
       "searchInput": {
@@ -19,12 +39,19 @@
 
       "button": {
         "loginWithoutRegister": "Entrar sem cadastro",
-        "add": "adicionar",
+        "add": "Adicionar",
         "close": "Fechar",
         "addBill": "Adicionar comandas",
         "addProductOrder": "Adicionar produto",
         "closeBill": "Fechar comanda",
-        "addProductStock": "Adicionar produto no estoque"
+        "addProductStock": "Adicionar produto no estoque",
+        "register": "Cadastrar",
+        "addExpense": "Adicionar despesa"
+
+      },
+
+      "bigButton": {
+        "registerNewProduct": "Cadastrar novo produto"
       },
       
       "card": {
@@ -37,18 +64,42 @@
         "quantity": "quantidade"
       },
 
+      "squareCard": {
+        "button": {
+          "add": "Adicionar"
+        }
+      },
 
       "bottomTab": {
         "bill": "Comandas",
         "stock": "Estoque",
-        "financial": "Financeiro"
+        "financial": "Financeiro",
+        "menu": "Menu"
       },
       
       "header": {
         "backButton": "voltar",
 
         "billHome": "Comandas",
-        "billAddProducts": "Adicionar produtos"
+        "billAddProducts": "Adicionar produtos",
+
+        "stockHome": "Estoque",
+        "stockRegisterProduct": "Cadastrar produto",
+        "stockDetailsProduct": "Detalhes do produto",
+
+        "financialHome": "Financeiro",
+        "financialInvoicing": "Faturamento",
+        "financialProfit": "Lucro",
+        "financialSpending": "Gastos",
+
+        "menuHome": "Menu",
+        "menuHelper": "Ajuda"
+      },
+
+      "scrollableButton": {
+        "spending": "Gastos",
+        "invoicing": "Faturamento",
+        "profit": "Lucro"
       },
 
       "counter": {
@@ -80,11 +131,71 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+        "textNoProductsRegistredInStock": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+        "textNoProductInStock": "Todos produtos do estoque está em falta",
 
         "addOrderBottomSheet": {
           "title": "Adicionar produto"
         }
+      },
+
+      "stockHome": {
+        "titleListProductsInStock": "Produtos em estoque",
+        "textEmptyProductInStock": "Você ainda não tem nenhum produto cadastrado em seu estoque, clique em cadastrar produto",
+
+        "addProductBottomSheet": {
+          "title":"Adicionar produto"
+        }
+      },
+
+      "stockRegisterProduct": {},
+
+      "stockDetailsProduct": {
+        "warning": "Aviso",
+        "stock": "Estoque",
+        "sales": "Vendas",
+
+        "comingSoon": "Em breve",
+
+        "titleStock": {
+          "quantityInStock": "Quantidade em estoque",
+          "avaregeMonth": "Média de venda/\nmês"
+        },
+
+        "titleSales": {
+          "7days": "7 dias",
+          "30days": "30 dias",
+          "lastMonth": "Último mês"
+        }
+      },
+
+      "financialHome": {
+        "extract": "Extrato",
+        "textEmptyExtract": "Ainda não tem nenhum registro do seu extrato..."
+      },
+
+      "financialInvoicing": {
+        "overview": "Visão geral",
+        "textEmptyInvoicing": "Ainda não tem nenhum registro do seu faturamento..."
+      },
+
+      "financialProfit": {
+        "overview": "Visão geral",
+        "textEmptyProfit": "Ainda não tem nenhum registro do seu lucro..."
+      },
+
+      "financialSpending": {
+        "overview": "Visão geral",
+        "textEmptySpending": "Ainda não tem nenhum registro da suas dispesas..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Idioma",
+          "help": "Precisa de ajuda ?"
+        },
+
+        "logout": "Sair"
       }
     }
   }

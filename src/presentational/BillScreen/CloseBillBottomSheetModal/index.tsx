@@ -1,16 +1,21 @@
-/* eslint-disable react/display-name */
-
-import React, { forwardRef, memo, useMemo } from 'react';
+import React, { forwardRef, memo, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components/native';
 
 import { Bill as BillModel } from '@database/models/billModel';
+
+import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { useNavigation } from '@react-navigation/native';
+import { useReduxSelector } from '@hooks/useReduxSelector';
+
+import { CLOSE_BILL } from '@store/slices/billSlice';
+import { CREATE_SALE } from '@store/slices/saleSlice';
+
+import formatedCurrency from '@utils/formatedCurrency';
+
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Button from '@components/Button';
-import formatedCurrency from '@utils/formatedCurrency';
-import { useReduxDispatch } from '@hooks/useReduxDispatch';
-import { CLOSE_BILL } from '@store/slices/billSlice';
-import { useNavigation } from '@react-navigation/native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface CloseBillBottomSheetModalProps {
   bill: BillModel;
@@ -21,18 +26,50 @@ const CloseBillBottomSheetModal = forwardRef<
   BottomSheetModal,
   CloseBillBottomSheetModalProps
 >(({ bill, totalPriceBill }, ref) => {
+  const [loadingCloseBill, setLoadingCloseBill] = useState(false);
+
   const dispatch = useReduxDispatch();
+
+  const { auth } = useReduxSelector(state => state.user);
 
   const { goBack } = useNavigation();
 
-  const snapPointHeigth = 16 + 32 + 32 + 40 + 80 + 32 + 44 + 32;
+  const snapPointHeigth = useMemo(
+    () => [16 + 32 + RFValue(32) + 40 + 80 + 32 + 44 + 32],
+    [],
+  );
 
-  const closeBill = () => {
+  const closeBill = useCallback(() => {
     dispatch(CLOSE_BILL({ bill }));
+  }, [bill, dispatch]);
+
+  const createSale = useCallback(() => {
+    if (auth) {
+      dispatch(
+        CREATE_SALE({
+          name: `venda ${bill.name}`,
+          totalPrice: totalPriceBill,
+          userId: auth.id,
+        }),
+      );
+    }
+  }, [auth, bill.name, dispatch, totalPriceBill]);
+
+  const onSubmit = () => {
+    setLoadingCloseBill(true);
+
+    setTimeout(() => closeBill(), 1000);
+
+    setTimeout(() => createSale(), 2000);
+
+    setTimeout(() => {
+      setLoadingCloseBill(false);
+      goBack();
+    }, 3000);
   };
 
   return (
-    <BottomSheetModal ref={ref} snapPoints={[snapPointHeigth]}>
+    <BottomSheetModal ref={ref} snapPoints={snapPointHeigth}>
       <StyledContainer>
         <StyledTitle>Finalizar Comanda</StyledTitle>
 
@@ -50,13 +87,7 @@ const CloseBillBottomSheetModal = forwardRef<
           </StyledRow>
         </StyledContainerBillInfo>
 
-        <Button
-          title="Fechar"
-          onPress={() => {
-            closeBill();
-            goBack();
-          }}
-        />
+        <Button title="Fechar" onPress={onSubmit} loading={loadingCloseBill} />
       </StyledContainer>
     </BottomSheetModal>
   );
@@ -76,7 +107,7 @@ const StyledTitle = styled.Text`
 
   text-align: center;
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   margin-bottom: 40px;
 `;

@@ -3,6 +3,7 @@ import { database } from '@database/index';
 import { Order as OrderModel } from '@database/models/orderModel';
 import {
   GetOrderById,
+  GetOrderByProduct,
   NewOrder,
   OrdersResponse,
   RemovedOrder,
@@ -15,7 +16,9 @@ export class OrderUseCase {
       await database.get<OrderModel>('orders').create(data => {
         (data.quantity = quantity),
           (data.productId = productId),
-          (data.billId = billId);
+          (data.billId = billId),
+          (data.createAt = Date.now()),
+          (data.updateAt = Date.now());
       });
     });
   }
@@ -36,6 +39,8 @@ export class OrderUseCase {
         productId: order.productId,
         billId: order.billId,
         quantity: order.quantity,
+        createAt: order.createAt,
+        updateAt: order.updateAt,
         product: await order.product,
         bill: await order.bill,
       };
@@ -56,6 +61,15 @@ export class OrderUseCase {
     return data[0];
   }
 
+  public static async getByProduct({ productId }: GetOrderByProduct) {
+    const data = await database
+      .get<OrderModel>('orders')
+      .query(Q.where('productId', productId))
+      .fetch();
+
+    return data;
+  }
+
   public static async update({
     updatedOrder: { quantity, productId, billId },
     order,
@@ -64,7 +78,9 @@ export class OrderUseCase {
       await order.update(data => {
         (data.quantity = quantity || order.quantity),
           (data.productId = productId || order.productId),
-          (data.billId = billId || order.billId);
+          (data.billId = billId || order.billId),
+          (data.createAt = order.createAt),
+          (data.updateAt = Date.now());
       });
     });
   }

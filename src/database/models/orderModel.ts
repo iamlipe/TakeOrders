@@ -1,5 +1,5 @@
 import { Model } from '@nozbe/watermelondb';
-import { field, relation } from '@nozbe/watermelondb/decorators';
+import { field, relation, date } from '@nozbe/watermelondb/decorators';
 import { Bill } from './billModel';
 import { Product } from './productModel';
 
@@ -15,4 +15,8 @@ export class Order extends Model {
   @relation('bills', 'billId') bill!: Bill;
 
   @relation('products', 'productId') product!: Product;
+
+  @date('createAt') createAt!: number;
+
+  @date('updateAt') updateAt!: number;
 }

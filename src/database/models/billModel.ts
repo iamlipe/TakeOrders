@@ -1,6 +1,5 @@
 import { Model } from '@nozbe/watermelondb';
 import { field } from '@nozbe/watermelondb/decorators';
-import { Associations } from '@nozbe/watermelondb/Model';
 
 export class Bill extends Model {
   static table = 'bills';

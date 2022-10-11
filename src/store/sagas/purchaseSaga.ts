@@ -4,9 +4,12 @@ import { Purchase as PurchaseModel } from '@database/models/purchaseModel';
 import { PurchaseUseCase } from '@database/useCase/purchaseUseCase';
 
 import {
-  CREATE_PURCHASE,
-  CREATE_PURCHASE_FAILURE,
-  CREATE_PURCHASE_SUCCESS,
+  CREATE_EXPANSE_PURCHASE,
+  CREATE_EXPANSE_PURCHASE_SUCCESS,
+  CREATE_EXPANSE_PURCHASE_FAILURE,
+  CREATE_PRODUCT_PURCHASE,
+  CREATE_PRODUCT_PURCHASE_SUCCESS,
+  CREATE__PRODUCT_PURCHASE_FAILURE,
   GET_PURCHASES,
   GET_PURCHASES_FAILURE,
   GET_PURCHASES_SUCCESS,
@@ -38,19 +41,21 @@ function* createProductPurchase({
   payload,
 }: PayloadAction<NewProductPurchase>) {
   try {
-    const exist: ProductUseCase[] = yield call(ProductUseCase.getById, {
-      id: payload.productId,
-    });
+    const exist: ProductUseCase[] = yield call(ProductUseCase.getById, payload);
 
     if (exist) {
       yield call(PurchaseUseCase.createProduct, payload);
 
-      yield put(CREATE_PURCHASE_SUCCESS());
+      yield put(CREATE_PRODUCT_PURCHASE_SUCCESS());
     } else {
-      yield put(CREATE_PURCHASE_FAILURE({ error: 'product does not exist' }));
+      yield put(
+        CREATE__PRODUCT_PURCHASE_FAILURE({ error: 'product does not exist' }),
+      );
     }
   } catch (error) {
-    yield put(CREATE_PURCHASE_FAILURE({ error: 'something went wrong' }));
+    yield put(
+      CREATE__PRODUCT_PURCHASE_FAILURE({ error: 'something went wrong' }),
+    );
   }
 }
 
@@ -60,9 +65,11 @@ function* createExpansePurchase({
   try {
     yield call(PurchaseUseCase.createExpanse, payload);
 
-    yield put(CREATE_PURCHASE_SUCCESS());
+    yield put(CREATE_EXPANSE_PURCHASE_SUCCESS());
   } catch (error) {
-    yield put(CREATE_PURCHASE_FAILURE({ error: 'something went wrong' }));
+    yield put(
+      CREATE_EXPANSE_PURCHASE_FAILURE({ error: 'something went wrong' }),
+    );
   }
 }
 
@@ -103,8 +110,8 @@ function* removeStock({ payload }: PayloadAction<RemovedPurchase>) {
 export default function* watcher() {
   yield all([
     takeLatest(GET_PURCHASES, getPurchases),
-    takeLatest(CREATE_PURCHASE, createProductPurchase),
-    takeLatest(CREATE_PURCHASE, createExpansePurchase),
+    takeLatest(CREATE_PRODUCT_PURCHASE, createProductPurchase),
+    takeLatest(CREATE_EXPANSE_PURCHASE, createExpansePurchase),
     takeLatest(UPDATE_PURCHASE, updateProductPurchase),
     takeLatest(UPDATE_PURCHASE, updateExpansePurchase),
     takeLatest(REMOVE_PURCHASE, removeStock),

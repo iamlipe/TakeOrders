@@ -31,9 +31,9 @@ import {
   CLOSE_BILL,
 } from '@store/slices/billSlice';
 
-function* getBills() {
+function* getOpenBills() {
   try {
-    const allBills: BillModel[] = yield call(BillUseCase.get);
+    const allBills: BillModel[] = yield call(BillUseCase.getOpenBills);
 
     yield put(GET_BILLS_SUCCESS({ allBills }));
   } catch (error) {
@@ -103,7 +103,7 @@ function* removeBill({ payload }: PayloadAction<RemovedBill>) {
 
 export default function* watcher() {
   yield all([
-    takeLatest(GET_BILLS, getBills),
+    takeLatest(GET_BILLS, getOpenBills),
     takeLatest(GET_BILLS_BY_NAME, getBillsByName),
     takeLatest(GET_BILL_BY_ID, getBillsById),
     takeLatest(CREATE_BILL, createBill),

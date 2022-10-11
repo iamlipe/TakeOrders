@@ -7,6 +7,7 @@ import { Purchase } from './purchaseModel';
 import { Spent } from './spentModel';
 import { Stock } from './stockModel';
 import { User } from './userModel';
+import { Sales } from './salesModel';
 
 export const models = [
   User,
@@ -18,4 +19,5 @@ export const models = [
   Purchase,
   Bill,
   Order,
+  Sales,
 ];

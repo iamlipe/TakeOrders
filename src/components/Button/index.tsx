@@ -2,13 +2,14 @@ import React, { memo } from 'react';
 import styled, { css, useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '@styles/colors';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const buttonIconPosition = {
   none: css``,
 
   left: css`
     position: absolute;
-    top: 14px;
+    top: ${(50 % -RFValue(16)) / 2}px;
     left: 12px;
   `,
 };
@@ -95,7 +96,7 @@ const Button = ({
         <StyledIcon
           name={icon.name}
           color={theme.colors[icon.color]}
-          size={16}
+          size={RFValue(16)}
           position={iconPosition}
         />
       )}
@@ -112,7 +113,7 @@ const StyledContainer = styled.TouchableOpacity<ButtonContainerProps>`
       ${buttonAling[align]}
     `};
 
-  height: 44px;
+  min-height: 44px;
 
   flex-direction: row;
   align-items: center;
@@ -138,7 +139,7 @@ const StyledIcon = styled(Icon)<ButtonIconProps>`
       ${buttonIconPosition[position]},
     `};
 
-  line-height: 16px;
+  line-height: ${RFValue(16)}px;
 `;
 
 const StyledLoading = styled.ActivityIndicator``;

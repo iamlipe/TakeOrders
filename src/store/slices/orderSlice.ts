@@ -30,11 +30,17 @@ export interface GetOrderById {
   orderId: string;
 }
 
+export interface GetOrderByProduct {
+  productId: string;
+}
+
 export interface OrdersResponse {
   id: string;
   productId: string;
   billId: string;
   quantity: number;
+  createAt: number;
+  updateAt: number;
   product: ProductModel;
   bill: BillModel;
 }
@@ -44,6 +50,7 @@ interface OrderState {
   error: string | null;
 
   allOrdersClient: OrdersResponse[] | null;
+  allOrdersByProduct: OrderModel[] | null;
 }
 
 const initialState: OrderState = {
@@ -51,6 +58,7 @@ const initialState: OrderState = {
   error: null,
 
   allOrdersClient: null,
+  allOrdersByProduct: null,
 };
 
 const orderSlice = createSlice({
@@ -77,6 +85,36 @@ const orderSlice = createSlice({
     }),
 
     GET_ORDERS_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
+    }),
+
+    GET_ORDERS_BY_PRODUCT: (state, _: PayloadAction<GetOrderByProduct>) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+
+      allOrdersByProduct: null,
+    }),
+
+    GET_ORDERS_BY_PRODUCT_SUCCESS: (
+      state,
+      {
+        payload: { allOrdersByProduct },
+      }: PayloadAction<{ allOrdersByProduct: OrderModel[] }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+
+      allOrdersByProduct,
+    }),
+
+    GET_ORDERS_BY_PRODUCT_FAILURE: (
       state,
       { payload: { error } }: PayloadAction<{ error: string }>,
     ) => ({
@@ -158,6 +196,9 @@ export const {
   GET_ORDERS,
   GET_ORDERS_SUCCESS,
   GET_ORDERS_FAILURE,
+  GET_ORDERS_BY_PRODUCT,
+  GET_ORDERS_BY_PRODUCT_SUCCESS,
+  GET_ORDERS_BY_PRODUCT_FAILURE,
   CREATE_ORDER,
   CREATE_ORDER_SUCCESS,
   CREATE_ORDER_FAILURE,

@@ -8,9 +8,14 @@ import {
   CREATE_INVOICE_FAILURE,
   CREATE_INVOICE_SUCCESS,
   GetInvoice,
+  GetInvoiceId,
   GET_INVOICE,
   GET_INVOICE_FAILURE,
+  GET_INVOICE_ID,
+  GET_INVOICE_ID_FAILURE,
+  GET_INVOICE_ID_SUCCESS,
   GET_INVOICE_SUCCESS,
+  InvoiceResponse,
   NewInvoice,
   RemovedInvoice,
   REMOVE_iNVOICE,
@@ -21,12 +26,52 @@ import {
   UPDATE_INVOICE_FAILURE,
   UPDATE_INVOICE_SUCCESS,
 } from '@store/slices/invoiceSlice';
+import { SalesUseCase } from '@database/useCase/salesUseCase';
+import { PurchaseUseCase } from '@database/useCase/purchaseUseCase';
+import { Sales as SalesModel } from '@database/models/salesModel';
+import { Purchase as PurchaseModel } from '@database/models/purchaseModel';
+import { PurchaseResponse } from '@store/slices/purchaseSlice';
 
-function* getInvoice({ payload }: PayloadAction<GetInvoice>) {
+function* getInvoiceId({ payload }: PayloadAction<GetInvoiceId>) {
   try {
-    const invoiceId: string = yield call(InvoiceUseCase.get, payload);
+    const invoiceId: string = yield call(InvoiceUseCase.getInvoiceId, payload);
 
-    yield put(GET_INVOICE_SUCCESS({ invoiceId }));
+    yield put(GET_INVOICE_ID_SUCCESS({ invoiceId }));
+  } catch (error) {
+    yield put(GET_INVOICE_ID_FAILURE({ error: 'something went wrong' }));
+  }
+}
+
+function* getIncoivce({ payload }: PayloadAction<GetInvoice>) {
+  try {
+    const dataSales: SalesModel[] = yield call(SalesUseCase.get, payload);
+    const dataPurchases: PurchaseResponse[] = yield call(PurchaseUseCase.get);
+
+    const allPurchases = dataPurchases.map((item): InvoiceResponse => {
+      return {
+        id: item.id,
+        name: item.product.name || item.expanse || '',
+        price: item.totalPrice,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      };
+    });
+
+    const allSales = dataSales.map((item): InvoiceResponse => {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.totalPrice,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      };
+    });
+
+    const allInvoicies: InvoiceResponse[] = [...allPurchases, ...allSales].sort(
+      (a, b) => b.createdAt - a.createdAt,
+    );
+
+    yield put(GET_INVOICE_SUCCESS({ allInvoicies }));
   } catch (error) {
     yield put(GET_INVOICE_FAILURE({ error: 'something went wrong' }));
   }
@@ -64,7 +109,8 @@ function* removeInvoice({ payload }: PayloadAction<RemovedInvoice>) {
 
 export default function* watcher() {
   yield all([
-    takeLatest(GET_INVOICE, getInvoice),
+    takeLatest(GET_INVOICE_ID, getInvoiceId),
+    takeLatest(GET_INVOICE, getIncoivce),
     takeLatest(CREATE_INVOICE, createInvoice),
     takeLatest(UPDATE_INVOICE, updateInvoice),
     takeLatest(REMOVE_iNVOICE, removeInvoice),

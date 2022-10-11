@@ -1,5 +1,6 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { Order as OrderModel } from '@database/models/orderModel';
 
 import { OrderUseCase } from '@database/useCase/orderUseCase';
 
@@ -21,13 +22,18 @@ import {
   REMOVE_ORDER_FAILURE,
   UPDATE_ORDER,
   REMOVE_ORDER,
+  GetOrderByProduct,
+  GET_ORDERS_BY_PRODUCT_SUCCESS,
+  GET_ORDERS_BY_PRODUCT_FAILURE,
+  GET_ORDERS_BY_PRODUCT,
 } from '@store/slices/orderSlice';
 
 function* getOrders({ payload }: PayloadAction<GetOrder>) {
   try {
-    const allOrdersClient: OrdersResponse[] = yield call(OrderUseCase.get, {
-      billId: payload.billId,
-    });
+    const allOrdersClient: OrdersResponse[] = yield call(
+      OrderUseCase.get,
+      payload,
+    );
 
     yield put(GET_ORDERS_SUCCESS({ allOrdersClient }));
   } catch (error) {
@@ -35,7 +41,20 @@ function* getOrders({ payload }: PayloadAction<GetOrder>) {
   }
 }
 
-function* addNewOrder({ payload }: PayloadAction<NewOrder>) {
+function* getAllByProduct({ payload }: PayloadAction<GetOrderByProduct>) {
+  try {
+    const allOrdersByProduct: OrderModel[] = yield call(
+      OrderUseCase.getByProduct,
+      payload,
+    );
+
+    yield put(GET_ORDERS_BY_PRODUCT_SUCCESS({ allOrdersByProduct }));
+  } catch (error) {
+    yield put(GET_ORDERS_BY_PRODUCT_FAILURE({ error: 'something went wrong' }));
+  }
+}
+
+function* createOrder({ payload }: PayloadAction<NewOrder>) {
   try {
     yield call(OrderUseCase.create, payload);
 
@@ -68,7 +87,8 @@ function* removeOrder({ payload }: PayloadAction<RemovedOrder>) {
 export default function* watcher() {
   yield all([
     takeLatest(GET_ORDERS, getOrders),
-    takeLatest(CREATE_ORDER, addNewOrder),
+    takeLatest(GET_ORDERS_BY_PRODUCT, getAllByProduct),
+    takeLatest(CREATE_ORDER, createOrder),
     takeLatest(UPDATE_ORDER, updateOrder),
     takeLatest(REMOVE_ORDER, removeOrder),
   ]);
