@@ -36,6 +36,7 @@ import SearchInput from '@components/SearchInput';
 import Button from '@components/Button';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
+import i18next from 'i18next';
 
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 
@@ -158,8 +159,6 @@ export const BillHome = () => {
 
             <Button
               title={t('components.button.addBill')}
-              iconPosition="left"
-              icon={{ name: 'add', color: 'GRAY_800' }}
               backgroundColor="trasparent"
               fontColor="GRAY_800"
               onPress={handleShowAddBillBottomSheet}

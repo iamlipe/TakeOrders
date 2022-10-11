@@ -6,11 +6,13 @@ import sagas from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
+const middlewares = [sagaMiddleware];
+
 export const store = configureStore({
   reducer: reducers,
-  middleware: [sagaMiddleware],
+  middleware: middlewares,
 });
 
-export type AppDispatch = typeof store.dispatch;
-
 sagaMiddleware.run(sagas);
+
+export type AppDispatch = typeof store.dispatch;

@@ -9,8 +9,10 @@ export type AuthStackParamList = {
 
 const Auth = createNativeStackNavigator<AuthStackParamList>();
 
-export const AuthStack = () => (
-  <Auth.Navigator screenOptions={{ headerShown: false }}>
-    <Auth.Screen name="Login" component={Login} />
-  </Auth.Navigator>
-);
+export const AuthStack = () => {
+  return (
+    <Auth.Navigator screenOptions={{ headerShown: false }}>
+      <Auth.Screen name="Login" component={Login} />
+    </Auth.Navigator>
+  );
+};

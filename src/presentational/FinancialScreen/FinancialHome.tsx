@@ -22,6 +22,7 @@ import ScrollableButton from '@components/ScrollableButton';
 import Loading from '@components/Loading';
 import FinancialCard from '@components/FinancialCard';
 import { GET_INVOICE } from '@store/slices/invoiceSlice';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface ContainerEmptyExtract {
   height: number;
@@ -34,7 +35,8 @@ type NavProps = NativeStackNavigationProp<
 
 const { height } = Dimensions.get('window');
 
-const heigthList = height - (120 + 32 + 80 + 32 + 24 + 16 + 32 + 72);
+const heigthList =
+  height - (120 + 32 + height * 0.1 + 32 + RFValue(24) + 16 + 32 + 72);
 
 export const FinancialHome = () => {
   const [showContent, setShowContent] = useState(false);
@@ -137,7 +139,7 @@ export const FinancialHome = () => {
             >
               <EmptyExtract width={132} height={132} />
               <StyledTextEmptyExtract>
-                Ainda não tem nenhum registro do seu extrato...
+                {t('screens.financialHome.textEmptyExtract')}
               </StyledTextEmptyExtract>
             </StyledContainerEmptyExtract>
           )}
@@ -158,7 +160,7 @@ const StyledContent = styled.View`
 `;
 
 const StyledContainerButtons = styled.View`
-  height: 70px;
+  height: ${height * 0.1}px;
 
   margin-bottom: 32px;
 `;
@@ -169,15 +171,23 @@ const StyledTitleExtract = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 24px;
+  line-height: ${RFValue(24)}px;
 
   margin-bottom: 16px;
 `;
 
 const StyledContainerEmptyExtract = styled.View<ContainerEmptyExtract>`
   height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72 - 24 - 32 - 70 - 32 - 32
-    : height - 120 - 72 - 24 - 32 - 70 - 32 - 32}px;
+    ? height -
+      StatusBar.currentHeight -
+      120 -
+      72 -
+      RFValue(24) -
+      32 -
+      70 -
+      32 -
+      32
+    : height - 120 - 72 - RFValue(24) - 32 - 70 - 32 - 32}px;
 
   justify-content: center;
   align-items: center;

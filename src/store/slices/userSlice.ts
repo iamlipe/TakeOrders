@@ -106,6 +106,25 @@ const userSlice = createSlice({
       isLoading: false,
       error,
     }),
+
+    LOGOUT: (state, _: PayloadAction) => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+
+    LOGOUT_SUCCESS: () => ({
+      ...initialState,
+    }),
+
+    LOGOUT_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
+    }),
   },
 });
 
@@ -123,6 +142,9 @@ export const {
   GET_DEFAULT_USER,
   GET_DEFAULT_USER_FAILURE,
   GET_DEFAULT_USER_SUCCESS,
+  LOGOUT,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE,
 } = actions;
 
 export default reducer;

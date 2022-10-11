@@ -15,6 +15,7 @@ import formatedCurrency from '@utils/formatedCurrency';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Button from '@components/Button';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface CloseBillBottomSheetModalProps {
   bill: BillModel;
@@ -34,7 +35,7 @@ const CloseBillBottomSheetModal = forwardRef<
   const { goBack } = useNavigation();
 
   const snapPointHeigth = useMemo(
-    () => [16 + 32 + 32 + 40 + 80 + 32 + 44 + 32],
+    () => [16 + 32 + RFValue(32) + 40 + 80 + 32 + 44 + 32],
     [],
   );
 
@@ -106,7 +107,7 @@ const StyledTitle = styled.Text`
 
   text-align: center;
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   margin-bottom: 40px;
 `;

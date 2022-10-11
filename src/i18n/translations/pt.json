@@ -6,6 +6,21 @@
       "minOne": "Adicione ao menos 1"
     },
     
+    "doubts": {
+      "questions": {
+        "saveData": "O app salva os dados em algum serviço de nuvem ?",
+        "whatHappenWithMyData": "O que acontece com os dados cadastrados, se eu desinstalar ou lipar o cache do app ?",
+        "limitBills": "Existe algum limite de comandas que posso abrir ?",
+        "limitProductInStock": "Existe algum limite de produtos em estoque que posso ter cadastrado ?"
+      },
+      "answers": {
+        "saveData": "Não, todos os dados são salvos apenas no dispositivo",
+        "whatHappenWithMyData": "Todos os dados são perdidos",
+        "limitBills": "Não existe nenhum tipo de restrição na quantidade de comandas abertas",
+        "limitProductInStock": "Não, você pode ter quantos produtos quiser cadastrado no estoque"
+      }
+    },
+
     "components": {
       "input": {
         "name": "nome",
@@ -58,7 +73,8 @@
       "bottomTab": {
         "bill": "Comandas",
         "stock": "Estoque",
-        "financial": "Financeiro"
+        "financial": "Financeiro",
+        "menu": "Menu"
       },
       
       "header": {
@@ -74,7 +90,10 @@
         "financialHome": "Financeiro",
         "financialInvoicing": "Faturamento",
         "financialProfit": "Lucro",
-        "financialSpending": "Gastos"
+        "financialSpending": "Gastos",
+
+        "menuHome": "Menu",
+        "menuHelper": "Ajuda"
       },
 
       "scrollableButton": {
@@ -112,7 +131,8 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+        "textNoProductsRegistredInStock": "Você não possui nenhum produto cadastrado em seu estoque, clique no botão abaixo para iniciar o cadastro",
+        "textNoProductInStock": "Todos produtos do estoque está em falta",
 
         "addOrderBottomSheet": {
           "title": "Adicionar produto"
@@ -121,6 +141,7 @@
 
       "stockHome": {
         "titleListProductsInStock": "Produtos em estoque",
+        "textEmptyProductInStock": "Você ainda não tem nenhum produto cadastrado em seu estoque, clique em cadastrar produto",
 
         "addProductBottomSheet": {
           "title":"Adicionar produto"
@@ -149,19 +170,32 @@
       },
 
       "financialHome": {
-        "extract": "Extrato"
+        "extract": "Extrato",
+        "textEmptyExtract": "Ainda não tem nenhum registro do seu extrato..."
       },
 
       "financialInvoicing": {
-        "overview": "Visão geral"
+        "overview": "Visão geral",
+        "textEmptyInvoicing": "Ainda não tem nenhum registro do seu faturamento..."
       },
 
       "financialProfit": {
-        "overview": "Visão geral"
+        "overview": "Visão geral",
+        "textEmptyProfit": "Ainda não tem nenhum registro do seu lucro..."
       },
 
       "financialSpending": {
-        "overview": "Visão geral"
+        "overview": "Visão geral",
+        "textEmptySpending": "Ainda não tem nenhum registro da suas dispesas..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Idioma",
+          "help": "Precisa de ajuda ?"
+        },
+
+        "logout": "Sair"
       }
     }
   }

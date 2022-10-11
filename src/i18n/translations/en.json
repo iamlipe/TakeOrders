@@ -5,6 +5,21 @@
       "validPhone": "Please enter a valid mobile number",
       "minOne": "Add at least 1"
     },
+
+    "doubts": {
+      "questions": {
+        "saveData": "Does the app save data to some cloud service?",
+        "whatHappenWithMyData": "What happens to the registered data if I uninstall or clear the cache of the app?",
+        "limitBills": "Is there any limit of commands that I can open?",
+        "limitProductInStock": "Is there a limit of products in stock that I can have registered?"
+      },
+      "answers": {
+        "saveData": "No, all data is only saved on the device",
+        "whatHappenWithMyData": "All data is lost",
+        "limitBills": "There is no restriction on the number of open commands.",
+        "limitProductInStock": "No, you can have as many products as you want registered in stock."
+      }
+    },
     
     "components": {
       "input": {
@@ -57,7 +72,8 @@
       "bottomTab": {
         "bill": "Bill",
         "stock": "Stock",
-        "financial": "Financial"
+        "financial": "Financial",
+        "menu": "Menu"
       },
       
       "header": {
@@ -73,7 +89,10 @@
         "financialHome": "Financial",
         "financialInvoicing": "Invoicing",
         "financialProfit": "Profit",
-        "financialSpending": "Spending"
+        "financialSpending": "Spending",
+
+        "menuHome": "Menu",
+        "menuHelper": "Help"
       },
 
       "scrollableButton": {
@@ -111,7 +130,8 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "You don't have any products registered in your stock, click on the button below to start registering",
+        "textNoProductsRegistredInStock": "You don't have any products registered in your stock, click on the button below to start registering",
+        "textNoProductInStock": "All items in stock are out of stock",
 
         "addOrderBottomSheet": {
           "title": "Add product"
@@ -120,6 +140,7 @@
 
       "stockHome": {
         "titleListProductsInStock": "Products in stock",
+        "textEmptyProductInStock": "You still don't have any products registered in your stock, click on register product",
 
         "addProductBottomSheet": {
           "title":"Add product"
@@ -148,19 +169,32 @@
       },
 
       "financialHome": {
-        "extract": "Extract"
+        "extract": "Extract",
+        "textEmptyExtract": "You still don't have any record of your extract..."
       },
 
       "financialInvoicing": {
-        "overview": "Overview"
+        "overview": "Overview",
+        "textEmptyInvoicing": "You still don't have any record of your invoicing..."
       },
 
       "financialProfit": {
-        "overview": "Overview"
+        "overview": "Overview",
+        "textEmptyProfit": "You still don't have any record of your profit..."
       },
 
       "financialSpending": {
-        "overview": "Overview"
+        "overview": "Overview",
+        "textEmptySpending": "You still don't have any record of your expenses..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Language",
+          "help": "Help"
+        },
+
+        "logout": "Logout"
       }
     }
   }

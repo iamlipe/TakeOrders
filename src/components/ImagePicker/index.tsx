@@ -21,6 +21,7 @@ import { useController } from 'react-hook-form';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface ImagePickerProps {
   name: string;
@@ -36,7 +37,7 @@ const ImagePicker = ({ control, name, label }: ImagePickerProps) => {
   } = useController({ control, name });
 
   const snapPointHeigth = useMemo(
-    () => [22 + 8 + 20 + 16 + 52 + 8 + 52 + 8 + 16],
+    () => [22 + 8 + RFValue(24) + 16 + 52 + 8 + 52 + 8 + 16],
     [],
   );
 
@@ -192,7 +193,7 @@ const StyledText = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 24px;
+  line-height: ${RFValue(24)}px;
 `;
 
 const StyledContainerSelectPicker = styled.View`

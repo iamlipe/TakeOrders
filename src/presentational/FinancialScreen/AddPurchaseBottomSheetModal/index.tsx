@@ -1,18 +1,10 @@
-import React, {
-  forwardRef,
-  memo,
-  useMemo,
-  useState,
-  useCallback,
-  useEffect,
-} from 'react';
+import React, { forwardRef, memo, useMemo, useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
-import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useReduxSelector } from '@hooks/useReduxSelector';
@@ -24,11 +16,12 @@ import { CREATE_EXPANSE_PURCHASE } from '@store/slices/purchaseSlice';
 import { formatedValue } from '@utils/formatedValueString';
 
 import { Keyboard } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView, BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Input from '@components/Input';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface PadNumberProps {
   text?: string;
@@ -82,10 +75,7 @@ const AddPurchaseBottomSheetModal = forwardRef<
 
   const theme = useTheme();
 
-  const snapPointHeigth = useMemo(
-    () => [16 + 16 + 32 + 40 + 32 + 16 + 48 + 32 + 44 + 16 + 352 + 16 + 48],
-    [],
-  );
+  const snapPointHeigth = useMemo(() => ['90%'], []);
 
   const schema = useMemo(
     () =>
@@ -203,7 +193,7 @@ const AddPurchaseBottomSheetModal = forwardRef<
   );
 });
 
-const StyledContainer = styled.View`
+const StyledContainer = styled(BottomSheetScrollView)`
   padding: 16px 0 48px;
 
   background-color: ${({ theme }) => theme.colors.WHITE};
@@ -217,7 +207,7 @@ const StyledTitle = styled.Text`
 
   text-align: center;
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   margin-bottom: 40px;
 `;

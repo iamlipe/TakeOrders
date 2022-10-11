@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Ref, RefCallback, useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,13 @@ import {
 } from '@react-navigation/native';
 import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import { Dimensions, Keyboard, Platform } from 'react-native';
+import {
+  Dimensions,
+  Keyboard,
+  Platform,
+  StatusBar,
+  MeasureLayoutOnSuccessCallback,
+} from 'react-native';
 
 import Animated, {
   useAnimatedStyle,
@@ -21,6 +27,7 @@ import Animated, {
 import BillIcon from '@assets/svgs/bill.svg';
 import FinancialIcon from '@assets/svgs/financial.svg';
 import StockIcon from '@assets/svgs/stock.svg';
+import MenuIcon from '@assets/svgs/menu.svg';
 
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
@@ -40,9 +47,12 @@ const { width } = Dimensions.get('window');
 export const BottonTab = ({ state }: ButtonTabProps) => {
   const [showIcons, setShowIcons] = useState(true);
 
+  const refTextTab = useRef<any>([]);
+
   const opacityIcons = useSharedValue(1);
   const heightBottomTab = useSharedValue(72);
   const lineTranslateX = useSharedValue(width * 0.2 - 30);
+  const lineWidht = useSharedValue(0);
 
   const { navigate } = useNavigation<NavPropsProducer>();
 
@@ -83,21 +93,84 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
 
   useEffect(() => {
     if (activeTab === 'BillStack') {
-      lineTranslateX.value = withTiming(width * 0.2 - 30, { duration: 200 });
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
+
+      refTextTab.current[0]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 + width * 0.05 - (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
 
     if (activeTab === 'StockStack') {
-      lineTranslateX.value = withTiming(width * 0.5 - 30, { duration: 200 });
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
+
+      refTextTab.current[1]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 +
+              (width * 0.05 + (width * 0.9) / 4) -
+              (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
 
     if (activeTab === 'FinancialStack') {
-      lineTranslateX.value = withTiming(width * 0.8 - 30, { duration: 200 });
+      StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
+
+      refTextTab.current[2]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 +
+              (width * 0.05 + (width * 0.9) / 2) -
+              (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
+    }
+
+    if (activeTab === 'MenuStack') {
+      StatusBar.setBackgroundColor(theme.colors.SECUNDARY_600);
+
+      refTextTab.current[3]?.measure(
+        (_x: number, _y: number, widht: number, _heigth: number) => {
+          lineTranslateX.value = withTiming(
+            (width * 0.9) / 4 / 2 +
+              (width * 0.05 + 3 * ((width * 0.9) / 4)) -
+              (widht + 10) / 2,
+            {
+              duration: 200,
+            },
+          );
+
+          lineWidht.value = withTiming(widht + 10, { duration: 200 });
+        },
+      );
     }
   });
 
   const animatedStyledLine = useAnimatedStyle(() => {
     return {
       left: lineTranslateX.value,
+      width: lineWidht.value,
     };
   });
 
@@ -114,6 +187,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
   });
 
   const renderTab = (
+    index: number,
     Icon: () => JSX.Element,
     title: string,
     route: keyof LoggedStackParamList,
@@ -130,7 +204,12 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
         ]}
       >
         <Icon />
-        <StyledTitleTab active={activeTab === route}>{title}</StyledTitleTab>
+        <StyledTitleTab
+          ref={(ref: any) => (refTextTab.current[index] = ref)}
+          active={activeTab === route}
+        >
+          {title}
+        </StyledTitleTab>
       </Animated.View>
     </StyledBaseButton>
   );
@@ -141,6 +220,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
     >
       <StyledButtonTabRow>
         {renderTab(
+          0,
           () => (
             <BillIcon
               fill={
@@ -154,6 +234,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           'BillStack',
         )}
         {renderTab(
+          1,
           () => (
             <StockIcon
               fill={
@@ -167,6 +248,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           'StockStack',
         )}
         {renderTab(
+          2,
           () => (
             <FinancialIcon
               fill={
@@ -178,6 +260,21 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           ),
           t('components.bottomTab.financial'),
           'FinancialStack',
+        )}
+        {renderTab(
+          3,
+          () => (
+            <MenuIcon
+              style={{ paddingVertical: 1 }}
+              fill={
+                activeTab === 'MenuStack'
+                  ? theme.colors.PRIMARY_600
+                  : theme.colors.GRAY_800
+              }
+            />
+          ),
+          t('components.bottomTab.menu'),
+          'MenuStack',
         )}
       </StyledButtonTabRow>
       <StyledLine style={animatedStyledLine} />
@@ -196,7 +293,7 @@ const StyledBottonTabContainer = styled(Animated.View)`
 `;
 
 const StyledButtonTabRow = styled.View`
-  width: 90%;
+  width: ${width * 0.9}px;
 
   flex-direction: row;
 
@@ -204,8 +301,8 @@ const StyledButtonTabRow = styled.View`
   align-self: center;
 `;
 
-const StyledBaseButton = styled.TouchableOpacity`
-  width: 33%;
+const StyledBaseButton = styled.Pressable`
+  width: 25%;
 
   align-items: center;
   justify-content: flex-end;
@@ -225,7 +322,6 @@ const StyledLine = styled(Animated.View)`
   left: ${width * 0.2 - 30}px;
   top: 58px;
 
-  width: 60px;
   height: 2px;
 
   background-color: ${({ theme }) => theme.colors.PRIMARY_500};

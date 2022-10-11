@@ -19,6 +19,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Counter from '@components/Counter';
 import Button from '@components/Button';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 interface FormAddNewOrder {
   quantity: string;
@@ -60,7 +61,7 @@ const AddOrderBottomSheetModal = forwardRef<
   const { goBack } = useNavigation();
 
   const snapPointHeigth = useMemo(
-    () => [16 + 32 + 32 + 24 + 136 + 24 + 60 + 40 + 45 + 32],
+    () => [16 + 32 + RFValue(32) + 24 + 136 + 24 + 60 + 40 + 45 + 32],
     [],
   );
 
@@ -157,7 +158,7 @@ const StyledTitle = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   text-align: center;
 

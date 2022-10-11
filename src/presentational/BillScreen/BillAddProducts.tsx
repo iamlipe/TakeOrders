@@ -154,7 +154,7 @@ export const BillAddProduct = () => {
         <StyledContainerNoProductsInStock>
           <EmptyProductsInStock width={132} height={132} />
           <StyledTextNoProductsInStock>
-            Todos produtos do estoque está em falta
+            {t('screens.billAddProducts.textNoProductInStock')}
           </StyledTextNoProductsInStock>
         </StyledContainerNoProductsInStock>
       );
@@ -164,7 +164,7 @@ export const BillAddProduct = () => {
       return (
         <StyledContainerNoProductsRegistredInStock>
           <StyledTitleNoProductsRegistredInStock>
-            {t('screens.billAddProducts.listProductsStockEmpty')}
+            {t('screens.billAddProducts.textNoProductsRegistredInStock')}
           </StyledTitleNoProductsRegistredInStock>
           <Button
             title={t('components.button.addProductStock')}

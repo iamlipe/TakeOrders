@@ -5,6 +5,21 @@
       "validPhone": "Por favor, introduzca un número de móvil válido",
       "minOne": "Agrega al menos 1"
     },
+
+    "doubts": {
+      "questions": {
+        "saveData": "¿La aplicación guarda datos en algún servicio en la nube?",
+        "whatHappenWithMyData": "¿Qué ocurre con los datos registrados si desinstalo o borro la caché de la aplicación?",
+        "limitBills": "¿Hay algún límite de comandos que puedo abrir?",
+        "limitProductInStock": "¿Hay un límite de productos en stock que puedo tener registrados?"
+      },
+      "answers": {
+        "saveData": "No, todos los datos solo se guardan en el dispositivo",
+        "whatHappenWithMyData": "Todos los datos se pierden",
+        "limitBills": "No hay restricción en el número de comandos abiertos.",
+        "limitProductInStock": "No, puedes tener registrados en stock tantos productos como quieras."
+      }
+    },
     
     "components": {
       "input": {
@@ -58,7 +73,8 @@
       "bottomTab": {
         "bill": "Cuenta",
         "stock": "Inventario",
-        "financial": "Financeiro"
+        "financial": "Financeiro",
+        "menu": "Menu"
       },
       
       "header": {
@@ -74,7 +90,10 @@
         "financialHome": "Financiero",
         "financialInvoicing": "Facturación",
         "financialProfit": "Lucro",
-        "financialSpending": "Gasto"
+        "financialSpending": "Gasto",
+
+        "menuHome": "Menu",
+        "menuHelper": "Ayuda"
       },
 
       "scrollableButton": {
@@ -112,7 +131,8 @@
       },
 
       "billAddProducts": {
-        "listProductsStockEmpty": "No tiene ningún producto registrado en su inventario, haga clic en el botón de abajo para comenzar a registrarse",
+        "textNoProductsRegistredInStock": "No tiene ningún producto registrado en su inventario, haga clic en el botón de abajo para comenzar a registrarse",
+        "textNoProductInStock": "Todos los productos en stock están agotados",
 
         "addOrderBottomSheet": {
           "title": "Agregar producto"
@@ -121,9 +141,10 @@
 
       "stockHome": {
         "titleListProductsInStock": "Produtos em estoque",
+        "textEmptyProductInStock": "Aún no tienes ningún producto registrado en tu stock, haz click en registrar producto",
 
         "addProductBottomSheet": {
-          "title":"Adicionar produto"
+          "title":"Agregar producto"
         }
       },
 
@@ -149,21 +170,33 @@
       },
 
       "financialHome": {
-        "extract": "Extracto"
+        "extract": "Extracto",
+        "textEmptyExtract": "Todavía no tienes ningún registro de tu extracto..."
       },
 
       "financialInvoicing": {
-        "overview": "visión general"
+        "overview": "Visión general",
+        "textEmptyInvoicing": "Todavía no tienes ningún registro de tu facturación..."
       },
 
       "financialProfit": {
-        "overview": "visión general"
+        "overview": "Visión general",
+        "textEmptyProfit": "Todavía no tienes ningún registro de tus ganancias..."
       },
 
       "financialSpending": {
-        "overview": "visión general"
+        "overview": "Visión general",
+        "textEmptySpending": "Todavía no tienes ningún registro de tus gastos..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Idioma",
+          "help": "Necesita ayuda ?"
+        },
+
+        "logout": "Salir"
       }
     }
-    
   }
 }

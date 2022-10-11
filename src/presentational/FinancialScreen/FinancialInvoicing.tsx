@@ -5,9 +5,11 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 import { GET_SALES } from '@store/slices/saleSlice';
 import { GET_PURCHASES } from '@store/slices/purchaseSlice';
+import { GET_INVOICE, InvoiceResponse } from '@store/slices/invoiceSlice';
 
 import { filterAllByMonth } from '@utils/filterByDate';
 
@@ -21,7 +23,6 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
-import { GET_INVOICE, InvoiceResponse } from '@store/slices/invoiceSlice';
 
 const { height } = Dimensions.get('window');
 
@@ -45,7 +46,7 @@ export const FinancialInvoicing = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 24 - 8 - 220 - 32 - 32 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 32 - 72,
     [],
   );
 
@@ -95,27 +96,26 @@ export const FinancialInvoicing = () => {
                 {t('screens.financialInvoicing.overview')}
               </StyledTitleOverview>
 
-              {invoicingFilteredByMonth &&
-                invoicingFilteredByMonth.length >= 2 && (
-                  <Overview
-                    data={invoicingFilteredByMonth?.map(invoicingMonth => {
-                      return {
-                        months: invoicingMonth.length
-                          ? new Date(
-                              invoicingMonth[0].createdAt,
-                            ).toLocaleDateString('pt-br', { month: 'long' })
-                          : new Date().toLocaleDateString('pt-br', {
-                              month: 'long',
-                            }),
-                        earnings: invoicingMonth.reduce(
-                          (prev, curr) => prev + curr.price,
-                          0,
-                        ),
-                      };
-                    })}
-                    type="invoicing"
-                  />
-                )}
+              {invoicingFilteredByMonth && (
+                <Overview
+                  data={invoicingFilteredByMonth?.map(invoicingMonth => {
+                    return {
+                      months: invoicingMonth.length
+                        ? new Date(
+                            invoicingMonth[0].createdAt,
+                          ).toLocaleDateString('pt-br', { month: 'long' })
+                        : new Date().toLocaleDateString('pt-br', {
+                            month: 'long',
+                          }),
+                      earnings: invoicingMonth.reduce(
+                        (prev, curr) => prev + curr.price,
+                        0,
+                      ),
+                    };
+                  })}
+                  type="invoicing"
+                />
+              )}
 
               <FlatList
                 data={allInvoicies}
@@ -144,7 +144,7 @@ export const FinancialInvoicing = () => {
             <StyledContainerEmptyInvoicing>
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyInvoicing>
-                Ainda não tem nenhum registro do seu faturamento...
+                {t('screens.financialInvoicing.textEmptyInvoicing')}
               </StyledTextEmptyInvoicing>
             </StyledContainerEmptyInvoicing>
           )}
@@ -170,7 +170,7 @@ const StyledTitleOverview = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 24px;
+  line-height: ${RFValue(24)}px;
 
   padding: 0 32px;
   margin-bottom: 8px;
