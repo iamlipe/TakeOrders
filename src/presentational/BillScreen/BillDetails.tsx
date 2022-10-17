@@ -22,6 +22,7 @@ import { OrderUseCase } from '@database/useCase/orderUseCase';
 import { useTranslation } from 'react-i18next';
 import { Order } from '@database/models/orderModel';
 import { ProductUseCase } from '@database/useCase/productUseCase';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 import { GET_ORDERS, REMOVE_ORDER } from '@store/slices/orderSlice';
 import { UPDATE_PRODUCT } from '@store/slices/productSlice';
@@ -30,7 +31,6 @@ import emptyOrdersImg from '@assets/imgs/empty-orders.png';
 
 import EmptyOrders from '@assets/svgs/empty-orders.svg';
 
-import { StatusBar } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Dimensions, FlatList } from 'react-native';
 
@@ -42,6 +42,10 @@ import Card from '@components/Card';
 import formatedCurrency from '@utils/formatedCurrency';
 import Button from '@components/Button';
 import CloseBillBottomSheetModal from './CloseBillBottomSheetModal';
+
+interface ContainerEmptyOrders {
+  height: number;
+}
 
 type StackParamsList = {
   Info: {
@@ -73,7 +77,7 @@ export const BillDetails = () => {
   const { t } = useTranslation();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 32 - 16 - 16 - 32 - 98 - 16 - 72,
+    () => height - 120 - 32 - RFValue(32) - 16 - 16 - 32 - 98 - 32 - 72 + 4,
     [],
   );
 
@@ -140,90 +144,78 @@ export const BillDetails = () => {
   }, [allOrdersClient, isLoading]);
 
   const renderContent = () => {
-    return (
-      <>
-        {showContent ? (
-          <StyledContent>
-            <StyledTitle>{t('screens.billDetails.title')}</StyledTitle>
+    if (showContent) {
+      return (
+        <StyledContent>
+          <StyledTitle>{t('screens.billDetails.title')}</StyledTitle>
 
-            {allOrdersClient?.length ? (
-              <FlatList
-                data={allOrdersClient}
-                renderItem={({ item }) => (
-                  <Card
-                    key={item.id}
-                    type="normal"
-                    cardSize="medium"
-                    item={{
-                      title: item.product.name,
-                      image: item.product.image,
-                      description: formatedCurrency(
-                        item.product.price * item.quantity,
-                      ),
-                      quantity: String(item.quantity),
-                      linkTitle: t('components.card.links.delete'),
-                      link: () => {
-                        removeOrder({
-                          orderId: item.id,
-                          quantity: item.quantity,
-                        });
-                      },
-                    }}
-                  />
-                )}
-                keyExtractor={item => item.id}
-                style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
-                  marginVertical: 16,
-                }}
-                showsVerticalScrollIndicator={false}
-              />
-            ) : (
-              <StyledContainerEmptyOrders style={{ height: heightList }}>
-                <EmptyOrders width={132} height={132} />
-                <StyledTextEmptyOrders>
-                  {t('screens.billDetails.listOrdersEmpty')}
-                </StyledTextEmptyOrders>
-              </StyledContainerEmptyOrders>
-            )}
-
-            <StyledContainerInfoBill>
-              <StyledTitleTotalPriceBill>
-                {t('screens.billDetails.total').toUpperCase()}
-              </StyledTitleTotalPriceBill>
-              <StyledTotalPriceBill>
-                {formatedCurrency(totalPriceBill)}
-              </StyledTotalPriceBill>
-            </StyledContainerInfoBill>
-
-            <StyledContainerButtons>
-              <Button
-                title={t('components.button.addProductOrder')}
-                onPress={() => navigate('BillAddProduct', { bill })}
-                icon={{ name: 'add', color: 'GRAY_800' }}
-                iconPosition="left"
-                backgroundColor="trasparent"
-                fontColor="GRAY_800"
-              />
-              <Button
-                title={t('components.button.closeBill')}
-                onPress={handleShowcloseBillBottomSheet}
-              />
-            </StyledContainerButtons>
-
-            <CloseBillBottomSheetModal
-              bill={bill}
-              totalPriceBill={totalPriceBill}
-              ref={closeBillBottomSheetModalRef}
+          {allOrdersClient?.length ? (
+            <FlatList
+              data={allOrdersClient}
+              renderItem={({ item }) => (
+                <Card
+                  key={item.id}
+                  type="normal"
+                  cardSize="medium"
+                  item={{
+                    title: item.product.name,
+                    image: item.product.image,
+                    description: formatedCurrency(
+                      item.product.price * item.quantity,
+                    ),
+                    quantity: String(item.quantity),
+                    linkTitle: t('components.card.links.delete'),
+                    link: () => {
+                      removeOrder({
+                        orderId: item.id,
+                        quantity: item.quantity,
+                      });
+                    },
+                  }}
+                />
+              )}
+              keyExtractor={item => item.id}
+              style={{
+                height: heightList,
+                marginVertical: 16,
+              }}
+              showsVerticalScrollIndicator={false}
             />
-          </StyledContent>
-        ) : (
-          <Loading />
-        )}
-      </>
-    );
+          ) : (
+            <StyledContainerEmptyOrders style={{ height: heightList }}>
+              <EmptyOrders width={132} height={132} />
+              <StyledTextEmptyOrders>
+                {t('screens.billDetails.listOrdersEmpty')}
+              </StyledTextEmptyOrders>
+            </StyledContainerEmptyOrders>
+          )}
+
+          <StyledContainerInfoBill>
+            <StyledTitleTotalPriceBill>
+              {t('screens.billDetails.total').toUpperCase()}
+            </StyledTitleTotalPriceBill>
+            <StyledTotalPriceBill>
+              {formatedCurrency(totalPriceBill)}
+            </StyledTotalPriceBill>
+          </StyledContainerInfoBill>
+
+          <StyledContainerButtons>
+            <Button
+              title={t('components.button.addProductOrder')}
+              onPress={() => navigate('BillAddProduct', { bill })}
+              backgroundColor="trasparent"
+              fontColor="GRAY_800"
+            />
+            <Button
+              title={t('components.button.closeBill')}
+              onPress={handleShowcloseBillBottomSheet}
+            />
+          </StyledContainerButtons>
+        </StyledContent>
+      );
+    }
+
+    return <Loading />;
   };
 
   return (
@@ -251,6 +243,12 @@ export const BillDetails = () => {
         t,
         totalPriceBill,
       ])}
+
+      <CloseBillBottomSheetModal
+        bill={bill}
+        totalPriceBill={totalPriceBill}
+        ref={closeBillBottomSheetModalRef}
+      />
     </StyledContainer>
   );
 };
@@ -275,7 +273,7 @@ const StyledTitle = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  line-height: 32px;
+  line-height: ${RFValue(32)}px;
 
   padding: 0 32px;
 `;
@@ -302,9 +300,13 @@ const StyledTotalPriceBill = styled(StyledTitleTotalPriceBill)`
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
 `;
 
-const StyledContainerEmptyOrders = styled.View`
+const StyledContainerEmptyOrders = styled.View<ContainerEmptyOrders>`
+  height: ${({ height }) => height}px;
+
   justify-content: center;
   align-items: center;
+
+  margin: 16px 0;
 `;
 
 const StyledTextEmptyOrders = styled(StyledTitle)`

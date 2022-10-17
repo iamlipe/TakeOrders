@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import i18next from 'i18next/index';
@@ -46,8 +46,35 @@ export const MenuHome = () => {
     setVisibleModalSelectLanguage(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(LOGOUT());
+  }, [dispatch]);
+
+  const renderContent = () => {
+    return (
+      <StyledContent>
+        <StyledContainerOptions>
+          <StyledBaseButton onPress={() => setVisibleModalSelectLanguage(true)}>
+            <StyledTextButton>
+              {t('screens.menuHome.options.language')}
+            </StyledTextButton>
+          </StyledBaseButton>
+
+          <StyledBaseButton onPress={() => navigate('MenuHelper')}>
+            <StyledTextButton>
+              {t('screens.menuHome.options.help')}
+            </StyledTextButton>
+          </StyledBaseButton>
+        </StyledContainerOptions>
+
+        <StyledBaseButtonLogout onPress={handleLogout}>
+          <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
+          <StyledTextButtonLogout>
+            {t('screens.menuHome.logout')}
+          </StyledTextButtonLogout>
+        </StyledBaseButtonLogout>
+      </StyledContent>
+    );
   };
 
   return (
@@ -63,36 +90,19 @@ export const MenuHome = () => {
           backgroundColor="SECUNDARY_600"
         />
 
-        <StyledContent>
-          <StyledContainerOptions>
-            <StyledBaseButton
-              onPress={() => setVisibleModalSelectLanguage(true)}
-            >
-              <StyledTextButton>
-                {t('screens.menuHome.options.language')}
-              </StyledTextButton>
-            </StyledBaseButton>
+        {useMemo(renderContent, [
+          handleLogout,
+          navigate,
+          t,
+          theme.colors.GRAY_800,
+        ])}
 
-            <StyledBaseButton onPress={() => navigate('MenuHelper')}>
-              <StyledTextButton>
-                {t('screens.menuHome.options.help')}
-              </StyledTextButton>
-            </StyledBaseButton>
-          </StyledContainerOptions>
-
-          <StyledBaseButtonLogout onPress={handleLogout}>
-            <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
-            <StyledTextButtonLogout>
-              {t('screens.menuHome.logout')}
-            </StyledTextButtonLogout>
-          </StyledBaseButtonLogout>
-        </StyledContent>
+        <ModalSelectLanguage
+          visible={visibleModalSelectLanguage}
+          setVisible={setVisibleModalSelectLanguage}
+          handleLanguage={handleLanguage}
+        />
       </StyledContainer>
-      <ModalSelectLanguage
-        visible={visibleModalSelectLanguage}
-        setVisible={setVisibleModalSelectLanguage}
-        handleLanguage={handleLanguage}
-      />
     </>
   );
 };
@@ -106,9 +116,7 @@ const StyledContent = styled.View`
 `;
 
 const StyledContainerOptions = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 32 - RFValue(24) - 32 - 72
-    : height - 120 - 32 - RFValue(24) - 32 - 72}px;
+  height: ${height - 120 - 32 - RFValue(24) - 32 - 72}px;
 `;
 
 const StyledBaseButton = styled.TouchableOpacity`

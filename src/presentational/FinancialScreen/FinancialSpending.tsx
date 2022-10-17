@@ -93,47 +93,34 @@ export const FinancialSpending = () => {
     }
   }, [allPurchases]);
 
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header
-        title={t('components.header.financialSpending')}
-        onPress={goBack}
-      />
-
-      {showContent ? (
+  const renderContent = () => {
+    if (showContent) {
+      return (
         <StyledContent>
           {spendingFilteredByMonth ? (
             <>
               <StyledTitleOverview>
                 {t('screens.financialSpending.overview')}
               </StyledTitleOverview>
-
-              {spendingFilteredByMonth && (
-                <Overview
-                  data={spendingFilteredByMonth.map(spendingMonth => {
-                    return {
-                      months: spendingMonth.length
-                        ? new Date(
-                            spendingMonth[0].createdAt,
-                          ).toLocaleDateString('pt-br', { month: 'long' })
-                        : new Date().toLocaleDateString('pt-br', {
-                            month: 'long',
-                          }),
-                      earnings: spendingMonth.reduce(
-                        (prev, curr) => prev + curr.totalPrice * -1,
-                        0,
-                      ),
-                    };
-                  })}
-                  type="spending"
-                />
-              )}
-
+              <Overview
+                data={spendingFilteredByMonth.map(spendingMonth => {
+                  return {
+                    months: spendingMonth.length
+                      ? new Date(spendingMonth[0].createdAt).toLocaleDateString(
+                          'pt-br',
+                          { month: 'long' },
+                        )
+                      : new Date().toLocaleDateString('pt-br', {
+                          month: 'long',
+                        }),
+                    earnings: spendingMonth.reduce(
+                      (prev, curr) => prev + curr.totalPrice * -1,
+                      0,
+                    ),
+                  };
+                })}
+                type="spending"
+              />
               <FlatList
                 data={allPurchases}
                 renderItem={({ item }) => (
@@ -147,9 +134,7 @@ export const FinancialSpending = () => {
                   />
                 )}
                 style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
+                  height: heightList,
                   marginVertical: 16,
                   paddingHorizontal: 32,
                 }}
@@ -158,7 +143,9 @@ export const FinancialSpending = () => {
               />
             </>
           ) : (
-            <StyledContainerEmptySpending>
+            <StyledContainerEmptySpending
+              style={{ height: heightList + 220 + RFValue(24) + 8 }}
+            >
               <EmptyChart width={132} height={132} />
               <StyledTextEmptySpending>
                 {t('screens.financialSpending.textEmptySpending')}
@@ -171,9 +158,32 @@ export const FinancialSpending = () => {
             onPress={handleShowAddPurchaseBottomSheet}
           />
         </StyledContent>
-      ) : (
-        <Loading />
-      )}
+      );
+    }
+
+    return <Loading />;
+  };
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header
+        title={t('components.header.financialSpending')}
+        onPress={goBack}
+      />
+
+      {useMemo(renderContent, [
+        allPurchases,
+        handleShowAddPurchaseBottomSheet,
+        heightList,
+        showContent,
+        spendingFilteredByMonth,
+        t,
+      ])}
 
       <AddPurchaseBottomSheetModal
         ref={addPurchaseBottomSheetModalRef}
@@ -204,14 +214,10 @@ const StyledTitleOverview = styled.Text`
 `;
 
 const StyledContainerEmptySpending = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-
   justify-content: center;
   align-items: center;
 
-  margin-top: -32px;
+  margin: 16px 0;
 `;
 
 const StyledTextEmptySpending = styled.Text`

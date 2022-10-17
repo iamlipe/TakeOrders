@@ -32,10 +32,6 @@ import AddProductBottomSheetModal from './AddProductBottomSheetModal';
 import Loading from '@components/Loading';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-interface ContainerEmptyProduct {
-  height: number;
-}
-
 type NavProps = NativeStackNavigationProp<
   StockStackParamList,
   'StockRegisterProduct'
@@ -89,16 +85,9 @@ export const StockHome = () => {
     }
   }, [allProducts, isLoading]);
 
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.stockHome')} />
-
-      {showContent ? (
+  const renderContent = () => {
+    if (showContent) {
+      return (
         <StyledContent>
           <BigButton
             title={t('components.bigButton.registerNewProduct')}
@@ -138,21 +127,13 @@ export const StockHome = () => {
                 )}
                 keyExtractor={item => item.id}
                 style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
+                  height: heightList,
                 }}
                 showsVerticalScrollIndicator={false}
               />
             </>
           ) : (
-            <StyledContainerEmptyProduct
-              height={
-                StatusBar.currentHeight
-                  ? heightList - StatusBar.currentHeight
-                  : heightList
-              }
-            >
+            <StyledContainerEmptyProduct style={{ height: heightList }}>
               <EmptyProduct width={120} height={120} />
 
               <StyledTextEmptyProduct>
@@ -167,9 +148,31 @@ export const StockHome = () => {
             closeBottomSheet={handleDismissAddProductBottomSheet}
           />
         </StyledContent>
-      ) : (
-        <Loading />
-      )}
+      );
+    }
+
+    return <Loading />;
+  };
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.stockHome')} />
+
+      {useMemo(renderContent, [
+        allProducts,
+        handleDismissAddProductBottomSheet,
+        handleShowAddProductBottomSheet,
+        heightList,
+        navigate,
+        selectedProduct,
+        showContent,
+        t,
+      ])}
     </StyledContainer>
   );
 };
@@ -194,9 +197,7 @@ const StyledTitleList = styled.Text`
   margin-top: 24px;
 `;
 
-const StyledContainerEmptyProduct = styled.View<ContainerEmptyProduct>`
-  height: ${({ height }) => height}px;
-
+const StyledContainerEmptyProduct = styled.View`
   align-items: center;
   justify-content: center;
 `;
