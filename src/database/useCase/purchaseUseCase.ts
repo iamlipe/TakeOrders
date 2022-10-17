@@ -43,7 +43,7 @@ export class PurchaseUseCase {
           (data.expanse = expanse),
           (data.description = description),
           (data.totalPrice = totalPrice),
-          (data.createdAt = Date.now() - 60 * 24 * 3600 * 1000),
+          (data.createdAt = Date.now()),
           (data.updatedAt = Date.now());
       });
     });

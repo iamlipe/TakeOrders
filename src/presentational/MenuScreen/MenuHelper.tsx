@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MenuStackParamList } from '@routes/stacks/MenuStack';
+import { Dimensions } from 'react-native';
 
 interface Doubt {
   id: number;
@@ -15,6 +16,8 @@ interface Doubt {
 }
 
 type NavProps = NativeStackNavigationProp<MenuStackParamList, 'MenuDoubt'>;
+
+const { height } = Dimensions.get('window');
 
 export const MenuHelper = () => {
   const { navigate } = useNavigation<NavProps>();
