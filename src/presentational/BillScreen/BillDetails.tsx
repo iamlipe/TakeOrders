@@ -202,8 +202,6 @@ export const BillDetails = () => {
               <Button
                 title={t('components.button.addProductOrder')}
                 onPress={() => navigate('BillAddProduct', { bill })}
-                icon={{ name: 'add', color: 'GRAY_800' }}
-                iconPosition="left"
                 backgroundColor="trasparent"
                 fontColor="GRAY_800"
               />
