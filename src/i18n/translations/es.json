@@ -1,0 +1,202 @@
+{
+  "translation": {
+    "errors": {
+      "required": "Requerida",
+      "validPhone": "Por favor, introduzca un número de móvil válido",
+      "minOne": "Agrega al menos 1"
+    },
+
+    "doubts": {
+      "questions": {
+        "saveData": "¿La aplicación guarda datos en algún servicio en la nube?",
+        "whatHappenWithMyData": "¿Qué ocurre con los datos registrados si desinstalo o borro la caché de la aplicación?",
+        "limitBills": "¿Hay algún límite de comandos que puedo abrir?",
+        "limitProductInStock": "¿Hay un límite de productos en stock que puedo tener registrados?"
+      },
+      "answers": {
+        "saveData": "No, todos los datos solo se guardan en el dispositivo",
+        "whatHappenWithMyData": "Todos los datos se pierden",
+        "limitBills": "No hay restricción en el número de comandos abiertos.",
+        "limitProductInStock": "No, puedes tener registrados en stock tantos productos como quieras."
+      }
+    },
+    
+    "components": {
+      "input": {
+        "name": "Nombre",
+        "phone": "Teléfono (opcional)",
+        "type": "Tipo",
+        "quantity": "Cantidad",
+        "totalPrice": "Precio total de compra",
+        "price": "Precio de venta (unidad)",
+        "image": "Imagen"
+      },
+      
+      "searchInput": {
+        "bill": "Buscar cuenta",
+        "product": "Buscar producto"
+      },
+
+      "button": {
+        "loginWithoutRegister": "Iniciar sesión sin registro",
+        "add": "Agregar",
+        "close": "finalizar",
+        "addBill": "Agregar cuenta",
+        "addProductOrder": "Agregar producto",
+        "closeBill": "Finalizar cuenta",
+        "addProductStock": "Agregar producto en inventario",
+        "register": "Registrar",
+        "addExpense": "Agregar gasto"
+      },
+
+      "bigButton": {
+        "registerNewProduct": "Registrar nuevo producto"
+      },
+      
+      "card": {
+        "links": {
+          "details": "detalles",
+          "add": "agregar",
+          "delete": "eliminar"
+        },
+
+        "quantity": "cantidad"
+      },
+
+      
+      "squareCard": {
+        "button": {
+          "add": "Agregar"
+        }
+      },
+
+      "bottomTab": {
+        "bill": "Cuenta",
+        "stock": "Inventario",
+        "financial": "Financeiro",
+        "menu": "Menu"
+      },
+      
+      "header": {
+        "backButton": "regresar",
+        
+        "billHome": "Cuentas",
+        "billAddProducts": "Agregar products",
+
+        "stockHome": "Inventario",
+        "stockRegisterProduct": "Registrar producto",
+        "stockDetailsProduct": "Detalles del producto",
+
+        "financialHome": "Financiero",
+        "financialInvoicing": "Facturación",
+        "financialProfit": "Lucro",
+        "financialSpending": "Gasto",
+
+        "menuHome": "Menu",
+        "menuHelper": "Ayuda"
+      },
+
+      "scrollableButton": {
+        "spending": "Gasto",
+        "invoicing": "Facturación",
+        "profit": "Lucro"
+      },
+
+      "counter": {
+        "quantity": "cantidad"
+      },
+
+      "loading": "Cargando..."
+    },
+
+    "screens": {
+      "billHome": {
+        "listBillEmpty": "Lista de cuentas vacía",
+
+        "addBillBottomSheet": {
+          "title": "Agregar cuenta"
+        }
+      },
+
+      "billDetails": {
+        "title": "Productos consumidos",
+        "listOrdersEmpty": "Esta cuenta no tiene pedidos",
+        "total": "total",
+
+        "closeBillBottomSheet": {
+          "title": "Cerrar cuenta",
+          "client": "Cliente",
+          "total": "Total"
+        }
+      },
+
+      "billAddProducts": {
+        "textNoProductsRegistredInStock": "No tiene ningún producto registrado en su inventario, haga clic en el botón de abajo para comenzar a registrarse",
+        "textNoProductInStock": "Todos los productos en stock están agotados",
+
+        "addOrderBottomSheet": {
+          "title": "Agregar producto"
+        }
+      },
+
+      "stockHome": {
+        "titleListProductsInStock": "Produtos em estoque",
+        "textEmptyProductInStock": "Aún no tienes ningún producto registrado en tu stock, haz click en registrar producto",
+
+        "addProductBottomSheet": {
+          "title":"Agregar producto"
+        }
+      },
+
+      "stockRegisterProduct": {},
+
+      "stockDetailsProduct": {
+        "warning": "Advertencia",
+        "stock": "Inventario",
+        "sales": "Ventas",
+
+        "comingSoon": "Pronto",
+
+        "titleStock": {
+          "quantityInStock": "Cantidad en inventario",
+          "avaregeMonth": "Promedio de ventas/\nmes"
+        },
+
+        "titleSales": {
+          "7days": "7 días",
+          "30days": "30 días",
+          "lastMonth": "El mes pasado"
+        }
+      },
+
+      "financialHome": {
+        "extract": "Extracto",
+        "textEmptyExtract": "Todavía no tienes ningún registro de tu extracto..."
+      },
+
+      "financialInvoicing": {
+        "overview": "Visión general",
+        "textEmptyInvoicing": "Todavía no tienes ningún registro de tu facturación..."
+      },
+
+      "financialProfit": {
+        "overview": "Visión general",
+        "textEmptyProfit": "Todavía no tienes ningún registro de tus ganancias..."
+      },
+
+      "financialSpending": {
+        "overview": "Visión general",
+        "textEmptySpending": "Todavía no tienes ningún registro de tus gastos..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Idioma",
+          "help": "Necesita ayuda ?"
+        },
+
+        "logout": "Salir"
+      }
+    }
+  }
+}

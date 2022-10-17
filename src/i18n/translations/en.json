@@ -1,0 +1,201 @@
+{
+  "translation": {
+    "errors": {
+      "required": "Required",
+      "validPhone": "Please enter a valid mobile number",
+      "minOne": "Add at least 1"
+    },
+
+    "doubts": {
+      "questions": {
+        "saveData": "Does the app save data to some cloud service?",
+        "whatHappenWithMyData": "What happens to the registered data if I uninstall or clear the cache of the app?",
+        "limitBills": "Is there any limit of commands that I can open?",
+        "limitProductInStock": "Is there a limit of products in stock that I can have registered?"
+      },
+      "answers": {
+        "saveData": "No, all data is only saved on the device",
+        "whatHappenWithMyData": "All data is lost",
+        "limitBills": "There is no restriction on the number of open commands.",
+        "limitProductInStock": "No, you can have as many products as you want registered in stock."
+      }
+    },
+    
+    "components": {
+      "input": {
+        "name": "Name",
+        "phone": "Phone (optional)",
+        "type": "Type",
+        "quantity": "Quantity",
+        "totalPrice": "Total purchase price",
+        "price": "Sale price (unit)",
+        "image": "image"
+      },
+      
+      "searchInput": {
+        "bill": "Search command",
+        "product": "Search product"
+      },
+
+      "button": {
+        "loginWithoutRegister": "Login without registration",
+        "add": "Add",
+        "close": "Close",
+        "addBill": "Add bill",
+        "addProductOrder": "Add product",
+        "closeBill": "Close bill",
+        "addProductStock": "Add product in stock",
+        "register": "Register",
+        "addExpense": "Add expense"
+      },
+
+      "bigButton": {
+        "registerNewProduct": "Register new product"
+      },
+      
+      "card": {
+        "links": {
+          "details": "details",
+          "add": "add",
+          "delete": "delete"
+        },
+
+        "quantity": "quantity"
+      },
+
+      "squareCard": {
+        "button": {
+          "add": "Add"
+        }
+      },
+
+      "bottomTab": {
+        "bill": "Bill",
+        "stock": "Stock",
+        "financial": "Financial",
+        "menu": "Menu"
+      },
+      
+      "header": {
+        "backButton": "back",
+
+        "billHome": "Bills",
+        "billAddProducts": "Add products",
+
+        "stockHome": "Stock",
+        "stockRegisterProduct": "Register product",
+        "stockDetailsProduct": "Product details",
+
+        "financialHome": "Financial",
+        "financialInvoicing": "Invoicing",
+        "financialProfit": "Profit",
+        "financialSpending": "Spending",
+
+        "menuHome": "Menu",
+        "menuHelper": "Help"
+      },
+
+      "scrollableButton": {
+        "spending": "Spending",
+        "invoicing": "Invoicing",
+        "profit": "Profit"
+      },
+
+      "counter": {
+        "quantity": "quantity"
+      },
+
+      "loading": "Loading..."
+    },
+
+    "screens": {
+      "billHome": {
+        "listBillEmpty": "Empty bill list",
+
+        "addBillBottomSheet": {
+          "title": "Add Bill"
+        }
+      },
+
+      "billDetails": {
+        "title": "Products consumed",
+        "listOrdersEmpty": "This bill has no order",
+        "total": "total",
+
+        "closeBillBottomSheet": {
+          "title": "End bill",
+          "client": "Client",
+          "total": "Total"
+        }
+      },
+
+      "billAddProducts": {
+        "textNoProductsRegistredInStock": "You don't have any products registered in your stock, click on the button below to start registering",
+        "textNoProductInStock": "All items in stock are out of stock",
+
+        "addOrderBottomSheet": {
+          "title": "Add product"
+        }
+      },
+
+      "stockHome": {
+        "titleListProductsInStock": "Products in stock",
+        "textEmptyProductInStock": "You still don't have any products registered in your stock, click on register product",
+
+        "addProductBottomSheet": {
+          "title":"Add product"
+        }
+      },
+
+      "stockRegisterProduct": {},
+
+      "stockDetailsProduct": {
+        "warning": "Warning",
+        "stock": "Stock",
+        "sales": "Sales",
+
+        "comingSoon": "Coming soon",
+
+        "titleStock": {
+          "quantityInStock": "Quantity in stock",
+          "avaregeMonth": "Average sales/\nmonth"
+        },
+
+        "titleSales": {
+          "7days": "7 days",
+          "30days": "30 days",
+          "lastMonth": "Last Month"
+        }
+      },
+
+      "financialHome": {
+        "extract": "Extract",
+        "textEmptyExtract": "You still don't have any record of your extract..."
+      },
+
+      "financialInvoicing": {
+        "overview": "Overview",
+        "textEmptyInvoicing": "You still don't have any record of your invoicing..."
+      },
+
+      "financialProfit": {
+        "overview": "Overview",
+        "textEmptyProfit": "You still don't have any record of your profit..."
+      },
+
+      "financialSpending": {
+        "overview": "Overview",
+        "textEmptySpending": "You still don't have any record of your expenses..."
+      },
+
+      "menuHome": {
+        "options": {
+          "language": "Language",
+          "help": "Help"
+        },
+
+        "logout": "Logout"
+      }
+    }
+  }
+}
