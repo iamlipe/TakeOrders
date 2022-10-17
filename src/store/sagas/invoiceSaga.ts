@@ -47,20 +47,20 @@ function* getIncoivce({ payload }: PayloadAction<GetInvoice>) {
     const dataSales: SalesModel[] = yield call(SalesUseCase.get, payload);
     const dataPurchases: PurchaseResponse[] = yield call(PurchaseUseCase.get);
 
-    const allPurchases = dataPurchases.map((item): InvoiceResponse => {
+    const allSales = dataSales.map((item): InvoiceResponse => {
       return {
         id: item.id,
-        name: item.product.name || item.expanse || '',
+        name: item.name,
         price: item.totalPrice,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
       };
     });
 
-    const allSales = dataSales.map((item): InvoiceResponse => {
+    const allPurchases = dataPurchases.map(item => {
       return {
         id: item.id,
-        name: item.name,
+        name: item.expanse || '',
         price: item.totalPrice,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
@@ -73,6 +73,8 @@ function* getIncoivce({ payload }: PayloadAction<GetInvoice>) {
 
     yield put(GET_INVOICE_SUCCESS({ allInvoicies }));
   } catch (error) {
+    console.log(error);
+
     yield put(GET_INVOICE_FAILURE({ error: 'something went wrong' }));
   }
 }

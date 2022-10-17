@@ -130,7 +130,7 @@ export const BillAddProduct = () => {
             keyExtractor={item => item.id}
             style={{
               height: heightList,
-              marginTop: 16,
+              marginVertical: 16,
             }}
             columnWrapperStyle={{
               justifyContent: 'space-between',

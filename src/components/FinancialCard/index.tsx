@@ -49,7 +49,7 @@ const StyledContainer = styled.View`
   justify-content: space-between;
 
   padding: 2px 0;
-  margin-bottom: 16px;
+  margin: 0 32px 16px;
 `;
 
 const StyledCircle = styled.View`
