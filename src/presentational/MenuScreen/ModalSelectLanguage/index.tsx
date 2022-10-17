@@ -6,6 +6,7 @@ import { Overlay } from 'react-native-elements';
 
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 interface ModalSelectLanguageProps {
   visible: boolean;
@@ -21,6 +22,8 @@ const ModalSelectLanguage = ({
   handleLanguage,
 }: ModalSelectLanguageProps) => {
   const theme = useTheme();
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -42,16 +45,24 @@ const ModalSelectLanguage = ({
         <StyledBaseButtonClose onPress={() => setVisible(false)}>
           <Icon name="close" size={RFValue(16)} color={theme.colors.GRAY_800} />
         </StyledBaseButtonClose>
-        <StyledTitle>Selecione seu idioma</StyledTitle>
+        <StyledTitle>
+          {t('screens.menuHome.selectLanguageModal.title')}
+        </StyledTitle>
 
         <StyledBaseButton onPress={() => handleLanguage('pt')}>
-          <StyledTextButtton>Portugues</StyledTextButtton>
+          <StyledTextButtton>
+            {t('screens.menuHome.selectLanguageModal.options.portuguese')}
+          </StyledTextButtton>
         </StyledBaseButton>
         <StyledBaseButton onPress={() => handleLanguage('en')}>
-          <StyledTextButtton>Ingles</StyledTextButtton>
+          <StyledTextButtton>
+            {t('screens.menuHome.selectLanguageModal.options.english')}
+          </StyledTextButtton>
         </StyledBaseButton>
         <StyledBaseButton onPress={() => handleLanguage('es')}>
-          <StyledTextButtton>Espanhol</StyledTextButtton>
+          <StyledTextButtton>
+            {t('screens.menuHome.selectLanguageModal.options.spanish')}
+          </StyledTextButtton>
         </StyledBaseButton>
       </StyledOverlay>
     </>
