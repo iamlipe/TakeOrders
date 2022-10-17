@@ -127,7 +127,9 @@ export const FinancialInvoicing = () => {
               />
             </>
           ) : (
-            <StyledContainerEmptyInvoicing style={{ height: heightList }}>
+            <StyledContainerEmptyInvoicing
+              style={{ height: heightList + 220 + RFValue(24) + 8 }}
+            >
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyInvoicing>
                 {t('screens.financialInvoicing.textEmptyInvoicing')}
@@ -188,7 +190,7 @@ const StyledContainerEmptyInvoicing = styled.View`
   justify-content: center;
   align-items: center;
 
-  margin-top: -32px;
+  margin: 16px 0;
 `;
 
 const StyledTextEmptyInvoicing = styled.Text`
