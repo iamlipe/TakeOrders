@@ -62,6 +62,7 @@ const SearchInput = ({ placeholder, type }: SearchInputProps) => {
       <StyledInputText
         onSubmitEditing={handleSearch}
         placeholder={placeholder}
+        placeholderTextColor={theme.colors.GRAY_800}
         onChangeText={setValue}
       />
     </StyledContainer>
