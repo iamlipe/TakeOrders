@@ -216,7 +216,9 @@ const StyledContainerSwiperDot = styled.View`
 `;
 
 const StyledSwiperDot = styled.Text<SwiperDotProps>`
-  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+  font-size: 8px;
+
+  margin: 0 2px;
 
   color: ${({ theme, active }) =>
     active ? theme.colors.GRAY_800 : theme.colors.GRAY_600};
