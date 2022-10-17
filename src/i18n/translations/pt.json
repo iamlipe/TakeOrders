@@ -41,7 +41,7 @@
         "loginWithoutRegister": "Entrar sem cadastro",
         "add": "Adicionar",
         "close": "Fechar",
-        "addBill": "Adicionar comandas",
+        "addBill": "Adicionar comanda",
         "addProductOrder": "Adicionar produto",
         "closeBill": "Fechar comanda",
         "addProductStock": "Adicionar produto no estoque",
@@ -111,16 +111,16 @@
     
     "screens": {
       "billHome": {
-        "listBillEmpty": "Lista de comandas vazia",
+        "listBillEmpty": "Lista de comandas vazia, clique em adicionar comanda para começar a usar",
 
         "addBillBottomSheet": {
-          "title": "Adicionar produto"
+          "title": "Adicionar comanda"
         }
       },
 
       "billDetails": {
         "title": "Produtos consumidos",
-        "listOrdersEmpty": "Esta conta não tem ordem",
+        "listOrdersEmpty": "Está comanda não possui nenhum pedido",
         "total": "total",
 
         "closeBillBottomSheet": {
@@ -195,7 +195,17 @@
           "help": "Precisa de ajuda ?"
         },
 
-        "logout": "Sair"
+        "logout": "Sair",
+
+        "selectLanguageModal": {
+          "title": "Selecione seu idioma",
+
+          "options": {
+            "portuguese": "Português",
+            "english": "inglês",
+            "spanish": "Espanhol"
+          }
+        }
       }
     }
   }
