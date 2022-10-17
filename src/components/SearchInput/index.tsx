@@ -70,6 +70,8 @@ const SearchInput = ({ placeholder, type }: SearchInputProps) => {
 };
 
 const StyledContainer = styled.View`
+  height: 56px;
+
   flex-direction: row;
   align-items: center;
 

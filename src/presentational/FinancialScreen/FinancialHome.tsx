@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -24,10 +24,6 @@ import FinancialCard from '@components/FinancialCard';
 import { GET_INVOICE } from '@store/slices/invoiceSlice';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-interface ContainerEmptyExtract {
-  height: number;
-}
-
 type NavProps = NativeStackNavigationProp<
   FinancialStackParamList,
   'FinancialInvoicing' | 'FinancialProfit' | 'FinancialSpending'
@@ -35,7 +31,7 @@ type NavProps = NativeStackNavigationProp<
 
 const { height } = Dimensions.get('window');
 
-const heigthList =
+const heightList =
   height - (120 + 32 + height * 0.1 + 32 + RFValue(24) + 16 + 32 + 72);
 
 export const FinancialHome = () => {
@@ -70,16 +66,9 @@ export const FinancialHome = () => {
     }
   }, [allInvoicies]);
 
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.financialHome')} />
-
-      {showContent ? (
+  const renderContent = () => {
+    if (showContent) {
+      return (
         <StyledContent>
           <StyledContainerButtons>
             <ScrollableButton
@@ -122,21 +111,13 @@ export const FinancialHome = () => {
               )}
               keyExtractor={item => item.id}
               style={{
-                height: StatusBar.currentHeight
-                  ? heigthList - StatusBar.currentHeight
-                  : heigthList,
+                height: heightList,
                 marginVertical: 16,
               }}
               showsVerticalScrollIndicator={false}
             />
           ) : (
-            <StyledContainerEmptyExtract
-              height={
-                StatusBar.currentHeight
-                  ? heigthList - StatusBar.currentHeight
-                  : heigthList
-              }
-            >
+            <StyledContainerEmptyExtract style={{ height: heightList }}>
               <EmptyExtract width={132} height={132} />
               <StyledTextEmptyExtract>
                 {t('screens.financialHome.textEmptyExtract')}
@@ -144,9 +125,21 @@ export const FinancialHome = () => {
             </StyledContainerEmptyExtract>
           )}
         </StyledContent>
-      ) : (
-        <Loading />
-      )}
+      );
+    }
+
+    return <Loading />;
+  };
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.financialHome')} />
+      {useMemo(renderContent, [allInvoicies, navigate, showContent, t])}
     </StyledContainer>
   );
 };
@@ -176,23 +169,11 @@ const StyledTitleExtract = styled.Text`
   margin-bottom: 16px;
 `;
 
-const StyledContainerEmptyExtract = styled.View<ContainerEmptyExtract>`
-  height: ${StatusBar.currentHeight
-    ? height -
-      StatusBar.currentHeight -
-      120 -
-      72 -
-      RFValue(24) -
-      32 -
-      70 -
-      32 -
-      32
-    : height - 120 - 72 - RFValue(24) - 32 - 70 - 32 - 32}px;
-
+const StyledContainerEmptyExtract = styled.View`
   justify-content: center;
   align-items: center;
 
-  margin-top: -32px;
+  margin: 16px 0;
 `;
 
 const StyledTextEmptyExtract = styled.Text`

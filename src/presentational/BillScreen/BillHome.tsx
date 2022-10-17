@@ -20,8 +20,6 @@ import { GET_INVOICE_ID } from '@store/slices/invoiceSlice';
 import { GET_STOCK } from '@store/slices/stockSlice';
 import { GET_SPENT } from '@store/slices/spentSlice';
 
-import emptyBillsImg from '@assets/imgs/empty-bills.png';
-
 import { Dimensions, FlatList, StatusBar } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -61,7 +59,7 @@ export const BillHome = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 56 - 16 - 16 - 44 - 16 - 72,
+    () => height - 120 - 32 - 56 - 16 - 16 - 44 - 32 - 72,
     [],
   );
 
@@ -109,66 +107,60 @@ export const BillHome = () => {
   }, [allBills, isLoading]);
 
   const renderContent = () => {
-    return (
-      <>
-        {showContent ? (
-          <StyledContent>
-            <SearchInput
-              placeholder={t('components.searchInput.bill')}
-              type="bills"
-            />
+    if (showContent) {
+      return (
+        <StyledContent>
+          <SearchInput
+            placeholder={t('components.searchInput.bill')}
+            type="bills"
+          />
 
-            {foundBills?.length || allBills?.length ? (
-              <FlatList
-                data={
-                  foundBills && foundBills.length > 0 ? foundBills : allBills
-                }
-                renderItem={({ item }) => (
-                  <Card
-                    key={item.id}
-                    type="clients"
-                    cardSize="large"
-                    item={{
-                      title:
-                        item.name[0].toUpperCase() +
-                        item.name.substring(1).toLowerCase(),
-                      description: item.id,
-                      linkTitle: t('components.card.links.details'),
-                      link: () => navigate('BillDetails', { bill: item }),
-                    }}
-                    onPress={() => navigate('BillDetails', { bill: item })}
-                  />
-                )}
-                keyExtractor={item => item.id}
-                style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
-                  marginVertical: 16,
-                }}
-                showsVerticalScrollIndicator={false}
-              />
-            ) : (
-              <StyledContainerEmptyBills style={{ height: heightList }}>
-                <EmptyBills width={132} height={132} />
-                <StyledTextEmptyBills>
-                  {t('screens.billHome.listBillEmpty')}
-                </StyledTextEmptyBills>
-              </StyledContainerEmptyBills>
-            )}
-
-            <Button
-              title={t('components.button.addBill')}
-              backgroundColor="trasparent"
-              fontColor="GRAY_800"
-              onPress={handleShowAddBillBottomSheet}
+          {foundBills?.length || allBills?.length ? (
+            <FlatList
+              data={foundBills && foundBills.length > 0 ? foundBills : allBills}
+              renderItem={({ item }) => (
+                <Card
+                  key={item.id}
+                  type="clients"
+                  cardSize="large"
+                  item={{
+                    title:
+                      item.name[0].toUpperCase() +
+                      item.name.substring(1).toLowerCase(),
+                    description: item.id,
+                    linkTitle: t('components.card.links.details'),
+                    link: () => navigate('BillDetails', { bill: item }),
+                  }}
+                  onPress={() => navigate('BillDetails', { bill: item })}
+                />
+              )}
+              keyExtractor={item => item.id}
+              style={{
+                height: heightList,
+                marginVertical: 16,
+              }}
+              showsVerticalScrollIndicator={false}
             />
-          </StyledContent>
-        ) : (
-          <Loading />
-        )}
-      </>
-    );
+          ) : (
+            <StyledContainerEmptyBills style={{ height: heightList }}>
+              <EmptyBills width={132} height={132} />
+              <StyledTextEmptyBills>
+                {t('screens.billHome.listBillEmpty')}
+              </StyledTextEmptyBills>
+            </StyledContainerEmptyBills>
+          )}
+
+          <Button
+            title={t('components.button.addBill')}
+            backgroundColor="trasparent"
+            fontColor="GRAY_800"
+            onPress={handleShowAddBillBottomSheet}
+          />
+        </StyledContent>
+      );
+    }
+
+    return <Loading />;
   };
 
   return (
@@ -211,6 +203,8 @@ const StyledContent = styled.View`
 const StyledContainerEmptyBills = styled.View`
   justify-content: center;
   align-items: center;
+
+  margin: 16px 0;
 `;
 
 const StyledTextEmptyBills = styled.Text`

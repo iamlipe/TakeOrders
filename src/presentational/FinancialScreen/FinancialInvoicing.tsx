@@ -7,15 +7,13 @@ import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { GET_SALES } from '@store/slices/saleSlice';
-import { GET_PURCHASES } from '@store/slices/purchaseSlice';
 import { GET_INVOICE, InvoiceResponse } from '@store/slices/invoiceSlice';
 
 import { filterAllByMonth } from '@utils/filterByDate';
 
 import EmptyChart from '@assets/svgs/empty-chart-1.svg';
 
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, FlatList } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -35,7 +33,7 @@ export const FinancialInvoicing = () => {
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allInvoicies, isLoading } = useReduxSelector(state => state.invoice);
+  const { allInvoicies } = useReduxSelector(state => state.invoice);
 
   const isFocused = useIsFocused();
 
@@ -76,19 +74,9 @@ export const FinancialInvoicing = () => {
     }
   }, [allInvoicies]);
 
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header
-        title={t('components.header.financialInvoicing')}
-        onPress={goBack}
-      />
-
-      {showContent ? (
+  const renderContent = () => {
+    if (showContent) {
+      return (
         <StyledContent>
           {invoicingFilteredByMonth ? (
             <>
@@ -130,9 +118,7 @@ export const FinancialInvoicing = () => {
                   />
                 )}
                 style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
+                  height: heightList,
                   marginVertical: 16,
                   paddingHorizontal: 32,
                 }}
@@ -141,7 +127,7 @@ export const FinancialInvoicing = () => {
               />
             </>
           ) : (
-            <StyledContainerEmptyInvoicing>
+            <StyledContainerEmptyInvoicing style={{ height: heightList }}>
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyInvoicing>
                 {t('screens.financialInvoicing.textEmptyInvoicing')}
@@ -149,9 +135,31 @@ export const FinancialInvoicing = () => {
             </StyledContainerEmptyInvoicing>
           )}
         </StyledContent>
-      ) : (
-        <Loading />
-      )}
+      );
+    }
+
+    return <Loading />;
+  };
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header
+        title={t('components.header.financialInvoicing')}
+        onPress={goBack}
+      />
+
+      {useMemo(renderContent, [
+        allInvoicies,
+        heightList,
+        invoicingFilteredByMonth,
+        showContent,
+        t,
+      ])}
     </StyledContainer>
   );
 };
@@ -177,10 +185,6 @@ const StyledTitleOverview = styled.Text`
 `;
 
 const StyledContainerEmptyInvoicing = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-
   justify-content: center;
   align-items: center;
 

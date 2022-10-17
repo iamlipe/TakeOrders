@@ -83,25 +83,28 @@ export const StockRegisterProduct = () => {
     [dispatch],
   );
 
-  const onSubmit = (data: FormReisterNewProduct) => {
-    if (stockId) {
-      setLoadingRegisterProduct(true);
+  const onSubmit = useCallback(
+    (data: FormReisterNewProduct) => {
+      if (stockId) {
+        setLoadingRegisterProduct(true);
 
-      createProduct({
-        name: data.name,
-        price: Number(data.price.substring(2).replace(/[^0-9]/g, '')) / 100,
-        quantity: 0,
-        stockId,
-        type: data.type,
-        image: data.image,
-      });
+        createProduct({
+          name: data.name,
+          price: Number(data.price.substring(2).replace(/[^0-9]/g, '')) / 100,
+          quantity: 0,
+          stockId,
+          type: data.type,
+          image: data.image,
+        });
 
-      setTimeout(() => {
-        setLoadingRegisterProduct(false);
-        navigate('StockHome');
-      }, 1000);
-    }
-  };
+        setTimeout(() => {
+          setLoadingRegisterProduct(false);
+          navigate('StockHome');
+        }, 1000);
+      }
+    },
+    [createProduct, navigate, stockId],
+  );
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -122,19 +125,9 @@ export const StockRegisterProduct = () => {
     }
   }, [spentId, stockId]);
 
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header
-        title={t('components.header.stockRegisterProduct')}
-        onPress={() => navigate('StockHome')}
-      />
-
-      {showContent ? (
+  const renderContent = () => {
+    if (showContent) {
+      return (
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
@@ -177,9 +170,36 @@ export const StockRegisterProduct = () => {
             />
           </StyledContent>
         </KeyboardAvoidingView>
-      ) : (
-        <Loading />
-      )}
+      );
+    }
+
+    return <Loading />;
+  };
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header
+        title={t('components.header.stockRegisterProduct')}
+        onPress={() => navigate('StockHome')}
+      />
+
+      {useMemo(renderContent, [
+        control,
+        errors.name?.message,
+        errors.price?.message,
+        errors.type?.message,
+        handleSubmit,
+        isSubmitted,
+        loadingRegisterProduct,
+        onSubmit,
+        showContent,
+        t,
+      ])}
     </StyledContainer>
   );
 };
@@ -188,16 +208,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.ScrollView`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-`;
+const StyledContent = styled.ScrollView``;
 
 const StyledContainerForm = styled.View`
-  min-height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 32 - 40 - 44 - 32 - 72
-    : height - 120 - 32 - 40 - 44 - 32 - 72}px;
-
-  margin-bottom: 40px;
+  height: ${height - 120 - 32 - 44 - 32 - 72}px;
 `;

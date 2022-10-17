@@ -232,9 +232,7 @@ const StyledContainer = styled(LinearGradient)`
 `;
 
 const StyledContent = styled.ScrollView`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
+  height: ${height - 120 - 72}px;
 `;
 
 const StyledContainerInfoProduct = styled.View<ContainerInfoProps>`

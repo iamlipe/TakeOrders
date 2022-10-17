@@ -134,9 +134,7 @@ export const BillAddProduct = () => {
             }}
             keyExtractor={item => item.id}
             style={{
-              height: StatusBar.currentHeight
-                ? heightList - StatusBar.currentHeight
-                : heightList,
+              height: heightList,
               marginTop: 16,
             }}
             columnWrapperStyle={{
@@ -151,7 +149,7 @@ export const BillAddProduct = () => {
 
     if (showContent && allProducts?.length && !filteredProducts?.length) {
       return (
-        <StyledContainerNoProductsInStock>
+        <StyledContainerNoProductsInStock style={{ height: heightList }}>
           <EmptyProductsInStock width={132} height={132} />
           <StyledTextNoProductsInStock>
             {t('screens.billAddProducts.textNoProductInStock')}
@@ -238,10 +236,6 @@ const StyledTitleNoProductsRegistredInStock = styled.Text`
 `;
 
 const StyledContainerNoProductsInStock = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-
   justify-content: center;
   align-items: center;
 

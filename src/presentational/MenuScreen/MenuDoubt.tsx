@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -20,9 +20,18 @@ export const MenuDoubt = () => {
   const { question, answer } =
     useRoute<RouteProp<StackParamsList, 'Info'>>().params;
 
-  const s = useRoute();
-
   const theme = useTheme();
+
+  const renderContent = () => {
+    return (
+      <StyledContent>
+        <StyledContainerDoubt>
+          <StyledTextQuestion>{question}</StyledTextQuestion>
+          <StyledTextAnswer>{answer}</StyledTextAnswer>
+        </StyledContainerDoubt>
+      </StyledContent>
+    );
+  };
 
   return (
     <StyledContainer
@@ -33,12 +42,7 @@ export const MenuDoubt = () => {
     >
       <Header title="Dúvida" backgroundColor="SECUNDARY_600" onPress={goBack} />
 
-      <StyledContent>
-        <StyledContainerDoubt>
-          <StyledTextQuestion>{question}</StyledTextQuestion>
-          <StyledTextAnswer>{answer}</StyledTextAnswer>
-        </StyledContainerDoubt>
-      </StyledContent>
+      {useMemo(renderContent, [answer, question])}
     </StyledContainer>
   );
 };

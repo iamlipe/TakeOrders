@@ -76,16 +76,9 @@ export const FinancialProfit = () => {
     }
   }, [allSales]);
 
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.financialProfit')} onPress={goBack} />
-
-      {showContent ? (
+  const renderContent = () => {
+    if (showContent) {
+      return (
         <StyledContent>
           {profitFilteredByMonth ? (
             <>
@@ -128,9 +121,7 @@ export const FinancialProfit = () => {
                   />
                 )}
                 style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
+                  height: heightList,
                   marginVertical: 16,
                   paddingHorizontal: 32,
                 }}
@@ -139,7 +130,7 @@ export const FinancialProfit = () => {
               />
             </>
           ) : (
-            <StyledContainerEmptyProfit>
+            <StyledContainerEmptyProfit style={{ height: heightList }}>
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyProfit>
                 {t('screens.financialProfit.textEmptyProfit')}
@@ -147,9 +138,28 @@ export const FinancialProfit = () => {
             </StyledContainerEmptyProfit>
           )}
         </StyledContent>
-      ) : (
-        <Loading />
-      )}
+      );
+    }
+
+    return <Loading />;
+  };
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.financialProfit')} onPress={goBack} />
+
+      {useMemo(renderContent, [
+        allSales,
+        heightList,
+        profitFilteredByMonth,
+        showContent,
+        t,
+      ])}
     </StyledContainer>
   );
 };
@@ -175,10 +185,6 @@ const StyledTitleOverview = styled.Text`
 `;
 
 const StyledContainerEmptyProfit = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-
   justify-content: center;
   align-items: center;
 
