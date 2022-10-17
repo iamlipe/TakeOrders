@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StockStackParamList } from '@routes/stacks/StockStack';
+import { ProductStackParamList } from '@routes/stacks/ProductStack';
 
 import { CREATE_PRODUCT, NewProduct } from '@store/slices/productSlice';
 
@@ -36,11 +36,11 @@ interface FormReisterNewProduct {
   image?: string;
 }
 
-type NavProps = NativeStackNavigationProp<StockStackParamList, 'StockHome'>;
+type NavProps = NativeStackNavigationProp<ProductStackParamList, 'ProductHome'>;
 
 const { height } = Dimensions.get('window');
 
-export const StockRegisterProduct = () => {
+export const ProductRegister = () => {
   const [showContent, setShowContent] = useState(false);
   const [loadingRegisterProduct, setLoadingRegisterProduct] = useState(false);
 
@@ -99,7 +99,7 @@ export const StockRegisterProduct = () => {
 
         setTimeout(() => {
           setLoadingRegisterProduct(false);
-          navigate('StockHome');
+          navigate('ProductHome');
         }, 1000);
       }
     },
@@ -185,7 +185,7 @@ export const StockRegisterProduct = () => {
     >
       <Header
         title={t('components.header.stockRegisterProduct')}
-        onPress={() => navigate('StockHome')}
+        onPress={() => navigate('ProductHome')}
       />
 
       {useMemo(renderContent, [

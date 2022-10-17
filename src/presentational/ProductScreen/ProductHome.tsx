@@ -1,13 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
-import { StockStackParamList } from '@routes/stacks/StockStack';
+import { ProductStackParamList } from '@routes/stacks/ProductStack';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -17,31 +11,30 @@ import { useTranslation } from 'react-i18next';
 
 import { GET_ALL_PRODUCTS } from '@store/slices/productSlice';
 
+import formatedCurrency from '@utils/formatedCurrency';
+
 import EmptyProduct from '@assets/svgs/empty-products.svg';
 
 import { FlatList } from 'react-native-gesture-handler';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Dimensions, StatusBar } from 'react-native';
+import { Dimensions } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 import LinearGradient from 'react-native-linear-gradient';
 
 import Header from '@components/Header';
 import BigButton from '@components/BigButton';
 import Card from '@components/Card';
-import AddProductBottomSheetModal from './AddProductBottomSheetModal';
 import Loading from '@components/Loading';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 type NavProps = NativeStackNavigationProp<
-  StockStackParamList,
-  'StockRegisterProduct'
+  ProductStackParamList,
+  'ProductRegister' | 'ProductDetails'
 >;
 
 const { height } = Dimensions.get('window');
 
-export const StockHome = () => {
+export const ProductHome = () => {
   const [showContent, setShowContent] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
   const dispatch = useReduxDispatch();
   const { allProducts, isLoading } = useReduxSelector(state => state.product);
@@ -58,16 +51,6 @@ export const StockHome = () => {
     () => height - 120 - 32 - 100 - RFValue(24) - 24 - 32 - 72,
     [],
   );
-
-  const addProductBottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  const handleShowAddProductBottomSheet = useCallback(() => {
-    addProductBottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleDismissAddProductBottomSheet = useCallback(() => {
-    addProductBottomSheetModalRef.current?.dismiss();
-  }, []);
 
   const getProducts = useCallback(() => {
     dispatch(GET_ALL_PRODUCTS());
@@ -92,7 +75,7 @@ export const StockHome = () => {
           <BigButton
             title={t('components.bigButton.registerNewProduct')}
             icon={{ name: 'add-circle-outline', color: 'WHITE' }}
-            onPress={() => navigate('StockRegisterProduct')}
+            onPress={() => navigate('ProductRegister')}
           />
 
           <StyledTitleList>
@@ -112,16 +95,10 @@ export const StockHome = () => {
                         item.name[0].toUpperCase() +
                         item.name.substring(1).toLowerCase(),
                       image: item.image,
-                      description: `${t('components.card.quantity')}: ${String(
-                        item.quantity,
-                      )}`,
-                      link: () => {
-                        setSelectedProduct(item.id);
-                        handleShowAddProductBottomSheet();
-                      },
+                      description: formatedCurrency(item.price),
                     }}
                     onPress={() =>
-                      navigate('StockDetailsProduct', { productId: item.id })
+                      navigate('ProductDetails', { productId: item.id })
                     }
                   />
                 )}
@@ -141,12 +118,6 @@ export const StockHome = () => {
               </StyledTextEmptyProduct>
             </StyledContainerEmptyProduct>
           )}
-
-          <AddProductBottomSheetModal
-            ref={addProductBottomSheetModalRef}
-            productId={selectedProduct}
-            closeBottomSheet={handleDismissAddProductBottomSheet}
-          />
         </StyledContent>
       );
     }
@@ -165,11 +136,8 @@ export const StockHome = () => {
 
       {useMemo(renderContent, [
         allProducts,
-        handleDismissAddProductBottomSheet,
-        handleShowAddProductBottomSheet,
         heightList,
         navigate,
-        selectedProduct,
         showContent,
         t,
       ])}

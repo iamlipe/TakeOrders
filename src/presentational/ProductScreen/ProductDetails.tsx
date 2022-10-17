@@ -31,7 +31,7 @@ type StackParamsList = {
 
 const { width, height } = Dimensions.get('window');
 
-export const StockDetailsProduct = () => {
+export const ProductDetails = () => {
   const [showContent, setShowContent] = useState(false);
 
   const dispatch = useReduxDispatch();
@@ -118,50 +118,6 @@ export const StockDetailsProduct = () => {
     );
   };
 
-  const renderWarningStockProduct = () => {
-    return (
-      <>
-        <StyledTitleInfo>
-          {t('screens.stockDetailsProduct.warning')}
-        </StyledTitleInfo>
-        <StyledContainerInfoProduct>
-          <StyledTextWarningStock>
-            {t('screens.stockDetailsProduct.comingSoon')}
-          </StyledTextWarningStock>
-        </StyledContainerInfoProduct>
-      </>
-    );
-  };
-
-  const renderInfoStock = () => {
-    return (
-      <>
-        <StyledTitleInfo>
-          {t('screens.stockDetailsProduct.stock')}
-        </StyledTitleInfo>
-        <StyledContainerInfoProduct>
-          <StyledColumnInfoStock>
-            <StyledTitleInfoStock>
-              {t('screens.stockDetailsProduct.titleStock.quantityInStock')}
-            </StyledTitleInfoStock>
-            <StyledDescriptionInfoStock>
-              {selectedProduct?.quantity}
-            </StyledDescriptionInfoStock>
-          </StyledColumnInfoStock>
-
-          <StyledColumnInfoStock>
-            <StyledTitleInfoStock>
-              {t('screens.stockDetailsProduct.titleStock.avaregeMonth')}
-            </StyledTitleInfoStock>
-            <StyledDescriptionInfoStock>
-              {t('screens.stockDetailsProduct.comingSoon')}
-            </StyledDescriptionInfoStock>
-          </StyledColumnInfoStock>
-        </StyledContainerInfoProduct>
-      </>
-    );
-  };
-
   const renderInfoSales = () => {
     return (
       <>
@@ -216,8 +172,6 @@ export const StockDetailsProduct = () => {
           contentContainerStyle={{ padding: 32 }}
         >
           {renderInfoProduct()}
-          {renderWarningStockProduct()}
-          {renderInfoStock()}
           {renderInfoSales()}
         </StyledContent>
       ) : (
@@ -328,8 +282,3 @@ const StyledTitleInfoSales = styled(StyledTitleInfoStock)`
 `;
 
 const StyledDescriptionInfoSales = styled(StyledDescriptionInfoStock)``;
-
-const StyledTextWarningStock = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
-  font-size: ${({ theme }) => theme.sizing.SMALLER};
-`;
