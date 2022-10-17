@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -7,22 +13,24 @@ import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-import { GET_PURCHASES } from '@store/slices/purchaseSlice';
+import { GET_INVOICE } from '@store/slices/invoiceSlice';
 
 import EmptyExtract from '@assets/svgs/empty-extract.svg';
 
-import { Dimensions, StatusBar } from 'react-native';
+import { Dimensions } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import LinearGradient from 'react-native-linear-gradient';
 
+import AddPurchaseBottomSheetModal from './AddPurchaseBottomSheetModal';
 import Header from '@components/Header';
 import ScrollableButton from '@components/ScrollableButton';
 import Loading from '@components/Loading';
 import FinancialCard from '@components/FinancialCard';
-import { GET_INVOICE } from '@store/slices/invoiceSlice';
-import { RFValue } from 'react-native-responsive-fontsize';
+import Button from '@components/Button';
 
 type NavProps = NativeStackNavigationProp<
   FinancialStackParamList,
@@ -30,9 +38,6 @@ type NavProps = NativeStackNavigationProp<
 >;
 
 const { height } = Dimensions.get('window');
-
-const heightList =
-  height - (120 + 32 + height * 0.1 + 32 + RFValue(24) + 16 + 32 + 72);
 
 export const FinancialHome = () => {
   const [showContent, setShowContent] = useState(false);
@@ -48,13 +53,39 @@ export const FinancialHome = () => {
 
   const { t } = useTranslation();
 
+  const heightList = useMemo(
+    () =>
+      height -
+      120 -
+      32 -
+      height * 0.1 -
+      16 -
+      RFValue(24) -
+      16 -
+      16 -
+      44 -
+      32 -
+      72,
+    [],
+  );
+
   const theme = useTheme();
+
+  const addPurchaseBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const getInvoicies = useCallback(() => {
     if (auth) {
       dispatch(GET_INVOICE({ userId: auth.id }));
     }
   }, [auth, dispatch]);
+
+  const handleShowAddPurchaseBottomSheet = useCallback(() => {
+    addPurchaseBottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleColseAddPurchaseBottomSheet = useCallback(() => {
+    addPurchaseBottomSheetModalRef.current?.dismiss();
+  }, []);
 
   useEffect(() => {
     getInvoicies();
@@ -124,6 +155,11 @@ export const FinancialHome = () => {
               </StyledTextEmptyExtract>
             </StyledContainerEmptyExtract>
           )}
+
+          <Button
+            title={t('components.button.addExpense')}
+            onPress={handleShowAddPurchaseBottomSheet}
+          />
         </StyledContent>
       );
     }
@@ -139,7 +175,19 @@ export const FinancialHome = () => {
       ]}
     >
       <Header title={t('components.header.financialHome')} />
-      {useMemo(renderContent, [allInvoicies, navigate, showContent, t])}
+      {useMemo(renderContent, [
+        allInvoicies,
+        handleShowAddPurchaseBottomSheet,
+        heightList,
+        navigate,
+        showContent,
+        t,
+      ])}
+
+      <AddPurchaseBottomSheetModal
+        ref={addPurchaseBottomSheetModalRef}
+        closeBottomSheet={handleColseAddPurchaseBottomSheet}
+      />
     </StyledContainer>
   );
 };
@@ -149,13 +197,15 @@ const StyledContainer = styled(LinearGradient)`
 `;
 
 const StyledContent = styled.View`
-  padding: 32px;
+  padding: 32px 0;
 `;
 
 const StyledContainerButtons = styled.View`
   height: ${height * 0.1}px;
 
-  margin-bottom: 32px;
+  padding: 0 32px;
+
+  margin-bottom: 16px;
 `;
 
 const StyledTitleExtract = styled.Text`
@@ -166,7 +216,7 @@ const StyledTitleExtract = styled.Text`
 
   line-height: ${RFValue(24)}px;
 
-  margin-bottom: 16px;
+  padding: 0 32px;
 `;
 
 const StyledContainerEmptyExtract = styled.View`

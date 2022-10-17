@@ -14,7 +14,7 @@ import { filterAllByMonth } from '@utils/filterByDate';
 
 import EmptyChart from '@assets/svgs/empty-chart-2.svg';
 
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, FlatList } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -123,7 +123,6 @@ export const FinancialProfit = () => {
                 style={{
                   height: heightList,
                   marginVertical: 16,
-                  paddingHorizontal: 32,
                 }}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}

@@ -120,7 +120,6 @@ export const FinancialInvoicing = () => {
                 style={{
                   height: heightList,
                   marginVertical: 16,
-                  paddingHorizontal: 32,
                 }}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}

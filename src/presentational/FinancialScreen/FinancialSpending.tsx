@@ -55,19 +55,9 @@ export const FinancialSpending = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 16 - 44 - 16 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 16 - 72,
     [],
   );
-
-  const addPurchaseBottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  const handleShowAddPurchaseBottomSheet = useCallback(() => {
-    addPurchaseBottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleColseAddPurchaseBottomSheet = useCallback(() => {
-    addPurchaseBottomSheetModalRef.current?.dismiss();
-  }, []);
 
   const getPurchases = useCallback(() => {
     dispatch(GET_PURCHASES());
@@ -136,7 +126,6 @@ export const FinancialSpending = () => {
                 style={{
                   height: heightList,
                   marginVertical: 16,
-                  paddingHorizontal: 32,
                 }}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
@@ -152,11 +141,6 @@ export const FinancialSpending = () => {
               </StyledTextEmptySpending>
             </StyledContainerEmptySpending>
           )}
-
-          <Button
-            title={t('components.button.addExpense')}
-            onPress={handleShowAddPurchaseBottomSheet}
-          />
         </StyledContent>
       );
     }
@@ -178,17 +162,11 @@ export const FinancialSpending = () => {
 
       {useMemo(renderContent, [
         allPurchases,
-        handleShowAddPurchaseBottomSheet,
         heightList,
         showContent,
         spendingFilteredByMonth,
         t,
       ])}
-
-      <AddPurchaseBottomSheetModal
-        ref={addPurchaseBottomSheetModalRef}
-        closeBottomSheet={handleColseAddPurchaseBottomSheet}
-      />
     </StyledContainer>
   );
 };
