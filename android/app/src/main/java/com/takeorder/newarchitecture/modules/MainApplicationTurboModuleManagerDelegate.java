@@ -1,4 +1,4 @@
-package com.takeorder.newarchitecture.modules;
+package com.takeorders.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

@@ -1,4 +1,4 @@
-package com.takeorder;
+package com.takeorders;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
