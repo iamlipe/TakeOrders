@@ -230,6 +230,8 @@ const StyledTitleNoProductsRegistredInStock = styled.Text`
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
 
+  color: ${({ theme }) => theme.colors.GRAY_800};
+
   text-align: center;
 
   margin-bottom: 16px;
