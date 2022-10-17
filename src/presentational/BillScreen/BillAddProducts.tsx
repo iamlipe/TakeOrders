@@ -22,10 +22,8 @@ import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
 import { GET_ALL_PRODUCTS } from '@store/slices/productSlice';
 
-import EmptyProductsInStock from '@assets/svgs/empty-products-in-stock.svg';
-
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, FlatList } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -42,7 +40,7 @@ type StackParamsList = {
   };
 };
 
-type NavProps = NativeStackNavigationProp<LoggedStackParamList, 'StockStack'>;
+type NavProps = NativeStackNavigationProp<LoggedStackParamList, 'ProductStack'>;
 
 const { height } = Dimensions.get('window');
 
@@ -54,7 +52,6 @@ export const BillAddProduct = () => {
 
   const dispatch = useReduxDispatch();
 
-  const { stockId } = useReduxSelector(state => state.stock);
   const { allProducts, foundProducts, isLoading } = useReduxSelector(
     state => state.product,
   );
@@ -99,9 +96,7 @@ export const BillAddProduct = () => {
   }, [allProducts, isLoading]);
 
   const renderContent = () => {
-    const filteredProducts = allProducts?.filter(item => item.quantity > 0);
-
-    if (showContent && filteredProducts?.length) {
+    if (showContent) {
       return (
         <StyledContainerProducts>
           <SearchInput
@@ -113,7 +108,7 @@ export const BillAddProduct = () => {
             data={
               foundProducts && foundProducts.length
                 ? foundProducts
-                : filteredProducts
+                : allProducts
             }
             numColumns={2}
             renderItem={({ item }) => {
@@ -147,17 +142,6 @@ export const BillAddProduct = () => {
       );
     }
 
-    if (showContent && allProducts?.length && !filteredProducts?.length) {
-      return (
-        <StyledContainerNoProductsInStock style={{ height: heightList }}>
-          <EmptyProductsInStock width={132} height={132} />
-          <StyledTextNoProductsInStock>
-            {t('screens.billAddProducts.textNoProductInStock')}
-          </StyledTextNoProductsInStock>
-        </StyledContainerNoProductsInStock>
-      );
-    }
-
     if (showContent && !allProducts?.length) {
       return (
         <StyledContainerNoProductsRegistredInStock>
@@ -167,7 +151,7 @@ export const BillAddProduct = () => {
           <Button
             title={t('components.button.addProductStock')}
             onPress={() => {
-              navigate('StockStack');
+              navigate('ProductStack');
               setTimeout(() => navigateDispatch(pushAction), 1000);
             }}
           />
@@ -233,22 +217,4 @@ const StyledTitleNoProductsRegistredInStock = styled.Text`
   text-align: center;
 
   margin-bottom: 16px;
-`;
-
-const StyledContainerNoProductsInStock = styled.View`
-  justify-content: center;
-  align-items: center;
-
-  margin-top: -32px;
-`;
-
-const StyledTextNoProductsInStock = styled.Text`
-  width: 80%;
-
-  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
-  font-size: ${({ theme }) => theme.sizing.SMALLEST};
-
-  color: ${({ theme }) => theme.colors.GRAY_800};
-
-  text-align: center;
 `;

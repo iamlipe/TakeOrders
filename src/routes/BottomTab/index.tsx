@@ -26,12 +26,12 @@ import Animated, {
 
 import BillIcon from '@assets/svgs/bill.svg';
 import FinancialIcon from '@assets/svgs/financial.svg';
-import StockIcon from '@assets/svgs/stock.svg';
+import ProductIcon from '@assets/svgs/stock.svg';
 import MenuIcon from '@assets/svgs/menu.svg';
 
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
-  'BillStack' | 'FinancialStack' | 'StockStack'
+  'BillStack' | 'FinancialStack' | 'ProductStack'
 >;
 
 interface TitleTabProps {
@@ -109,7 +109,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
       );
     }
 
-    if (activeTab === 'StockStack') {
+    if (activeTab === 'ProductStack') {
       StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
 
       refTextTab.current[1]?.measure(
@@ -236,16 +236,16 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
         {renderTab(
           1,
           () => (
-            <StockIcon
+            <ProductIcon
               fill={
-                activeTab === 'StockStack'
+                activeTab === 'ProductStack'
                   ? theme.colors.PRIMARY_600
                   : theme.colors.GRAY_800
               }
             />
           ),
-          t('components.bottomTab.stock'),
-          'StockStack',
+          t('components.bottomTab.products'),
+          'ProductStack',
         )}
         {renderTab(
           2,

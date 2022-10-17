@@ -72,7 +72,7 @@
 
       "bottomTab": {
         "bill": "Cuenta",
-        "stock": "Inventario",
+        "products": "Products",
         "financial": "Financeiro",
         "menu": "Menu"
       },
