@@ -194,7 +194,17 @@
           "help": "Help"
         },
 
-        "logout": "Logout"
+        "logout": "Logout",
+
+        "selectLanguageModal": {
+          "title": "Select your language",
+
+          "options": {
+            "portuguese": "Portuguese",
+            "english": "English",
+            "spanish": "Spanish"
+          }
+        }
       }
     }
   }

@@ -222,4 +222,6 @@ const StyledTextEmptyBills = styled.Text`
   color: ${({ theme }) => theme.colors.GRAY_800};
 
   text-align: center;
+
+  margin-top: 16px;
 `;

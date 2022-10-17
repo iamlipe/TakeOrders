@@ -195,7 +195,17 @@
           "help": "Necesita ayuda ?"
         },
 
-        "logout": "Salir"
+        "logout": "Salir",
+
+        "selectLanguageModal": {
+          "title": "Elige tu idioma",
+
+          "options": {
+            "portuguese": "Portugués",
+            "english": "Inglés",
+            "spanish": "Español"
+          }
+        }
       }
     }
   }
