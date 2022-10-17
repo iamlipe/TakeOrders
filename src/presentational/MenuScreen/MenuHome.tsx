@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
+import i18next from 'i18next/index';
 import { useTranslation } from 'react-i18next';
+import { useUserStorage } from '@hooks/useUserStorage';
+import { useNavigation } from '@react-navigation/native';
+import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MenuStackParamList } from '@routes/stacks/MenuStack';
+import { RFValue } from 'react-native-responsive-fontsize';
+
+import { LOGOUT } from '@store/slices/userSlice';
+
+import { Dimensions, StatusBar } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Header from '@components/Header';
-
-import ModalSelectLanguage from './ModalSelectLanguage';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MenuStackParamList } from '@routes/stacks/MenuStack';
-import { Dimensions, StatusBar } from 'react-native';
-import i18next from 'i18next/index';
-import { useReduxDispatch } from '@hooks/useReduxDispatch';
-import { LOGOUT } from '@store/slices/userSlice';
-import { useUserStorage } from '@hooks/useUserStorage';
+import ModalSelectLanguage from './SelectLanguageModal';
 
 type NavProps = NativeStackNavigationProp<MenuStackParamList, 'MenuHelper'>;
 
@@ -49,46 +51,49 @@ export const MenuHome = () => {
   };
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header
-        title={t('components.header.menuHome')}
-        backgroundColor="SECUNDARY_600"
-      />
+    <>
+      <StyledContainer
+        colors={[
+          theme.colors.BACKGROUND_WEAKYELLOW,
+          theme.colors.BACKGROUND_OFFWHITE,
+        ]}
+      >
+        <Header
+          title={t('components.header.menuHome')}
+          backgroundColor="SECUNDARY_600"
+        />
 
-      <StyledContent>
-        <StyledContainerOptions>
-          <StyledBaseButton onPress={() => setVisibleModalSelectLanguage(true)}>
-            <StyledTextButton>
-              {t('screens.menuHome.options.language')}
-            </StyledTextButton>
-          </StyledBaseButton>
+        <StyledContent>
+          <StyledContainerOptions>
+            <StyledBaseButton
+              onPress={() => setVisibleModalSelectLanguage(true)}
+            >
+              <StyledTextButton>
+                {t('screens.menuHome.options.language')}
+              </StyledTextButton>
+            </StyledBaseButton>
 
-          <StyledBaseButton onPress={() => navigate('MenuHelper')}>
-            <StyledTextButton>
-              {t('screens.menuHome.options.help')}
-            </StyledTextButton>
-          </StyledBaseButton>
-        </StyledContainerOptions>
+            <StyledBaseButton onPress={() => navigate('MenuHelper')}>
+              <StyledTextButton>
+                {t('screens.menuHome.options.help')}
+              </StyledTextButton>
+            </StyledBaseButton>
+          </StyledContainerOptions>
 
-        <StyledBaseButtonLogout onPress={handleLogout}>
-          <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
-          <StyledTextButtonLogout>
-            {t('screens.menuHome.logout')}
-          </StyledTextButtonLogout>
-        </StyledBaseButtonLogout>
-      </StyledContent>
-
+          <StyledBaseButtonLogout onPress={handleLogout}>
+            <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
+            <StyledTextButtonLogout>
+              {t('screens.menuHome.logout')}
+            </StyledTextButtonLogout>
+          </StyledBaseButtonLogout>
+        </StyledContent>
+      </StyledContainer>
       <ModalSelectLanguage
         visible={visibleModalSelectLanguage}
         setVisible={setVisibleModalSelectLanguage}
         handleLanguage={handleLanguage}
       />
-    </StyledContainer>
+    </>
   );
 };
 
@@ -102,8 +107,8 @@ const StyledContent = styled.View`
 
 const StyledContainerOptions = styled.View`
   height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 32 - 40 - 32 - 72
-    : height - 120 - 32 - 40 - 32 - 72}px;
+    ? height - StatusBar.currentHeight - 120 - 32 - RFValue(24) - 32 - 72
+    : height - 120 - 32 - RFValue(24) - 32 - 72}px;
 `;
 
 const StyledBaseButton = styled.TouchableOpacity`
@@ -118,9 +123,11 @@ const StyledTextButton = styled.Text`
 `;
 
 const StyledBaseButtonLogout = styled(StyledBaseButton)`
+  height: ${RFValue(24)}px;
+
   flex-direction: row;
 
-  align-items: center;
+  align-self: baseline;
 `;
 
 const StyledTextButtonLogout = styled(StyledTextButton)`

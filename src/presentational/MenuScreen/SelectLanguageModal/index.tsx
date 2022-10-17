@@ -8,7 +8,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { Dimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-interface ModalSelectLanguageProps {
+interface SelectLanguageModalProps {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   handleLanguage: (language: 'pt' | 'en' | 'es') => void;
@@ -16,11 +16,11 @@ interface ModalSelectLanguageProps {
 
 const { width, height } = Dimensions.get('window');
 
-const ModalSelectLanguage = ({
+const SelectLanguageModal = ({
   visible,
   setVisible,
   handleLanguage,
-}: ModalSelectLanguageProps) => {
+}: SelectLanguageModalProps) => {
   const theme = useTheme();
 
   const { t } = useTranslation();
@@ -127,4 +127,4 @@ const StyledTextButtton = styled.Text`
   color: ${({ theme }) => theme.colors.GRAY_800};
 `;
 
-export default memo(ModalSelectLanguage);
+export default memo(SelectLanguageModal);
