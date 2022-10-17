@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 import styled from 'styled-components/native';
 import * as Yup from 'yup';
@@ -36,6 +37,8 @@ const AddBillBottomSheetModal = forwardRef<
   BottomSheetModal,
   AddBillBottomSheetModalProps
 >(({ closeBottomSheet }, ref) => {
+  const [loadingAddBill, setLoadingAddBill] = useState(false);
+
   const { invoiceId } = useReduxSelector(state => state.invoice);
   const { auth } = useReduxSelector(state => state.user);
   const dispatch = useReduxDispatch();
@@ -88,10 +91,17 @@ const AddBillBottomSheetModal = forwardRef<
   }, [dispatch]);
 
   const onSubmit = (data: FormAddNewBill) => {
-    createBill(data);
-    getBills();
-    closeBottomSheet();
+    setLoadingAddBill(true);
+
     Keyboard.dismiss();
+
+    setTimeout(() => createBill(data), 500);
+
+    setTimeout(() => getBills(), 1000);
+
+    setTimeout(() => closeBottomSheet(), 1500);
+
+    setTimeout(() => setLoadingAddBill(false), 2000);
   };
 
   useEffect(() => {
@@ -131,6 +141,7 @@ const AddBillBottomSheetModal = forwardRef<
         <Button
           title={t('components.button.add')}
           onPress={handleSubmit(onSubmit)}
+          loading={loadingAddBill}
         />
       </StyledContainer>
     </BottomSheetModal>
