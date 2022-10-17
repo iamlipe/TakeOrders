@@ -1,4 +1,4 @@
-package com.takeorder.newarchitecture;
+package com.takeorders.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.takeorder.BuildConfig;
-import com.takeorder.newarchitecture.components.MainComponentsRegistry;
-import com.takeorder.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.takeorders.BuildConfig;
+import com.takeorders.newarchitecture.components.MainComponentsRegistry;
+import com.takeorders.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
