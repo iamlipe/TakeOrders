@@ -15,7 +15,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { GET_INVOICE } from '@store/slices/invoiceSlice';
+import { GET_PROFIT } from '@store/slices/profitSlice';
 
 import EmptyExtract from '@assets/svgs/empty-extract.svg';
 
@@ -45,7 +45,7 @@ export const FinancialHome = () => {
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allInvoicies } = useReduxSelector(state => state.invoice);
+  const { allProfit } = useReduxSelector(state => state.profit);
 
   const isFocused = useIsFocused();
 
@@ -61,7 +61,7 @@ export const FinancialHome = () => {
       height * 0.1 -
       16 -
       RFValue(24) -
-      16 -
+      14 -
       16 -
       44 -
       32 -
@@ -75,7 +75,7 @@ export const FinancialHome = () => {
 
   const getInvoicies = useCallback(() => {
     if (auth) {
-      dispatch(GET_INVOICE({ userId: auth.id }));
+      dispatch(GET_PROFIT({ userId: auth.id }));
     }
   }, [auth, dispatch]);
 
@@ -92,10 +92,10 @@ export const FinancialHome = () => {
   }, [getInvoicies, isFocused]);
 
   useEffect(() => {
-    if (allInvoicies) {
+    if (allProfit) {
       setTimeout(() => setShowContent(true), 1000);
     }
-  }, [allInvoicies]);
+  }, [allProfit]);
 
   const renderContent = () => {
     if (showContent) {
@@ -110,12 +110,12 @@ export const FinancialHome = () => {
                   title: t('components.scrollableButton.spending'),
                 },
                 {
-                  iconName: 'local-offer',
+                  iconName: 'attach-money',
                   onPress: () => navigate('FinancialInvoicing'),
                   title: t('components.scrollableButton.invoicing'),
                 },
                 {
-                  iconName: 'attach-money',
+                  iconName: 'local-offer',
                   onPress: () => navigate('FinancialProfit'),
                   title: t('components.scrollableButton.profit'),
                 },
@@ -127,9 +127,9 @@ export const FinancialHome = () => {
             {t('screens.financialHome.extract')}
           </StyledTitleExtract>
 
-          {allInvoicies?.length ? (
+          {allProfit?.length ? (
             <FlatList
-              data={allInvoicies}
+              data={allProfit}
               renderItem={({ item }) => (
                 <FinancialCard
                   key={item.id}
@@ -176,7 +176,7 @@ export const FinancialHome = () => {
     >
       <Header title={t('components.header.financialHome')} />
       {useMemo(renderContent, [
-        allInvoicies,
+        allProfit,
         handleShowAddPurchaseBottomSheet,
         heightList,
         navigate,

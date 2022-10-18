@@ -55,7 +55,7 @@ export const FinancialSpending = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 16 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 16 - 16 - 72,
     [],
   );
 

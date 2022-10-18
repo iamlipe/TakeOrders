@@ -1,17 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useReduxSelector } from '@hooks/useReduxSelector';
-import { useReduxDispatch } from '@hooks/useReduxDispatch';
-import { useTranslation } from 'react-i18next';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { Sales as SalesModel } from '@database/models/salesModel';
 
-import { GET_INVOICE, InvoiceResponse } from '@store/slices/invoiceSlice';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { useReduxSelector } from '@hooks/useReduxSelector';
+import { useTranslation } from 'react-i18next';
+
+import { RFValue } from 'react-native-responsive-fontsize';
+import { GET_SALES } from '@store/slices/saleSlice';
 
 import { filterAllByMonth } from '@utils/filterByDate';
 
-import EmptyChart from '@assets/svgs/empty-chart-1.svg';
+import EmptyChart from '@assets/svgs/empty-chart-2.svg';
 
 import { Dimensions, FlatList } from 'react-native';
 
@@ -26,14 +28,14 @@ const { height } = Dimensions.get('window');
 
 export const FinancialInvoicing = () => {
   const [showContent, setShowContent] = useState(false);
-  const [invoicingFilteredByMonth, setInvoicingFilteredByMonth] = useState<
-    InvoiceResponse[][] | null
+  const [profitFilteredByMonth, setProfitFilteredByMonth] = useState<
+    SalesModel[][] | null
   >(null);
 
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allInvoicies } = useReduxSelector(state => state.invoice);
+  const { allSales, isLoading } = useReduxSelector(state => state.sale);
 
   const isFocused = useIsFocused();
 
@@ -44,96 +46,97 @@ export const FinancialInvoicing = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 32 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 16 - 16 - 72,
     [],
   );
 
-  const getInvoicies = useCallback(() => {
+  const getSales = useCallback(() => {
     if (auth) {
-      dispatch(GET_INVOICE({ userId: auth.id }));
+      dispatch(GET_SALES({ userId: auth.id }));
     }
   }, [auth, dispatch]);
 
   useEffect(() => {
-    getInvoicies();
-  }, [getInvoicies, isFocused]);
+    getSales();
+  }, [getSales, isFocused]);
 
   useEffect(() => {
-    if (allInvoicies) {
+    if (allSales && !isLoading) {
       setTimeout(() => setShowContent(true), 1000);
     }
-  }, [allInvoicies]);
+  }, [allSales, isLoading]);
 
   useEffect(() => {
-    if (allInvoicies?.length) {
+    if (allSales?.length) {
       const data = filterAllByMonth({
-        data: allInvoicies,
-      }) as unknown as InvoiceResponse[][];
+        data: allSales,
+      }) as unknown as SalesModel[][];
 
-      setInvoicingFilteredByMonth(data);
+      setProfitFilteredByMonth(data);
     }
-  }, [allInvoicies]);
+  }, [allSales]);
 
   const renderContent = () => {
     if (showContent) {
       return (
         <StyledContent>
-          {invoicingFilteredByMonth ? (
+          {profitFilteredByMonth ? (
             <>
               <StyledTitleOverview>
-                {t('screens.financialInvoicing.overview')}
+                {t('screens.financialProfit.overview')}
               </StyledTitleOverview>
 
-              {invoicingFilteredByMonth && (
+              {profitFilteredByMonth && (
                 <Overview
-                  data={invoicingFilteredByMonth?.map(invoicingMonth => {
+                  data={profitFilteredByMonth.map(profitMonth => {
                     return {
-                      months: invoicingMonth.length
-                        ? new Date(
-                            invoicingMonth[0].createdAt,
-                          ).toLocaleDateString('pt-br', { month: 'long' })
+                      months: profitMonth.length
+                        ? new Date(profitMonth[0].createdAt).toLocaleDateString(
+                            'pt-br',
+                            { month: 'long' },
+                          )
                         : new Date().toLocaleDateString('pt-br', {
                             month: 'long',
                           }),
-                      earnings: invoicingMonth.reduce(
-                        (prev, curr) => prev + curr.price,
+                      earnings: profitMonth.reduce(
+                        (prev, curr) => prev + curr.totalPrice,
                         0,
                       ),
                     };
                   })}
-                  type="invoicing"
+                  type="profit"
                 />
               )}
 
               <FlatList
-                data={allInvoicies}
+                data={allSales}
                 renderItem={({ item }) => (
                   <FinancialCard
                     key={item.id}
                     item={{
                       title: item.name,
-                      price: item.price,
                       date: item.createdAt,
+                      price: item.totalPrice,
                     }}
                   />
                 )}
                 style={{
                   height: heightList,
-                  marginVertical: 16,
+                  marginTop: 16,
                 }}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
               />
             </>
           ) : (
-            <StyledContainerEmptyInvoicing
+            <StyledContainerEmptyProfit
               style={{ height: heightList + 220 + RFValue(24) + 8 }}
             >
               <EmptyChart width={132} height={132} />
-              <StyledTextEmptyInvoicing>
-                {t('screens.financialInvoicing.textEmptyInvoicing')}
-              </StyledTextEmptyInvoicing>
-            </StyledContainerEmptyInvoicing>
+              <StyledTextEmptyProfit>
+                {t('screens.financialProfit.textEmptyProfit')}
+              </StyledTextEmptyProfit>
+            </StyledContainerEmptyProfit>
           )}
         </StyledContent>
       );
@@ -155,9 +158,9 @@ export const FinancialInvoicing = () => {
       />
 
       {useMemo(renderContent, [
-        allInvoicies,
+        allSales,
         heightList,
-        invoicingFilteredByMonth,
+        profitFilteredByMonth,
         showContent,
         t,
       ])}
@@ -185,14 +188,14 @@ const StyledTitleOverview = styled.Text`
   margin-bottom: 8px;
 `;
 
-const StyledContainerEmptyInvoicing = styled.View`
+const StyledContainerEmptyProfit = styled.View`
   justify-content: center;
   align-items: center;
 
   margin: 16px 0;
 `;
 
-const StyledTextEmptyInvoicing = styled.Text`
+const StyledTextEmptyProfit = styled.Text`
   width: 80%;
 
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
