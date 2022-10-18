@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -19,6 +20,8 @@ export const MenuDoubt = () => {
 
   const { question, answer } =
     useRoute<RouteProp<StackParamsList, 'Info'>>().params;
+
+  const { t } = useTranslation();
 
   const theme = useTheme();
 
@@ -40,7 +43,11 @@ export const MenuDoubt = () => {
         theme.colors.BACKGROUND_OFFWHITE,
       ]}
     >
-      <Header title="Dúvida" backgroundColor="SECUNDARY_600" onPress={goBack} />
+      <Header
+        title={t('components.header.menuDoubt')}
+        backgroundColor="SECUNDARY_600"
+        onPress={goBack}
+      />
 
       {useMemo(renderContent, [answer, question])}
     </StyledContainer>

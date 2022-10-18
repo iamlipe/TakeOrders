@@ -12,21 +12,22 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 import { LOGOUT } from '@store/slices/userSlice';
 
-import { Dimensions, StatusBar } from 'react-native';
+import { Dimensions } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Header from '@components/Header';
-import ModalSelectLanguage from './SelectLanguageModal';
+import SelectLanguageModal from './SelectLanguageModal';
+import WarningLogoutModal from './WarningLogoutModal';
 
 type NavProps = NativeStackNavigationProp<MenuStackParamList, 'MenuHelper'>;
 
 const { height } = Dimensions.get('window');
 
 export const MenuHome = () => {
-  const [visibleModalSelectLanguage, setVisibleModalSelectLanguage] =
-    useState(false);
+  const [visibleSelectLanguage, setVisibleSelectLanguage] = useState(false);
+  const [visibleWarningLogout, setVisibleWarningLogout] = useState(false);
 
   const dispatch = useReduxDispatch();
 
@@ -43,18 +44,20 @@ export const MenuHome = () => {
 
     userStorage.saveUserLanguage('language', language);
 
-    setVisibleModalSelectLanguage(false);
+    setVisibleSelectLanguage(false);
   };
 
   const handleLogout = useCallback(() => {
     dispatch(LOGOUT());
+
+    setVisibleWarningLogout(false);
   }, [dispatch]);
 
   const renderContent = () => {
     return (
       <StyledContent>
         <StyledContainerOptions>
-          <StyledBaseButton onPress={() => setVisibleModalSelectLanguage(true)}>
+          <StyledBaseButton onPress={() => setVisibleSelectLanguage(true)}>
             <StyledTextButton>
               {t('screens.menuHome.options.language')}
             </StyledTextButton>
@@ -67,7 +70,7 @@ export const MenuHome = () => {
           </StyledBaseButton>
         </StyledContainerOptions>
 
-        <StyledBaseButtonLogout onPress={handleLogout}>
+        <StyledBaseButtonLogout onPress={() => setVisibleWarningLogout(true)}>
           <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
           <StyledTextButtonLogout>
             {t('screens.menuHome.logout')}
@@ -90,17 +93,18 @@ export const MenuHome = () => {
           backgroundColor="SECUNDARY_600"
         />
 
-        {useMemo(renderContent, [
-          handleLogout,
-          navigate,
-          t,
-          theme.colors.GRAY_800,
-        ])}
+        {useMemo(renderContent, [navigate, t, theme.colors.GRAY_800])}
 
-        <ModalSelectLanguage
-          visible={visibleModalSelectLanguage}
-          setVisible={setVisibleModalSelectLanguage}
+        <SelectLanguageModal
+          visible={visibleSelectLanguage}
+          setVisible={setVisibleSelectLanguage}
           handleLanguage={handleLanguage}
+        />
+
+        <WarningLogoutModal
+          visible={visibleWarningLogout}
+          setVisible={setVisibleWarningLogout}
+          handleLogout={handleLogout}
         />
       </StyledContainer>
     </>

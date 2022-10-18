@@ -13,6 +13,7 @@
         "limitBills": "¿Hay algún límite de comandos que puedo abrir?",
         "limitProductInStock": "¿Hay un límite de productos en stock que puedo tener registrados?"
       },
+
       "answers": {
         "saveData": "No, todos los datos solo se guardan en el dispositivo",
         "whatHappenWithMyData": "Todos los datos se pierden",
@@ -46,7 +47,10 @@
         "closeBill": "Finalizar cuenta",
         "addProductStock": "Agregar producto en inventario",
         "register": "Registrar",
-        "addExpense": "Agregar gasto"
+        "addExpense": "Agregar gasto",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "logout": "Sí, desconéctame"
       },
 
       "bigButton": {
@@ -93,7 +97,8 @@
         "financialSpending": "Gasto",
 
         "menuHome": "Menu",
-        "menuHelper": "Ayuda"
+        "menuHelper": "Ayuda",
+        "menuDoubt": "Duda"
       },
 
       "scrollableButton": {
@@ -127,6 +132,11 @@
           "title": "Cerrar cuenta",
           "client": "Cliente",
           "total": "Total"
+        },
+
+        "warningDeleteProductModal": {
+          "title": "Estás seguro ?",
+          "description": "¿Realmente desea eliminar esta orden del comando? este proceso no se puede deshacer"
         }
       },
 
@@ -205,6 +215,11 @@
             "english": "Inglés",
             "spanish": "Español"
           }
+        },
+
+        "warningLogoutModal": {
+          "title": "Saliendo de tu cuenta",
+          "description": "¿Estás seguro de que quieres cerrar sesión?"
         }
       }
     }

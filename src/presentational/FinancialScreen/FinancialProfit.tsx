@@ -8,6 +8,7 @@ import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useTranslation } from 'react-i18next';
 
+import { RFValue } from 'react-native-responsive-fontsize';
 import { GET_SALES } from '@store/slices/saleSlice';
 
 import { filterAllByMonth } from '@utils/filterByDate';
@@ -22,7 +23,6 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 const { height } = Dimensions.get('window');
 

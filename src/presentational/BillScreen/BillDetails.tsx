@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
   useMemo,
+  SetStateAction,
 } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
@@ -42,6 +43,7 @@ import Card from '@components/Card';
 import formatedCurrency from '@utils/formatedCurrency';
 import Button from '@components/Button';
 import CloseBillBottomSheetModal from './CloseBillBottomSheetModal';
+import WarningDeleteProductModal from './WarningDeleteProductModal';
 
 interface ContainerEmptyOrders {
   height: number;
@@ -60,6 +62,14 @@ const { height } = Dimensions.get('window');
 export const BillDetails = () => {
   const [showContent, setShowContent] = useState(false);
   const [totalPriceBill, setTotalPriceBill] = useState(0);
+  const [showWarningModal, setShowWargningModal] = useState(false);
+  const [removeOrder, setRemoveOrder] = useState<{
+    orderId: string;
+    quantity: number;
+  }>({
+    orderId: '',
+    quantity: 0,
+  });
 
   const { allOrdersClient, isLoading } = useReduxSelector(state => state.order);
 
@@ -90,35 +100,6 @@ export const BillDetails = () => {
   const getOrders = useCallback(() => {
     dispatch(GET_ORDERS({ billId: bill.id }));
   }, [bill, dispatch]);
-
-  const removeOrder = useCallback(
-    async ({ orderId, quantity }: { orderId: string; quantity: number }) => {
-      const order = await OrderUseCase.getById({
-        billId: bill.id,
-        orderId,
-      });
-
-      const product = await ProductUseCase.getById({
-        productId: order.product.id,
-      });
-
-      dispatch(REMOVE_ORDER({ order }));
-
-      setTimeout(
-        () =>
-          dispatch(
-            UPDATE_PRODUCT({
-              product,
-              updatedProduct: {
-                quantity: product.quantity + quantity,
-              },
-            }),
-          ),
-        1000,
-      );
-    },
-    [bill.id, dispatch],
-  );
 
   useEffect(() => {
     getOrders();
@@ -166,7 +147,8 @@ export const BillDetails = () => {
                     quantity: String(item.quantity),
                     linkTitle: t('components.card.links.delete'),
                     link: () => {
-                      removeOrder({
+                      setShowWargningModal(true);
+                      setRemoveOrder({
                         orderId: item.id,
                         quantity: item.quantity,
                       });
@@ -238,7 +220,6 @@ export const BillDetails = () => {
         handleShowcloseBillBottomSheet,
         heightList,
         navigate,
-        removeOrder,
         showContent,
         t,
         totalPriceBill,
@@ -248,6 +229,13 @@ export const BillDetails = () => {
         bill={bill}
         totalPriceBill={totalPriceBill}
         ref={closeBillBottomSheetModalRef}
+      />
+
+      <WarningDeleteProductModal
+        visible={showWarningModal}
+        setVisible={setShowWargningModal}
+        bill={bill}
+        removeProduct={removeOrder}
       />
     </StyledContainer>
   );

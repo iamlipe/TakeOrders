@@ -111,6 +111,8 @@ const Card = ({
       );
 
       setPrice(priceOrder);
+    } else {
+      setPrice(0);
     }
   }, [description]);
 
