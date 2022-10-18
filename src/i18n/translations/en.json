@@ -13,6 +13,7 @@
         "limitBills": "Is there any limit of commands that I can open?",
         "limitProductInStock": "Is there a limit of products in stock that I can have registered?"
       },
+
       "answers": {
         "saveData": "No, all data is only saved on the device",
         "whatHappenWithMyData": "All data is lost",
@@ -46,7 +47,10 @@
         "closeBill": "Close bill",
         "addProductStock": "Add product in stock",
         "register": "Register",
-        "addExpense": "Add expense"
+        "addExpense": "Add expense",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "logout": "Yes, log me out"
       },
 
       "bigButton": {
@@ -92,7 +96,8 @@
         "financialSpending": "Spending",
 
         "menuHome": "Menu",
-        "menuHelper": "Help"
+        "menuHelper": "Help",
+        "MenuDoubt": "Doubt"
       },
 
       "scrollableButton": {
@@ -126,6 +131,11 @@
           "title": "End bill",
           "client": "Client",
           "total": "Total"
+        },
+
+        "warningDeleteProductModal": {
+          "title": "Are you safe?",
+          "description": "Do you really want to delete this order from the command? this process cannot be undone"
         }
       },
 
@@ -204,6 +214,11 @@
             "english": "English",
             "spanish": "Spanish"
           }
+        },
+
+        "warningLogoutModal": {
+          "title": "Logging Out",
+          "description": "Are you sure want logout ?"
         }
       }
     }

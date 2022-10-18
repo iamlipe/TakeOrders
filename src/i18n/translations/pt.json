@@ -13,6 +13,7 @@
         "limitBills": "Existe algum limite de comandas que posso abrir ?",
         "limitProductInStock": "Existe algum limite de produtos em estoque que posso ter cadastrado ?"
       },
+
       "answers": {
         "saveData": "Não, todos os dados são salvos apenas no dispositivo",
         "whatHappenWithMyData": "Todos os dados são perdidos",
@@ -46,8 +47,10 @@
         "closeBill": "Fechar comanda",
         "addProductStock": "Adicionar produto no estoque",
         "register": "Cadastrar",
-        "addExpense": "Adicionar despesa"
-
+        "addExpense": "Adicionar despesa",
+        "cancel": "Cancelar",
+        "delete": "Excluir",
+        "logout": "Sim, desconecte-me"
       },
 
       "bigButton": {
@@ -93,7 +96,8 @@
         "financialSpending": "Gastos",
 
         "menuHome": "Menu",
-        "menuHelper": "Ajuda"
+        "menuHelper": "Ajuda",
+        "menuDoubt": "Dúvida"
       },
 
       "scrollableButton": {
@@ -127,6 +131,11 @@
           "title": "Finalizar comanda",
           "client": "Cliente",
           "total": "Total"
+        },
+
+        "warningDeleteProductModal": {
+          "title": "Tem certeza ?",
+          "description": "Você realmente deseja excluir esse pedido da comanda? este processo não pode ser desfeito"
         }
       },
 
@@ -205,6 +214,11 @@
             "english": "inglês",
             "spanish": "Espanhol"
           }
+        },
+
+        "warningLogoutModal": {
+          "title": "Saindo da sua conta",
+          "description": "Tem certeza de que deseja sair?"
         }
       }
     }

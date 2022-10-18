@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -52,6 +53,7 @@ export const BillHome = () => {
   );
 
   const isFocused = useIsFocused();
+
   const { navigate } = useNavigation<NavProps>();
 
   const { t } = useTranslation();
@@ -98,7 +100,7 @@ export const BillHome = () => {
     getSpentId();
   }, [getBills, getInvoiceId, getSpentId, getStockId, isFocused]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (allBills && !isLoading) {
       setTimeout(() => {
         setShowContent(true);
