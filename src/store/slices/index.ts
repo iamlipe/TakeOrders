@@ -10,6 +10,7 @@ import purchase, { purchaseState } from './purchaseSlice';
 import bill, { billState } from './billSlice';
 import order, { orderState } from './orderSlice';
 import sale, { saleState } from './saleSlice';
+import profit, { profitState } from './profitSlice';
 
 export const globalState = {
   user: userState,
@@ -22,6 +23,7 @@ export const globalState = {
   bill: billState,
   order: orderState,
   sale: saleState,
+  profit: profitState,
 };
 
 export const globalReducer = {
@@ -35,6 +37,7 @@ export const globalReducer = {
   bill,
   order,
   sale,
+  profit,
 };
 
 const rootReducer = combineReducers(globalReducer);

@@ -91,7 +91,7 @@
         "stockDetailsProduct": "Detalhes do produto",
 
         "financialHome": "Financeiro",
-        "financialInvoicing": "Faturamento",
+        "financialInvoicing": "Vendas",
         "financialProfit": "Lucro",
         "financialSpending": "Gastos",
 
@@ -102,7 +102,7 @@
 
       "scrollableButton": {
         "spending": "Gastos",
-        "invoicing": "Faturamento",
+        "invoicing": "Vendas",
         "profit": "Lucro"
       },
 
@@ -190,7 +190,7 @@
 
       "financialProfit": {
         "overview": "Visão geral",
-        "textEmptyProfit": "Ainda não tem nenhum registro do seu lucro..."
+        "textEmptyProfit": "Ainda não tem nenhum registro de venda..."
       },
 
       "financialSpending": {

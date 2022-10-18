@@ -5,24 +5,12 @@ export interface GetInvoiceId {
   userId: string;
 }
 
-export interface GetInvoice {
-  userId: string;
-}
-
 export interface NewInvoice {
   userId: string;
 }
 
 export interface RemovedInvoice {
   invoice: InvoiceModel;
-}
-
-export interface InvoiceResponse {
-  id: string;
-  name: string;
-  price: number;
-  createdAt: number;
-  updatedAt: number;
 }
 
 export interface UpdatedInvoice extends RemovedInvoice {
@@ -34,8 +22,6 @@ interface InvoiceState {
   error: string | null;
 
   invoiceId: string | null;
-
-  allInvoicies: InvoiceResponse[] | null;
 }
 
 const initialState: InvoiceState = {
@@ -43,14 +29,13 @@ const initialState: InvoiceState = {
   error: null,
 
   invoiceId: null,
-  allInvoicies: null,
 };
 
 const InvoiceSlice = createSlice({
   name: 'invoice',
   initialState,
   reducers: {
-    GET_INVOICE_ID: (state, _: PayloadAction<GetInvoice>) => ({
+    GET_INVOICE_ID: (state, _: PayloadAction<GetInvoiceId>) => ({
       ...state,
       isLoading: true,
       error: null,
@@ -69,34 +54,6 @@ const InvoiceSlice = createSlice({
     }),
 
     GET_INVOICE_ID_FAILURE: (state, { payload: { error } }) => ({
-      ...state,
-      isLoading: false,
-      error,
-    }),
-
-    GET_INVOICE: (state, _: PayloadAction<GetInvoice>) => ({
-      ...state,
-      isLoading: true,
-      error: null,
-    }),
-
-    GET_INVOICE_SUCCESS: (
-      state,
-      {
-        payload: { allInvoicies },
-      }: PayloadAction<{ allInvoicies: InvoiceResponse[] }>,
-    ) => ({
-      ...state,
-      isLoading: false,
-      error: null,
-
-      allInvoicies,
-    }),
-
-    GET_INVOICE_FAILURE: (
-      state,
-      { payload: { error } }: PayloadAction<{ error: string }>,
-    ) => ({
       ...state,
       isLoading: false,
       error,
@@ -175,9 +132,6 @@ export const {
   GET_INVOICE_ID,
   GET_INVOICE_ID_SUCCESS,
   GET_INVOICE_ID_FAILURE,
-  GET_INVOICE,
-  GET_INVOICE_SUCCESS,
-  GET_INVOICE_FAILURE,
   CREATE_INVOICE,
   CREATE_INVOICE_SUCCESS,
   CREATE_INVOICE_FAILURE,
