@@ -49,13 +49,14 @@ export class ProductUseCase {
     name,
   }: {
     name: string;
-  }): Promise<ProductModel[]> {
-    const data = await database
-      .get<ProductModel>('products')
-      .query(Q.where('name', name))
-      .fetch();
+  }): Promise<ProductModel[] | undefined> {
+    const data = await database.get<ProductModel>('products').query().fetch();
 
-    return data;
+    if (name) {
+      return data.filter(item =>
+        item.name.toLowerCase().includes(name.toLowerCase()),
+      );
+    }
   }
 
   public static async update({

@@ -1,4 +1,4 @@
-import React, { Ref, RefCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { useTranslation } from 'react-i18next';
@@ -10,13 +10,7 @@ import {
 } from '@react-navigation/native';
 import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import {
-  Dimensions,
-  Keyboard,
-  Platform,
-  StatusBar,
-  MeasureLayoutOnSuccessCallback,
-} from 'react-native';
+import { Dimensions, Keyboard, Platform, StatusBar } from 'react-native';
 
 import Animated, {
   useAnimatedStyle,
