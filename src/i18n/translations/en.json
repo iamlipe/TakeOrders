@@ -30,7 +30,7 @@
         "quantity": "Quantity",
         "totalPrice": "Total purchase price",
         "price": "Sale price (unit)",
-        "image": "image"
+        "image": "Image"
       },
       
       "searchInput": {

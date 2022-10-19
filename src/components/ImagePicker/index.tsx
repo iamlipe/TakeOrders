@@ -126,7 +126,11 @@ const ImagePicker = ({ control, name, label }: ImagePickerProps) => {
     <StyledContainer>
       <StyledBaseButtonInput onPress={handleShowChosePickerBottomSheet}>
         {image ? (
-          <StyledInputImage source={{ uri: image }}></StyledInputImage>
+          <StyledInputImage
+            style={{ elevation: 5 }}
+            source={{ uri: image }}
+            resizeMode="center"
+          ></StyledInputImage>
         ) : (
           <StyledInputImageDefault>
             <Icon name="add-a-photo" color={theme.colors.WHITE} size={24} />
@@ -174,6 +178,8 @@ const StyledInputImage = styled.Image`
 
   border-radius: 50px;
   background-color: ${({ theme }) => theme.colors.WHITE};
+
+  border: 5px solid ${({ theme }) => theme.colors.WHITE};
 `;
 
 const StyledInputImageDefault = styled.View`

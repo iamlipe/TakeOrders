@@ -1,4 +1,10 @@
-import React, { forwardRef, memo, useEffect, useMemo } from 'react';
+import React, {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import styled from 'styled-components/native';
 import * as Yup from 'yup';
 
@@ -65,27 +71,40 @@ const AddOrderBottomSheetModal = forwardRef<
     [],
   );
 
-  const onSubmit = (data: FormAddNewOrder) => {
-    if (product) {
-      dispatch(
-        CREATE_ORDER({
-          quantity: Number(data.quantity),
-          billId,
-          productId: product.id,
-        }),
-      );
+  const createOrder = useCallback(
+    (data: FormAddNewOrder) => {
+      if (product) {
+        dispatch(
+          CREATE_ORDER({
+            quantity: Number(data.quantity),
+            billId,
+            productId: product.id,
+          }),
+        );
+      }
+    },
+    [billId, dispatch, product],
+  );
 
-      setTimeout(() => {
+  const updateProduct = useCallback(
+    (data: FormAddNewOrder) => {
+      if (product) {
         dispatch(
           UPDATE_PRODUCT({
             product,
             updatedProduct: {
-              quantity: product.quantity - Number(data.quantity),
+              quantity: Number(data.quantity),
             },
           }),
         );
-      }, 1000);
-    }
+      }
+    },
+    [dispatch, product],
+  );
+
+  const onSubmit = (data: FormAddNewOrder) => {
+    setTimeout(() => createOrder(data), 250);
+    setTimeout(() => updateProduct(data), 500);
   };
 
   useEffect(() => {
@@ -130,7 +149,6 @@ const AddOrderBottomSheetModal = forwardRef<
               <Counter
                 name="quantity"
                 control={control}
-                maxQuantity={product.quantity}
                 error={isSubmitted ? errors.quantity?.message : ''}
               />
             </StyledContainerForm>

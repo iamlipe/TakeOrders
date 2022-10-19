@@ -45,7 +45,6 @@ function* getProfit({ payload }: PayloadAction<GetProfit>) {
 
     yield put(GET_PROFIT_SUCCESS({ allProfit }));
   } catch (error) {
-    console.log(error);
 
     yield put(GET_PROFIT_FAILURE({ error: 'something went wrong' }));
   }
