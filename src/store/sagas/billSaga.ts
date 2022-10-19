@@ -45,8 +45,6 @@ function* getBillsByName({ payload }: PayloadAction<GetBillByName>) {
   try {
     const foundBills: BillModel[] = yield call(BillUseCase.getByName, payload);
 
-    console.log(foundBills);
-
     yield put(GET_BILLS_BY_NAME_SUCCESS({ foundBills }));
   } catch (error) {
     yield put(GET_BILLS_BY_NAME_FAILURE({ error: 'something went wrong' }));

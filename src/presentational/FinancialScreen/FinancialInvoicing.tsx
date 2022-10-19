@@ -109,7 +109,7 @@ export const FinancialInvoicing = () => {
               )}
 
               <FlatList
-                data={allSales}
+                data={allSales && [...allSales].reverse()}
                 renderItem={({ item }) => (
                   <FinancialCard
                     key={item.id}

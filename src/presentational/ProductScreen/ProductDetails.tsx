@@ -130,7 +130,10 @@ export const ProductDetails = () => {
               {t('screens.stockDetailsProduct.titleSales.7days')}
             </StyledTitleInfoSales>
             <StyledDescriptionInfoSales>
-              {ordersLast7Years?.length}
+              {ordersLast7Years?.reduce(
+                (prev, curr) => prev + curr.quantity,
+                0,
+              )}
             </StyledDescriptionInfoSales>
           </StyledColumnInfoSales>
           <StyledColumnInfoSales>
@@ -138,7 +141,10 @@ export const ProductDetails = () => {
               {t('screens.stockDetailsProduct.titleSales.30days')}
             </StyledTitleInfoSales>
             <StyledDescriptionInfoSales>
-              {ordersLast30Years?.length}
+              {ordersLast30Years?.reduce(
+                (prev, curr) => prev + curr.quantity,
+                0,
+              )}
             </StyledDescriptionInfoSales>
           </StyledColumnInfoSales>
           <StyledColumnInfoSales>
@@ -146,7 +152,7 @@ export const ProductDetails = () => {
               {t('screens.stockDetailsProduct.titleSales.lastMonth')}
             </StyledTitleInfoSales>
             <StyledDescriptionInfoSales>
-              {ordersLastMonth?.length}
+              {ordersLastMonth?.reduce((prev, curr) => prev + curr.quantity, 0)}
             </StyledDescriptionInfoSales>
           </StyledColumnInfoSales>
         </StyledContainerInfoProduct>

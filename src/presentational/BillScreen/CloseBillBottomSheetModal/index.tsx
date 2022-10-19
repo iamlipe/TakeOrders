@@ -58,14 +58,14 @@ const CloseBillBottomSheetModal = forwardRef<
   const onSubmit = () => {
     setLoadingCloseBill(true);
 
-    setTimeout(() => closeBill(), 1000);
+    setTimeout(() => closeBill(), 500);
 
-    setTimeout(() => createSale(), 2000);
+    setTimeout(() => createSale(), 1000);
 
     setTimeout(() => {
       setLoadingCloseBill(false);
       goBack();
-    }, 3000);
+    }, 1500);
   };
 
   return (
