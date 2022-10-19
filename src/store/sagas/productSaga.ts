@@ -28,7 +28,6 @@ import {
   UPDATE_PRODUCT_FAILURE,
   UPDATE_PRODUCT_SUCCESS,
 } from '@store/slices/productSlice';
-import { PurchaseUseCase } from '@database/useCase/purchaseUseCase';
 
 function* getAllProducts() {
   try {

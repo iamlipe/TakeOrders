@@ -37,12 +37,6 @@ const SearchInput = ({ placeholder, type }: SearchInputProps) => {
     }
   }, [dispatch, type, value]);
 
-  useEffect(() => {
-    if (value === '') {
-      handleSearch();
-    }
-  }, [handleSearch, value]);
-
   return (
     <StyledContainer style={{ elevation: 3 }}>
       <StyledContainerIcon>

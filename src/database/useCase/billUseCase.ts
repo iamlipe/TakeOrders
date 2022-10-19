@@ -20,6 +20,7 @@ export class BillUseCase {
         (data.status = true),
           (data.invoiceId = invoiceId),
           (data.userId = userId),
+          (data.image = Math.floor(Math.random() * 20 + 1)),
           (data.name = name),
           (data.email = email),
           (data.phone = phone);
@@ -47,12 +48,16 @@ export class BillUseCase {
 
   public static async getByName({
     billName,
-  }: GetBillByName): Promise<BillModel[]> {
+  }: GetBillByName): Promise<BillModel[] | undefined> {
     const data = await database.get<BillModel>('bills').query().fetch();
 
-    return data.filter(item =>
-      item.name.toLowerCase().includes(billName.toLowerCase()),
-    );
+    if (billName) {
+      const filtered = data.filter(item =>
+        item.name.toLowerCase().includes(billName.toLowerCase()),
+      );
+
+      return filtered;
+    }
   }
 
   public static async getById({ billId }: GetBillById): Promise<BillModel> {

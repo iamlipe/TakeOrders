@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -9,7 +10,10 @@ import styled, { useTheme } from 'styled-components/native';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
-import { Product as ProductModel } from '@database/models/productModel';
+import {
+  Product,
+  Product as ProductModel,
+} from '@database/models/productModel';
 import { Bill as BillModel } from '@database/models/billModel';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -49,6 +53,7 @@ export const BillAddProduct = () => {
     null,
   );
   const [showContent, setShowContent] = useState(false);
+  const [dataProducts, setDatatProducts] = useState<Product[] | null>(null);
 
   const dispatch = useReduxDispatch();
 
@@ -67,7 +72,7 @@ export const BillAddProduct = () => {
 
   const theme = useTheme();
 
-  const pushAction = StackActions.push('StockRegisterProduct', undefined);
+  const pushAction = StackActions.push('ProductRegister', undefined);
 
   const addOrderBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -88,6 +93,17 @@ export const BillAddProduct = () => {
   }, [getProducts]);
 
   useEffect(() => {
+    if (allProducts || foundProducts) {
+      if (foundProducts?.length) return setDatatProducts(foundProducts);
+
+      if (allProducts?.length)
+        return setDatatProducts([...allProducts].reverse());
+
+      return setDatatProducts([]);
+    }
+  }, [allProducts, foundProducts]);
+
+  useLayoutEffect(() => {
     if (allProducts && !isLoading) {
       setTimeout(() => {
         setShowContent(true);
@@ -96,7 +112,7 @@ export const BillAddProduct = () => {
   }, [allProducts, isLoading]);
 
   const renderContent = () => {
-    if (showContent) {
+    if (showContent && dataProducts?.length) {
       return (
         <StyledContainerProducts>
           <SearchInput
@@ -105,11 +121,7 @@ export const BillAddProduct = () => {
           />
 
           <FlatList
-            data={
-              foundProducts && foundProducts.length
-                ? foundProducts
-                : allProducts
-            }
+            data={dataProducts}
             numColumns={2}
             renderItem={({ item }) => {
               return (
@@ -142,7 +154,7 @@ export const BillAddProduct = () => {
       );
     }
 
-    if (showContent && !allProducts?.length) {
+    if (showContent && !dataProducts?.length) {
       return (
         <StyledContainerNoProductsRegistredInStock>
           <StyledTitleNoProductsRegistredInStock>
@@ -172,8 +184,7 @@ export const BillAddProduct = () => {
       <Header title={t('components.header.billAddProducts')} onPress={goBack} />
 
       {useMemo(renderContent, [
-        allProducts,
-        foundProducts,
+        dataProducts,
         handleShowAddOrderBottomSheet,
         heightList,
         navigate,

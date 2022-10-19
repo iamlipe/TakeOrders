@@ -20,6 +20,7 @@ import { GET_BILLS } from '@store/slices/billSlice';
 import { GET_INVOICE_ID } from '@store/slices/invoiceSlice';
 import { GET_STOCK } from '@store/slices/stockSlice';
 import { GET_SPENT } from '@store/slices/spentSlice';
+import { Bill } from '@database/models/billModel';
 
 import { Dimensions, FlatList, StatusBar } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -43,6 +44,7 @@ const { height } = Dimensions.get('window');
 
 export const BillHome = () => {
   const [showContent, setShowContent] = useState(false);
+  const [dataBills, setDataBills] = useState<Bill[] | null>(null);
 
   const addBillBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -100,13 +102,23 @@ export const BillHome = () => {
     getSpentId();
   }, [getBills, getInvoiceId, getSpentId, getStockId, isFocused]);
 
+  useEffect(() => {
+    if (allBills || foundBills) {
+      if (foundBills?.length) return setDataBills(foundBills);
+
+      if (allBills?.length) return setDataBills([...allBills].reverse());
+
+      return setDataBills([]);
+    }
+  }, [allBills, foundBills]);
+
   useLayoutEffect(() => {
-    if (allBills && !isLoading) {
+    if (dataBills) {
       setTimeout(() => {
         setShowContent(true);
       }, 1000);
     }
-  }, [allBills, isLoading]);
+  }, [allBills, dataBills, isLoading]);
 
   const renderContent = () => {
     if (showContent) {
@@ -117,9 +129,9 @@ export const BillHome = () => {
             type="bills"
           />
 
-          {foundBills?.length || allBills?.length ? (
+          {dataBills?.length ? (
             <FlatList
-              data={foundBills && foundBills.length > 0 ? foundBills : allBills}
+              data={dataBills}
               renderItem={({ item }) => (
                 <Card
                   key={item.id}
@@ -131,9 +143,11 @@ export const BillHome = () => {
                       item.name.substring(1).toLowerCase(),
                     description: item.id,
                     linkTitle: t('components.card.links.details'),
+                    image: item.image,
                     link: () => navigate('BillDetails', { bill: item }),
                   }}
                   onPress={() => navigate('BillDetails', { bill: item })}
+                  personCard
                 />
               )}
               keyExtractor={item => item.id}
@@ -154,8 +168,6 @@ export const BillHome = () => {
 
           <Button
             title={t('components.button.addBill')}
-            backgroundColor="trasparent"
-            fontColor="GRAY_800"
             onPress={handleShowAddBillBottomSheet}
           />
         </StyledContent>
@@ -175,8 +187,7 @@ export const BillHome = () => {
       <Header title={t('components.header.billHome')} />
 
       {useMemo(renderContent, [
-        allBills,
-        foundBills,
+        dataBills,
         handleShowAddBillBottomSheet,
         heightList,
         navigate,
