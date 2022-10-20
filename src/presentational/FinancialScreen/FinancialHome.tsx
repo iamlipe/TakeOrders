@@ -154,6 +154,7 @@ export const FinancialHome = () => {
                   title: t('components.scrollableButton.profit'),
                 },
               ]}
+              backgroundColor="PRIMARY_600"
             />
           </StyledContainerButtons>
 
