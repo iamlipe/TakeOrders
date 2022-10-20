@@ -53,33 +53,6 @@ export const MenuHome = () => {
     setVisibleWarningLogout(false);
   }, [dispatch]);
 
-  const renderContent = () => {
-    return (
-      <StyledContent>
-        <StyledContainerOptions>
-          <StyledBaseButton onPress={() => setVisibleSelectLanguage(true)}>
-            <StyledTextButton>
-              {t('screens.menuHome.options.language')}
-            </StyledTextButton>
-          </StyledBaseButton>
-
-          <StyledBaseButton onPress={() => navigate('MenuHelper')}>
-            <StyledTextButton>
-              {t('screens.menuHome.options.help')}
-            </StyledTextButton>
-          </StyledBaseButton>
-        </StyledContainerOptions>
-
-        <StyledBaseButtonLogout onPress={() => setVisibleWarningLogout(true)}>
-          <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
-          <StyledTextButtonLogout>
-            {t('screens.menuHome.logout')}
-          </StyledTextButtonLogout>
-        </StyledBaseButtonLogout>
-      </StyledContent>
-    );
-  };
-
   return (
     <>
       <StyledContainer
@@ -93,7 +66,28 @@ export const MenuHome = () => {
           backgroundColor="SECUNDARY_600"
         />
 
-        {useMemo(renderContent, [navigate, t, theme.colors.GRAY_800])}
+        <StyledContent>
+          <StyledContainerOptions>
+            <StyledBaseButton onPress={() => setVisibleSelectLanguage(true)}>
+              <StyledTextButton>
+                {t('screens.menuHome.options.language')}
+              </StyledTextButton>
+            </StyledBaseButton>
+
+            <StyledBaseButton onPress={() => navigate('MenuHelper')}>
+              <StyledTextButton>
+                {t('screens.menuHome.options.help')}
+              </StyledTextButton>
+            </StyledBaseButton>
+          </StyledContainerOptions>
+
+          <StyledBaseButtonLogout onPress={() => setVisibleWarningLogout(true)}>
+            <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
+            <StyledTextButtonLogout>
+              {t('screens.menuHome.logout')}
+            </StyledTextButtonLogout>
+          </StyledBaseButtonLogout>
+        </StyledContent>
 
         <SelectLanguageModal
           visible={visibleSelectLanguage}

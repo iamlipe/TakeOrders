@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
   useMemo,
-  SetStateAction,
+  useLayoutEffect,
 } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
@@ -16,27 +16,19 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BillStackParamList } from '@routes/stacks/BillStack';
 import { Bill as BillModel } from '@database/models/billModel';
-import { OrderUseCase } from '@database/useCase/orderUseCase';
-import { useTranslation } from 'react-i18next';
-import { Order } from '@database/models/orderModel';
-import { ProductUseCase } from '@database/useCase/productUseCase';
+import { GET_ORDERS } from '@store/slices/orderSlice';
+
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { GET_ORDERS, REMOVE_ORDER } from '@store/slices/orderSlice';
-import { UPDATE_PRODUCT } from '@store/slices/productSlice';
-
-import emptyOrdersImg from '@assets/imgs/empty-orders.png';
-
-import EmptyOrders from '@assets/svgs/empty-orders.svg';
-
+import { Dimensions, RefreshControl } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Dimensions, FlatList } from 'react-native';
-
+import EmptyOrders from '@assets/svgs/empty-orders.svg';
 import LinearGradient from 'react-native-linear-gradient';
-
 import Loading from '@components/Loading';
 import Header from '@components/Header';
 import Card from '@components/Card';
@@ -60,6 +52,7 @@ type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillAddProduct'>;
 const { height } = Dimensions.get('window');
 
 export const BillDetails = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [totalPriceBill, setTotalPriceBill] = useState(0);
   const [showWarningModal, setShowWargningModal] = useState(false);
@@ -87,31 +80,31 @@ export const BillDetails = () => {
   const { t } = useTranslation();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(32) - 16 - 16 - 32 - 98 - 32 - 72 + 4,
+    () => height - 120 - 32 - RFValue(32) - 16 - 16 - 32 - 98 - 32 - 72,
     [],
   );
 
   const closeBillBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const handleShowcloseBillBottomSheet = useCallback(() => {
-    closeBillBottomSheetModalRef.current?.present();
-  }, []);
-
   const getOrders = useCallback(() => {
     dispatch(GET_ORDERS({ billId: bill.id }));
   }, [bill, dispatch]);
 
+  const handleShowcloseBillBottomSheet = useCallback(() => {
+    closeBillBottomSheetModalRef.current?.present();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    getOrders();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getOrders]);
+
   useEffect(() => {
     getOrders();
   }, [getOrders, isFocused, isLoading]);
-
-  useEffect(() => {
-    if (allOrdersClient && !isLoading) {
-      setTimeout(() => {
-        setShowContent(true);
-      }, 1000);
-    }
-  }, [allOrdersClient, isLoading]);
 
   useEffect(() => {
     if (allOrdersClient) {
@@ -124,45 +117,64 @@ export const BillDetails = () => {
     }
   }, [allOrdersClient, isLoading]);
 
-  const renderContent = () => {
-    if (showContent) {
-      return (
-        <StyledContent>
+  useLayoutEffect(() => {
+    if (allOrdersClient) {
+      setTimeout(() => setShowContent(true), 1000);
+    }
+  }, [allOrdersClient]);
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header
+        title={
+          bill.name[0].toUpperCase() + bill.name.substring(1).toLowerCase()
+        }
+        onPress={goBack}
+      />
+
+      {showContent ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <StyledTitle>{t('screens.billDetails.title')}</StyledTitle>
 
           {allOrdersClient?.length ? (
-            <FlatList
-              data={allOrdersClient}
-              renderItem={({ item }) => (
-                <Card
-                  key={item.id}
-                  type="normal"
-                  cardSize="medium"
-                  item={{
-                    title: item.product.name,
-                    image: item.product.image,
-                    description: formatedCurrency(
-                      item.product.price * item.quantity,
-                    ),
-                    quantity: String(item.quantity),
-                    linkTitle: t('components.card.links.delete'),
-                    link: () => {
-                      setShowWargningModal(true);
-                      setRemoveOrder({
-                        orderId: item.id,
-                        quantity: item.quantity,
-                      });
-                    },
-                  }}
-                />
-              )}
-              keyExtractor={item => item.id}
-              style={{
-                height: heightList,
-                marginVertical: 16,
-              }}
-              showsVerticalScrollIndicator={false}
-            />
+            <StyledContainerCardOrders style={{ minHeight: heightList }}>
+              {allOrdersClient.map(item => {
+                return (
+                  <Card
+                    key={item.id}
+                    type="normal"
+                    cardSize="medium"
+                    item={{
+                      title: item.product.name,
+                      image: item.product.image,
+                      description: formatedCurrency(
+                        item.product.price * item.quantity,
+                      ),
+                      quantity: String(item.quantity),
+                      linkTitle: t('components.card.links.delete'),
+                      link: () => {
+                        setShowWargningModal(true);
+                        setRemoveOrder({
+                          orderId: item.id,
+                          quantity: item.quantity,
+                        });
+                      },
+                    }}
+                  />
+                );
+              })}
+            </StyledContainerCardOrders>
           ) : (
             <StyledContainerEmptyOrders style={{ height: heightList }}>
               <EmptyOrders width={132} height={132} />
@@ -194,36 +206,9 @@ export const BillDetails = () => {
             />
           </StyledContainerButtons>
         </StyledContent>
-      );
-    }
-
-    return <Loading />;
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header
-        title={
-          bill.name[0].toUpperCase() + bill.name.substring(1).toLowerCase()
-        }
-        onPress={goBack}
-      />
-
-      {useMemo(renderContent, [
-        allOrdersClient,
-        bill,
-        handleShowcloseBillBottomSheet,
-        heightList,
-        navigate,
-        showContent,
-        t,
-        totalPriceBill,
-      ])}
+      ) : (
+        <Loading />
+      )}
 
       <CloseBillBottomSheetModal
         bill={bill}
@@ -245,8 +230,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledContainerButtons = styled.View`
@@ -306,4 +291,8 @@ const StyledTextEmptyOrders = styled(StyledTitle)`
   color: ${({ theme }) => theme.colors.GRAY_800};
 
   text-align: center;
+`;
+
+const StyledContainerCardOrders = styled.View`
+  margin: 16px 0;
 `;

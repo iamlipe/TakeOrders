@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { ProductStackParamList } from '@routes/stacks/ProductStack';
@@ -16,7 +22,7 @@ import formatedCurrency from '@utils/formatedCurrency';
 import EmptyProduct from '@assets/svgs/empty-products.svg';
 
 import { FlatList } from 'react-native-gesture-handler';
-import { Dimensions } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -34,10 +40,11 @@ type NavProps = NativeStackNavigationProp<
 const { height } = Dimensions.get('window');
 
 export const ProductHome = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
   const dispatch = useReduxDispatch();
-  const { allProducts, isLoading } = useReduxSelector(state => state.product);
+  const { allProducts } = useReduxSelector(state => state.product);
 
   const isFocused = useIsFocused();
 
@@ -48,7 +55,7 @@ export const ProductHome = () => {
   const { t } = useTranslation();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 100 - RFValue(24) - 24 - 32 - 72,
+    () => height - 120 - 32 - 100 - RFValue(24) - 24 - 32 - 32 - 72,
     [],
   );
 
@@ -56,22 +63,41 @@ export const ProductHome = () => {
     dispatch(GET_ALL_PRODUCTS());
   }, [dispatch]);
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    getProducts();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getProducts]);
+
   useEffect(() => {
     getProducts();
   }, [getProducts, isFocused]);
 
-  useEffect(() => {
-    if (allProducts && !isLoading) {
-      setTimeout(() => {
-        setShowContent(true);
-      }, 1000);
+  useLayoutEffect(() => {
+    if (allProducts) {
+      setTimeout(() => setShowContent(true), 1000);
     }
-  }, [allProducts, isLoading]);
+  }, [allProducts]);
 
-  const renderContent = () => {
-    if (showContent) {
-      return (
-        <StyledContent>
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.stockHome')} />
+
+      {showContent ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <BigButton
             title={t('components.bigButton.registerNewProduct')}
             icon={{ name: 'add-circle-outline', color: 'WHITE' }}
@@ -81,11 +107,11 @@ export const ProductHome = () => {
           <StyledTitleList>
             {t('screens.stockHome.titleListProductsInStock')}
           </StyledTitleList>
-          {allProducts?.length ? (
-            <>
-              <FlatList
-                data={allProducts}
-                renderItem={({ item }) => (
+
+          <StyledContainerCardProducts style={{ minHeight: heightList }}>
+            {allProducts?.length ? (
+              allProducts.map(item => {
+                return (
                   <Card
                     key={item.id}
                     type="normal"
@@ -101,46 +127,22 @@ export const ProductHome = () => {
                       navigate('ProductDetails', { productId: item.id })
                     }
                   />
-                )}
-                keyExtractor={item => item.id}
-                style={{
-                  height: heightList,
-                }}
-                showsVerticalScrollIndicator={false}
-              />
-            </>
-          ) : (
-            <StyledContainerEmptyProduct style={{ height: heightList }}>
-              <EmptyProduct width={120} height={120} />
+                );
+              })
+            ) : (
+              <StyledContainerEmptyProduct style={{ height: heightList }}>
+                <EmptyProduct width={120} height={120} />
 
-              <StyledTextEmptyProduct>
-                {t('screens.stockHome.textEmptyProductInStock')}
-              </StyledTextEmptyProduct>
-            </StyledContainerEmptyProduct>
-          )}
+                <StyledTextEmptyProduct>
+                  {t('screens.stockHome.textEmptyProductInStock')}
+                </StyledTextEmptyProduct>
+              </StyledContainerEmptyProduct>
+            )}
+          </StyledContainerCardProducts>
         </StyledContent>
-      );
-    }
-
-    return <Loading />;
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.stockHome')} />
-
-      {useMemo(renderContent, [
-        allProducts,
-        heightList,
-        navigate,
-        showContent,
-        t,
-      ])}
+      ) : (
+        <Loading />
+      )}
     </StyledContainer>
   );
 };
@@ -149,8 +151,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledTitleList = styled.Text`
@@ -181,4 +183,8 @@ const StyledTextEmptyProduct = styled.Text`
   text-align: center;
 
   margin-top: 16px;
+`;
+
+const StyledContainerCardProducts = styled.View`
+  margin: 16px 0;
 `;

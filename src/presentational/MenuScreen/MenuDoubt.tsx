@@ -25,17 +25,6 @@ export const MenuDoubt = () => {
 
   const theme = useTheme();
 
-  const renderContent = () => {
-    return (
-      <StyledContent>
-        <StyledContainerDoubt>
-          <StyledTextQuestion>{question}</StyledTextQuestion>
-          <StyledTextAnswer>{answer}</StyledTextAnswer>
-        </StyledContainerDoubt>
-      </StyledContent>
-    );
-  };
-
   return (
     <StyledContainer
       colors={[
@@ -49,7 +38,12 @@ export const MenuDoubt = () => {
         onPress={goBack}
       />
 
-      {useMemo(renderContent, [answer, question])}
+      <StyledContent>
+        <StyledContainerDoubt>
+          <StyledTextQuestion>{question}</StyledTextQuestion>
+          <StyledTextAnswer>{answer}</StyledTextAnswer>
+        </StyledContainerDoubt>
+      </StyledContent>
     </StyledContainer>
   );
 };

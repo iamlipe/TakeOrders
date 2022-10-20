@@ -39,7 +39,7 @@
       },
 
       "button": {
-        "loginWithoutRegister": "Entrar sem cadastro",
+        "loginWithoutRegister": "Entrar sem cadastro (teste)",
         "add": "Adicionar",
         "close": "Fechar",
         "addBill": "Adicionar comanda",

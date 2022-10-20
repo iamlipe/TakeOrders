@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -13,7 +19,7 @@ import { filterAllByMonth } from '@utils/filterByDate';
 
 import EmptyChart from '@assets/svgs/empty-chart-1.svg';
 
-import { Dimensions, FlatList } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -25,6 +31,7 @@ import Overview from '@components/Overview';
 const { height } = Dimensions.get('window');
 
 export const FinancialProfit = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [profitFilteredByMonth, setProfitFilteredByMonth] = useState<
     ProfitResponse[][] | null
@@ -33,7 +40,7 @@ export const FinancialProfit = () => {
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allProfit } = useReduxSelector(state => state.profit);
+  const { allProfit, isLoading } = useReduxSelector(state => state.profit);
 
   const isFocused = useIsFocused();
 
@@ -44,7 +51,7 @@ export const FinancialProfit = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 16 - 16 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 16 - 72 - 120,
     [],
   );
 
@@ -54,15 +61,34 @@ export const FinancialProfit = () => {
     }
   }, [auth, dispatch]);
 
-  useEffect(() => {
+  const handleDataOverview = useCallback(() => {
+    const result = profitFilteredByMonth?.map(invoicingMonth => {
+      return {
+        months: invoicingMonth.length
+          ? new Date(invoicingMonth[0].createdAt).toLocaleDateString('pt-br', {
+              month: 'long',
+            })
+          : new Date().toLocaleDateString('pt-br', {
+              month: 'long',
+            }),
+        earnings: invoicingMonth.reduce((prev, curr) => prev + curr.price, 0),
+      };
+    });
+
+    return result || [];
+  }, [profitFilteredByMonth]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
     getInvoicies();
-  }, [getInvoicies, isFocused]);
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getInvoicies]);
 
   useEffect(() => {
-    if (allProfit) {
-      setTimeout(() => setShowContent(true), 1000);
-    }
-  }, [allProfit]);
+    getInvoicies();
+  }, [getInvoicies, isFocused, isLoading]);
 
   useEffect(() => {
     if (allProfit?.length) {
@@ -74,56 +100,52 @@ export const FinancialProfit = () => {
     }
   }, [allProfit]);
 
-  const renderContent = () => {
-    if (showContent) {
-      return (
-        <StyledContent>
+  useLayoutEffect(() => {
+    if (allProfit) {
+      setTimeout(() => setShowContent(true), 1000);
+    }
+  }, [allProfit]);
+
+  const renderListProfit = () =>
+    allProfit?.map(item => (
+      <FinancialCard
+        key={item.id}
+        item={{
+          title: item.name,
+          price: item.price,
+          date: item.createdAt,
+        }}
+      />
+    ));
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.financialProfit')} onPress={goBack} />
+
+      {showContent ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {profitFilteredByMonth ? (
             <>
               <StyledTitleOverview>
                 {t('screens.financialInvoicing.overview')}
               </StyledTitleOverview>
 
-              {profitFilteredByMonth && (
-                <Overview
-                  data={profitFilteredByMonth?.map(invoicingMonth => {
-                    return {
-                      months: invoicingMonth.length
-                        ? new Date(
-                            invoicingMonth[0].createdAt,
-                          ).toLocaleDateString('pt-br', { month: 'long' })
-                        : new Date().toLocaleDateString('pt-br', {
-                            month: 'long',
-                          }),
-                      earnings: invoicingMonth.reduce(
-                        (prev, curr) => prev + curr.price,
-                        0,
-                      ),
-                    };
-                  })}
-                  type="invoicing"
-                />
-              )}
+              <Overview data={handleDataOverview()} type="invoicing" />
 
-              <FlatList
-                data={allProfit}
-                renderItem={({ item }) => (
-                  <FinancialCard
-                    key={item.id}
-                    item={{
-                      title: item.name,
-                      price: item.price,
-                      date: item.createdAt,
-                    }}
-                  />
-                )}
-                style={{
-                  height: heightList,
-                  marginTop: 16,
-                }}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-              />
+              <StyledContainerCardFinancial style={{ minHeight: heightList }}>
+                {renderListProfit()}
+              </StyledContainerCardFinancial>
             </>
           ) : (
             <StyledContainerEmptyInvoicing
@@ -136,28 +158,9 @@ export const FinancialProfit = () => {
             </StyledContainerEmptyInvoicing>
           )}
         </StyledContent>
-      );
-    }
-
-    return <Loading />;
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.financialProfit')} onPress={goBack} />
-
-      {useMemo(renderContent, [
-        allProfit,
-        heightList,
-        profitFilteredByMonth,
-        showContent,
-        t,
-      ])}
+      ) : (
+        <Loading />
+      )}
     </StyledContainer>
   );
 };
@@ -166,8 +169,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledTitleOverview = styled.Text`
@@ -199,5 +202,9 @@ const StyledTextEmptyInvoicing = styled.Text`
 
   text-align: center;
 
+  margin-top: 16px;
+`;
+
+const StyledContainerCardFinancial = styled.View`
   margin-top: 16px;
 `;

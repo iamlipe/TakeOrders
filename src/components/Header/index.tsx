@@ -1,7 +1,13 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '@styles/colors';
+
+import Animated, {
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 
 import { useTranslation } from 'react-i18next';
 
@@ -43,6 +49,9 @@ const Header = ({ title, backgroundColor, onPress }: HeaderProps) => {
 };
 
 const StyledContainer = styled.View<ContainerProps>`
+  position: relative;
+  z-index: 1;
+
   width: 100%;
   height: 120px;
 

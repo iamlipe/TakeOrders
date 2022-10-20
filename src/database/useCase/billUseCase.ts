@@ -49,7 +49,10 @@ export class BillUseCase {
   public static async getByName({
     billName,
   }: GetBillByName): Promise<BillModel[] | undefined> {
-    const data = await database.get<BillModel>('bills').query().fetch();
+    const data = await database
+      .get<BillModel>('bills')
+      .query(Q.where('status', true))
+      .fetch();
 
     if (billName) {
       const filtered = data.filter(item =>
