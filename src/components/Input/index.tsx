@@ -26,8 +26,8 @@ interface InputProps extends TextInputProps {
   options?: TextInputMaskOptionProp;
 }
 
-const Input = forwardRef<TextInputMask, InputProps>(
-  ({ name, control, label, error, type, options }: InputProps, ref) => {
+const Input = forwardRef<any, InputProps>(
+  ({ name, control, label, error, type, options, ...rest }, ref) => {
     const theme = useTheme();
 
     const labelTraslateY = useSharedValue(0);
@@ -64,6 +64,7 @@ const Input = forwardRef<TextInputMask, InputProps>(
           <StyledRow>
             {type ? (
               <StyledInputMask
+                {...rest}
                 ref={ref}
                 type={type}
                 options={options}
@@ -76,6 +77,7 @@ const Input = forwardRef<TextInputMask, InputProps>(
               />
             ) : (
               <StyledInputText
+                {...rest}
                 ref={ref}
                 onChangeText={onChange}
                 onFocus={() => handleFocus(true)}

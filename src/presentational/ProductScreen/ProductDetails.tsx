@@ -114,6 +114,7 @@ export const ProductDetails = () => {
         )}
 
         <StyledTitleProduct>{selectedProduct?.name}</StyledTitleProduct>
+        <StyledTitleProduct>{selectedProduct?.type}</StyledTitleProduct>
       </StyledContainerInfoProduct>
     );
   };

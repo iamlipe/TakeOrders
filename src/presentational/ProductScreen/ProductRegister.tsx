@@ -8,17 +8,14 @@ import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
+import { useTranslation } from 'react-i18next';
+
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProductStackParamList } from '@routes/stacks/ProductStack';
 
 import { CREATE_PRODUCT, NewProduct } from '@store/slices/productSlice';
 
-import {
-  Dimensions,
-  StatusBar,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -27,7 +24,7 @@ import Header from '@components/Header';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import Loading from '@components/Loading';
-import { useTranslation } from 'react-i18next';
+import Select from '@components/Select';
 
 interface FormReisterNewProduct {
   name: string;
@@ -148,18 +145,24 @@ export const ProductRegister = () => {
                 label={t('components.input.name')}
                 error={isSubmitted ? errors.name?.message : ''}
               />
-              <Input
+
+              <Select
                 name="type"
                 control={control}
                 label={t('components.input.type')}
-                error={isSubmitted ? errors.type?.message : ''}
+                options={[
+                  { id: '1', name: 'Bebidas' },
+                  { id: '2', name: 'Petisco' },
+                ]}
               />
+
               <Input
                 name="price"
                 control={control}
                 label={t('components.input.price')}
                 error={isSubmitted ? errors.price?.message : ''}
                 type="money"
+                onSubmitEditing={handleSubmit(onSubmit)}
               />
             </StyledContainerForm>
 
@@ -192,7 +195,6 @@ export const ProductRegister = () => {
         control,
         errors.name?.message,
         errors.price?.message,
-        errors.type?.message,
         handleSubmit,
         isSubmitted,
         loadingRegisterProduct,

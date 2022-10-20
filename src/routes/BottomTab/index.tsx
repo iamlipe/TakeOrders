@@ -83,7 +83,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           );
       }
     };
-  }, [heightBottomTab, opacityIcons]);
+  }, [activeTab, heightBottomTab, opacityIcons]);
 
   useEffect(() => {
     if (activeTab === 'BillStack') {
