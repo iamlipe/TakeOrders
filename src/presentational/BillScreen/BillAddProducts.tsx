@@ -27,7 +27,7 @@ import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 import { GET_ALL_PRODUCTS } from '@store/slices/productSlice';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Dimensions, FlatList } from 'react-native';
+import { Dimensions, FlatList, RefreshControl } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -46,9 +46,10 @@ type StackParamsList = {
 
 type NavProps = NativeStackNavigationProp<LoggedStackParamList, 'ProductStack'>;
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export const BillAddProduct = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductModel | null>(
     null,
   );
@@ -76,6 +77,10 @@ export const BillAddProduct = () => {
 
   const addOrderBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
+  const getProducts = useCallback(() => {
+    dispatch(GET_ALL_PRODUCTS());
+  }, [dispatch]);
+
   const handleShowAddOrderBottomSheet = useCallback(() => {
     addOrderBottomSheetModalRef.current?.present();
   }, []);
@@ -84,9 +89,13 @@ export const BillAddProduct = () => {
     addOrderBottomSheetModalRef.current?.dismiss();
   }, []);
 
-  const getProducts = useCallback(() => {
-    dispatch(GET_ALL_PRODUCTS());
-  }, [dispatch]);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    getProducts();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getProducts]);
 
   useEffect(() => {
     getProducts();
@@ -104,30 +113,46 @@ export const BillAddProduct = () => {
   }, [allProducts, foundProducts]);
 
   useLayoutEffect(() => {
-    if (allProducts && !isLoading) {
-      setTimeout(() => {
-        setShowContent(true);
-      }, 1000);
+    if (allProducts) {
+      setTimeout(() => setShowContent(true), 1000);
     }
-  }, [allProducts, isLoading]);
+  }, [allProducts]);
 
-  const renderContent = () => {
-    if (showContent && dataProducts?.length) {
-      return (
-        <StyledContainerProducts>
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.billAddProducts')} onPress={goBack} />
+
+      {showContent && dataProducts?.length && (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <SearchInput
             placeholder={t('components.searchInput.product')}
             type="products"
           />
 
-          <FlatList
-            data={dataProducts}
-            numColumns={2}
-            renderItem={({ item }) => {
+          <StyledContainerCardProducts
+            style={{
+              height:
+                ((width - 64) / 2) * Math.round(dataProducts.length / 2) + 16,
+              minHeight: heightList,
+            }}
+          >
+            {dataProducts.map((item, index) => {
               return (
                 <SquareCard
                   key={item.id}
                   item={{
+                    index,
                     name: item.name,
                     image: item.image,
                     price: formatedCurrency(item.price),
@@ -138,24 +163,12 @@ export const BillAddProduct = () => {
                   }}
                 />
               );
-            }}
-            keyExtractor={item => item.id}
-            style={{
-              height: heightList,
-              marginVertical: 16,
-            }}
-            columnWrapperStyle={{
-              justifyContent: 'space-between',
-              paddingHorizontal: 32,
-            }}
-            showsVerticalScrollIndicator={false}
-          />
-        </StyledContainerProducts>
-      );
-    }
+            })}
+          </StyledContainerCardProducts>
+        </StyledContent>
+      )}
 
-    if (showContent && !dataProducts?.length) {
-      return (
+      {showContent && !dataProducts?.length && (
         <StyledContainerNoProductsRegistredInStock>
           <StyledTitleNoProductsRegistredInStock>
             {t('screens.billAddProducts.textNoProductsRegistredInStock')}
@@ -168,31 +181,9 @@ export const BillAddProduct = () => {
             }}
           />
         </StyledContainerNoProductsRegistredInStock>
-      );
-    }
+      )}
 
-    return <Loading />;
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.billAddProducts')} onPress={goBack} />
-
-      {useMemo(renderContent, [
-        dataProducts,
-        handleShowAddOrderBottomSheet,
-        heightList,
-        navigate,
-        navigateDispatch,
-        pushAction,
-        showContent,
-        t,
-      ])}
+      {!showContent && <Loading />}
 
       <AddOrderBottomSheetModal
         product={selectedProduct}
@@ -208,8 +199,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContainerProducts = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledContainerNoProductsRegistredInStock = styled.View`
@@ -228,4 +219,16 @@ const StyledTitleNoProductsRegistredInStock = styled.Text`
   text-align: center;
 
   margin-bottom: 16px;
+`;
+
+const StyledContainerCardProducts = styled.View`
+  width: ${width - 64}px;
+
+  margin: 16px 0;
+
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  justify-content: flex-start;
+  align-self: center;
 `;

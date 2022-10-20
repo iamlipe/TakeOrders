@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,8 +20,7 @@ import { GET_PROFIT } from '@store/slices/profitSlice';
 
 import EmptyExtract from '@assets/svgs/empty-extract.svg';
 
-import { Dimensions } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { Dimensions, RefreshControl } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -40,12 +40,13 @@ type NavProps = NativeStackNavigationProp<
 const { height } = Dimensions.get('window');
 
 export const FinancialHome = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allProfit } = useReduxSelector(state => state.profit);
+  const { allProfit, isLoading } = useReduxSelector(state => state.profit);
 
   const isFocused = useIsFocused();
 
@@ -87,20 +88,53 @@ export const FinancialHome = () => {
     addPurchaseBottomSheetModalRef.current?.dismiss();
   }, []);
 
-  useEffect(() => {
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
     getInvoicies();
-  }, [getInvoicies, isFocused]);
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getInvoicies]);
 
   useEffect(() => {
+    getInvoicies();
+  }, [getInvoicies, isFocused, isLoading]);
+
+  useLayoutEffect(() => {
     if (allProfit) {
       setTimeout(() => setShowContent(true), 1000);
     }
   }, [allProfit]);
 
-  const renderContent = () => {
-    if (showContent) {
-      return (
-        <StyledContent>
+  const renderListProfit = () =>
+    allProfit?.map(item => (
+      <FinancialCard
+        key={item.id}
+        item={{
+          title: item.name,
+          date: item.createdAt,
+          price: item.price,
+        }}
+      />
+    ));
+
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.financialHome')} />
+
+      {showContent ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <StyledContainerButtons>
             <ScrollableButton
               buttons={[
@@ -128,25 +162,9 @@ export const FinancialHome = () => {
           </StyledTitleExtract>
 
           {allProfit?.length ? (
-            <FlatList
-              data={allProfit}
-              renderItem={({ item }) => (
-                <FinancialCard
-                  key={item.id}
-                  item={{
-                    title: item.name,
-                    date: item.createdAt,
-                    price: item.price,
-                  }}
-                />
-              )}
-              keyExtractor={item => item.id}
-              style={{
-                height: heightList,
-                marginVertical: 16,
-              }}
-              showsVerticalScrollIndicator={false}
-            />
+            <StyledContainerCardFinancial style={{ minHeight: heightList }}>
+              {renderListProfit()}
+            </StyledContainerCardFinancial>
           ) : (
             <StyledContainerEmptyExtract style={{ height: heightList }}>
               <EmptyExtract width={132} height={132} />
@@ -161,28 +179,9 @@ export const FinancialHome = () => {
             onPress={handleShowAddPurchaseBottomSheet}
           />
         </StyledContent>
-      );
-    }
-
-    return <Loading />;
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.financialHome')} />
-      {useMemo(renderContent, [
-        allProfit,
-        handleShowAddPurchaseBottomSheet,
-        heightList,
-        navigate,
-        showContent,
-        t,
-      ])}
+      ) : (
+        <Loading />
+      )}
 
       <AddPurchaseBottomSheetModal
         ref={addPurchaseBottomSheetModalRef}
@@ -196,8 +195,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledContainerButtons = styled.View`
@@ -237,4 +236,8 @@ const StyledTextEmptyExtract = styled.Text`
   text-align: center;
 
   margin-top: 16px;
+`;
+
+const StyledContainerCardFinancial = styled.View`
+  margin: 16px 0;
 `;

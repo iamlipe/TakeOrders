@@ -64,6 +64,9 @@ const SearchInput = ({ placeholder, type }: SearchInputProps) => {
 };
 
 const StyledContainer = styled.View`
+  position: relative;
+  z-index: 10;
+
   height: 56px;
 
   flex-direction: row;

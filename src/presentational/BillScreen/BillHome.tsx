@@ -22,7 +22,7 @@ import { GET_STOCK } from '@store/slices/stockSlice';
 import { GET_SPENT } from '@store/slices/spentSlice';
 import { Bill } from '@database/models/billModel';
 
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import EmptyBills from '@assets/svgs/empty-bills.svg';
@@ -36,13 +36,13 @@ import SearchInput from '@components/SearchInput';
 import Button from '@components/Button';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
-import i18next from 'i18next';
 
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 
 const { height } = Dimensions.get('window');
 
 export const BillHome = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [dataBills, setDataBills] = useState<Bill[] | null>(null);
 
@@ -95,12 +95,23 @@ export const BillHome = () => {
     getBills();
   }, [getBills]);
 
-  useEffect(() => {
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
     getBills();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getBills]);
+
+  useEffect(() => {
     getInvoiceId();
     getStockId();
     getSpentId();
-  }, [getBills, getInvoiceId, getSpentId, getStockId, isFocused]);
+  }, [getInvoiceId, getSpentId, getStockId]);
+
+  useEffect(() => {
+    getBills();
+  }, [getBills, isFocused, isLoading]);
 
   useEffect(() => {
     if (allBills || foundBills) {
@@ -114,49 +125,55 @@ export const BillHome = () => {
 
   useLayoutEffect(() => {
     if (dataBills) {
-      setTimeout(() => {
-        setShowContent(true);
-      }, 1000);
+      setTimeout(() => setShowContent(true), 1000);
     }
-  }, [allBills, dataBills, isLoading]);
+  }, [dataBills]);
 
-  const renderContent = () => {
-    if (showContent) {
-      return (
-        <StyledContent>
+  return (
+    <StyledContainer
+      colors={[
+        theme.colors.BACKGROUND_WEAKYELLOW,
+        theme.colors.BACKGROUND_OFFWHITE,
+      ]}
+    >
+      <Header title={t('components.header.billHome')} />
+
+      {showContent ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <SearchInput
             placeholder={t('components.searchInput.bill')}
             type="bills"
           />
 
           {dataBills?.length ? (
-            <FlatList
-              data={dataBills}
-              renderItem={({ item }) => (
-                <Card
-                  key={item.id}
-                  type="clients"
-                  cardSize="large"
-                  item={{
-                    title:
-                      item.name[0].toUpperCase() +
-                      item.name.substring(1).toLowerCase(),
-                    description: item.id,
-                    linkTitle: t('components.card.links.details'),
-                    image: item.image,
-                    link: () => navigate('BillDetails', { bill: item }),
-                  }}
-                  onPress={() => navigate('BillDetails', { bill: item })}
-                  personCard
-                />
-              )}
-              keyExtractor={item => item.id}
-              style={{
-                height: heightList,
-                marginVertical: 16,
-              }}
-              showsVerticalScrollIndicator={false}
-            />
+            <StyledContainerCardBill style={{ minHeight: heightList }}>
+              {dataBills.map(item => {
+                return (
+                  <Card
+                    key={item.id}
+                    type="clients"
+                    cardSize="large"
+                    item={{
+                      title:
+                        item.name[0].toUpperCase() +
+                        item.name.substring(1).toLowerCase(),
+                      description: item.id,
+                      linkTitle: t('components.card.links.details'),
+                      image: item.image,
+                      link: () => navigate('BillDetails', { bill: item }),
+                    }}
+                    onPress={() => navigate('BillDetails', { bill: item })}
+                    personCard
+                  />
+                );
+              })}
+            </StyledContainerCardBill>
           ) : (
             <StyledContainerEmptyBills style={{ height: heightList }}>
               <EmptyBills width={132} height={132} />
@@ -171,29 +188,9 @@ export const BillHome = () => {
             onPress={handleShowAddBillBottomSheet}
           />
         </StyledContent>
-      );
-    }
-
-    return <Loading />;
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.billHome')} />
-
-      {useMemo(renderContent, [
-        dataBills,
-        handleShowAddBillBottomSheet,
-        heightList,
-        navigate,
-        showContent,
-        t,
-      ])}
+      ) : (
+        <Loading />
+      )}
 
       <AddBillBottomSheetModal
         ref={addBillBottomSheetModalRef}
@@ -207,10 +204,12 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  justify-content: space-between;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
+`;
 
-  padding: 32px 0;
+const StyledContainerCardBill = styled.View`
+  margin: 16px 0;
 `;
 
 const StyledContainerEmptyBills = styled.View`
