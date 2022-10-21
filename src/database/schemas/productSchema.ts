@@ -5,9 +5,9 @@ export const productSchema = tableSchema({
   columns: [
     { name: 'stockId', type: 'string' },
     { name: 'name', type: 'string' },
-    { name: 'type', type: 'string' },
+    { name: 'categoryId', type: 'string' },
     { name: 'image', type: 'string' },
     { name: 'price', type: 'number' },
-    { name: 'quantity', type: 'number' },
+    { name: 'quantitySold', type: 'number' },
   ],
 });

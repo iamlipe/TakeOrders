@@ -93,7 +93,7 @@ const AddOrderBottomSheetModal = forwardRef<
           UPDATE_PRODUCT({
             product,
             updatedProduct: {
-              quantity: Number(data.quantity),
+              quantitySold: Number(data.quantity),
             },
           }),
         );
@@ -103,7 +103,7 @@ const AddOrderBottomSheetModal = forwardRef<
   );
 
   const onSubmit = (data: FormAddNewOrder) => {
-    setTimeout(() => createOrder(data), 250);
+    setTimeout(() => createOrder(data), 0);
     setTimeout(() => updateProduct(data), 500);
   };
 

@@ -19,6 +19,7 @@ import {
   GET_PRODUCT_BY_ID_FAILURE,
   GET_PRODUCT_BY_ID_SUCCESS,
   NewProduct,
+  ProductResponse,
   RemovedProduct,
   REMOVE_PRODUCT,
   REMOVE_PRODUCT_FAILURE,
@@ -31,7 +32,7 @@ import {
 
 function* getAllProducts() {
   try {
-    const allProducts: ProductModel[] = yield call(ProductUseCase.get);
+    const allProducts: ProductResponse[] = yield call(ProductUseCase.get);
 
     yield put(GET_ALL_PRODUCTS_SUCCESS({ allProducts }));
   } catch (error) {
@@ -41,7 +42,7 @@ function* getAllProducts() {
 
 function* getProductsByName({ payload }: PayloadAction<GetProducsByName>) {
   try {
-    const foundProducts: ProductModel[] = yield call(
+    const foundProducts: ProductResponse[] = yield call(
       ProductUseCase.getByName,
       payload,
     );
@@ -54,7 +55,7 @@ function* getProductsByName({ payload }: PayloadAction<GetProducsByName>) {
 
 function* getProductById({ payload }: PayloadAction<GetProductById>) {
   try {
-    const selectedProduct: ProductModel = yield call(
+    const selectedProduct: ProductResponse = yield call(
       ProductUseCase.getById,
       payload,
     );
@@ -67,12 +68,12 @@ function* getProductById({ payload }: PayloadAction<GetProductById>) {
 
 function* createProduct({ payload }: PayloadAction<NewProduct>) {
   try {
-    const exist: ProductModel[] = yield call(ProductUseCase.getByName, {
+    const exist: ProductResponse[] = yield call(ProductUseCase.getByName, {
       name: payload.name,
     });
 
     if (!exist.length) {
-      const latestProductCreated: ProductModel = yield call(
+      const latestProductCreated: ProductResponse = yield call(
         ProductUseCase.create,
         payload,
       );

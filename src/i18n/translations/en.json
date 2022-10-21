@@ -50,7 +50,8 @@
         "addExpense": "Add expense",
         "cancel": "Cancel",
         "delete": "Delete",
-        "logout": "Yes, log me out"
+        "logout": "Yes, log me out",
+        "edit": "Edit"
       },
 
       "bigButton": {
@@ -88,6 +89,7 @@
 
         "stockHome": "Stock",
         "stockRegisterProduct": "Register product",
+        "stockEditProduct": "Edit product",
         "stockDetailsProduct": "Product details",
 
         "financialHome": "Financial",

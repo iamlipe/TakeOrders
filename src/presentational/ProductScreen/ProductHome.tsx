@@ -101,7 +101,7 @@ export const ProductHome = () => {
           <BigButton
             title={t('components.bigButton.registerNewProduct')}
             icon={{ name: 'add-circle-outline', color: 'WHITE' }}
-            onPress={() => navigate('ProductRegister')}
+            onPress={() => navigate('ProductRegister', { product: undefined })}
           />
 
           <StyledTitleList>

@@ -4,10 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProductHome } from '@presentational/ProductScreen/ProductHome';
 import { ProductRegister } from '@presentational/ProductScreen/ProductRegister';
 import { ProductDetails } from '@presentational/ProductScreen/ProductDetails';
+import { ProductResponse } from '@store/slices/productSlice';
 
 export type ProductStackParamList = {
   ProductHome: undefined;
-  ProductRegister: undefined;
+  ProductRegister: { product: ProductResponse | undefined };
   ProductDetails: { productId: string };
 };
 

@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BillStackParamList } from '@routes/stacks/BillStack';
 import { Bill as BillModel } from '@database/models/billModel';
-import { GET_ORDERS } from '@store/slices/orderSlice';
+import { GET_ORDERS, REMOVE_ORDER } from '@store/slices/orderSlice';
 
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -35,7 +35,13 @@ import Card from '@components/Card';
 import formatedCurrency from '@utils/formatedCurrency';
 import Button from '@components/Button';
 import CloseBillBottomSheetModal from './CloseBillBottomSheetModal';
-import WarningDeleteProductModal from './WarningDeleteProductModal';
+import WarningDeleteProductOrderModal from './WarningDeleteProductOrderModal';
+import WarningDeleteModal from '@components/WarningDeleteModal';
+import { Order } from '@database/models/orderModel';
+import { GET_BILLS } from '@store/slices/billSlice';
+import { UPDATE_PRODUCT } from '@store/slices/productSlice';
+import { OrderUseCase } from '@database/useCase/orderUseCase';
+import { ProductUseCase } from '@database/useCase/productUseCase';
 
 interface ContainerEmptyOrders {
   height: number;
@@ -56,13 +62,10 @@ export const BillDetails = () => {
   const [showContent, setShowContent] = useState(false);
   const [totalPriceBill, setTotalPriceBill] = useState(0);
   const [showWarningModal, setShowWargningModal] = useState(false);
-  const [removeOrder, setRemoveOrder] = useState<{
+  const [orderToRemove, setOrderToRemove] = useState<{
     orderId: string;
     quantity: number;
-  }>({
-    orderId: '',
-    quantity: 0,
-  });
+  } | null>(null);
 
   const { allOrdersClient, isLoading } = useReduxSelector(state => state.order);
 
@@ -89,6 +92,68 @@ export const BillDetails = () => {
   const getOrders = useCallback(() => {
     dispatch(GET_ORDERS({ billId: bill.id }));
   }, [bill, dispatch]);
+
+  const getBills = useCallback(() => {
+    dispatch(GET_BILLS());
+  }, [dispatch]);
+
+  const removeOrder = useCallback(
+    (order: Order) => {
+      dispatch(REMOVE_ORDER({ order }));
+    },
+    [dispatch],
+  );
+
+  const updateProduct = useCallback(
+    ({
+      productId,
+      productQuantity,
+      quantity,
+    }: {
+      productId: string;
+      productQuantity: number;
+      quantity: number;
+    }) => {
+      dispatch(
+        UPDATE_PRODUCT({
+          productId,
+          updatedProduct: {
+            quantitySold: productQuantity + quantity,
+          },
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const handleRemoveOrder = useCallback(async () => {
+    if (orderToRemove) {
+      const order = await OrderUseCase.getById({
+        billId: bill.id,
+        orderId: orderToRemove.orderId,
+      });
+
+      const product = await ProductUseCase.getById({
+        productId: order.product.id,
+      });
+
+      setTimeout(() => removeOrder(order), 250);
+
+      setTimeout(
+        () =>
+          updateProduct({
+            productId: product.id,
+            productQuantity: product.quantitySold,
+            quantity: orderToRemove.quantity,
+          }),
+        500,
+      );
+
+      setTimeout(() => getBills(), 750);
+
+      setTimeout(() => setShowWargningModal(false), 1000);
+    }
+  }, [bill.id, getBills, orderToRemove, removeOrder, updateProduct]);
 
   const handleShowcloseBillBottomSheet = useCallback(() => {
     closeBillBottomSheetModalRef.current?.present();
@@ -165,7 +230,7 @@ export const BillDetails = () => {
                       linkTitle: t('components.card.links.delete'),
                       link: () => {
                         setShowWargningModal(true);
-                        setRemoveOrder({
+                        setOrderToRemove({
                           orderId: item.id,
                           quantity: item.quantity,
                         });
@@ -216,11 +281,10 @@ export const BillDetails = () => {
         ref={closeBillBottomSheetModalRef}
       />
 
-      <WarningDeleteProductModal
+      <WarningDeleteModal
         visible={showWarningModal}
         setVisible={setShowWargningModal}
-        bill={bill}
-        removeProduct={removeOrder}
+        remove={() => handleRemoveOrder()}
       />
     </StyledContainer>
   );

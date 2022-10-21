@@ -19,9 +19,9 @@ const App = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
-        <SafeAreaProvider>
-          <ThemeProvider theme={theme}>
-            <I18nextProvider i18n={i18n}>
+        <ThemeProvider theme={theme}>
+          <I18nextProvider i18n={i18n}>
+            <SafeAreaProvider>
               <BottomSheetModalProvider>
                 <StatusBar
                   barStyle="dark-content"
@@ -30,9 +30,9 @@ const App = () => {
                 />
                 <Routes />
               </BottomSheetModalProvider>
-            </I18nextProvider>
-          </ThemeProvider>
-        </SafeAreaProvider>
+            </SafeAreaProvider>
+          </I18nextProvider>
+        </ThemeProvider>
       </Provider>
     </GestureHandlerRootView>
   );

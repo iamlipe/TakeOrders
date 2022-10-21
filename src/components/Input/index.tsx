@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import React, { forwardRef, memo, useCallback } from 'react';
+import React, { forwardRef, memo, useCallback, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TextInputProps } from 'react-native';
@@ -26,8 +26,8 @@ interface InputProps extends TextInputProps {
   options?: TextInputMaskOptionProp;
 }
 
-const Input = forwardRef<TextInputMask, InputProps>(
-  ({ name, control, label, error, type, options }: InputProps, ref) => {
+const Input = forwardRef<any, InputProps>(
+  ({ name, control, label, error, type, options, ...rest }, ref) => {
     const theme = useTheme();
 
     const labelTraslateY = useSharedValue(0);
@@ -57,6 +57,11 @@ const Input = forwardRef<TextInputMask, InputProps>(
       };
     });
 
+    useEffect(() => {
+      if (value) handleFocus(true);
+      if (!value) handleFocus(false);
+    }, [handleFocus, value]);
+
     return (
       <StyledContainer>
         <StyledContent style={{ elevation: 2 }}>
@@ -64,6 +69,7 @@ const Input = forwardRef<TextInputMask, InputProps>(
           <StyledRow>
             {type ? (
               <StyledInputMask
+                {...rest}
                 ref={ref}
                 type={type}
                 options={options}
@@ -76,6 +82,7 @@ const Input = forwardRef<TextInputMask, InputProps>(
               />
             ) : (
               <StyledInputText
+                {...rest}
                 ref={ref}
                 onChangeText={onChange}
                 onFocus={() => handleFocus(true)}

@@ -10,6 +10,7 @@ import { spentSchema } from './spentSchema';
 import { stockSchema } from './stockSchema';
 import { userSchema } from './userSchema';
 import { salesSchema } from './SalesSchema';
+import { categorySchema } from './categorySchema';
 
 export const schemas = appSchema({
   version: 1,
@@ -24,5 +25,6 @@ export const schemas = appSchema({
     billSchema,
     orderSchema,
     salesSchema,
+    categorySchema,
   ],
 });

@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import styled from 'styled-components/native';
@@ -17,12 +18,13 @@ import { useTranslation } from 'react-i18next';
 
 import { CREATE_BILL, GET_BILLS } from '@store/slices/billSlice';
 
-import { Keyboard } from 'react-native';
+import { Keyboard, TextInput } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Input from '@components/Input';
 import Button from '@components/Button';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { TextInputMask } from 'react-native-masked-text';
 
 interface FormAddNewBill {
   name: string;
@@ -135,6 +137,7 @@ const AddBillBottomSheetModal = forwardRef<
             label={t('components.input.phone')}
             error={isSubmitted ? errors.phone?.message : ''}
             type="cel-phone"
+            onSubmitEditing={handleSubmit(onSubmit)}
           />
         </StyledContainerForm>
 
