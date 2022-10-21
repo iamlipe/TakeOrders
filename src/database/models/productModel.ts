@@ -1,5 +1,6 @@
 import { Model } from '@nozbe/watermelondb';
-import { field } from '@nozbe/watermelondb/decorators';
+import { field, relation } from '@nozbe/watermelondb/decorators';
+import { Category } from './categoryModel';
 
 export class Product extends Model {
   static table = 'products';
@@ -8,11 +9,13 @@ export class Product extends Model {
 
   @field('name') name!: string;
 
-  @field('type') type!: string;
+  @field('categoryId') categoryId!: string;
 
   @field('image') image?: string;
 
   @field('price') price!: number;
 
-  @field('quantity') quantity!: number;
+  @field('quantitySold') quantitySold!: number;
+
+  @relation('categories', 'categoryId') category!: Category;
 }

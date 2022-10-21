@@ -50,7 +50,8 @@
         "addExpense": "Agregar gasto",
         "cancel": "Cancelar",
         "delete": "Eliminar",
-        "logout": "Sí, desconéctame"
+        "logout": "Sí, desconéctame",
+        "edit": "Editar"
       },
 
       "bigButton": {
@@ -89,6 +90,7 @@
 
         "stockHome": "Inventario",
         "stockRegisterProduct": "Registrar producto",
+        "stockEditProduct": "Editar produto",
         "stockDetailsProduct": "Detalles del producto",
 
         "financialHome": "Financiero",

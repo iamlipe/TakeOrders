@@ -20,30 +20,24 @@ import { ProductUseCase } from '@database/useCase/productUseCase';
 import { REMOVE_ORDER } from '@store/slices/orderSlice';
 import { GET_BILLS } from '@store/slices/billSlice';
 import { Order } from '@database/models/orderModel';
-import { Product } from '@database/models/productModel';
 
 interface TextButtonProps {
   remove?: boolean;
 }
 
-interface WarningDeleteProductModalProps {
+interface WarningDeleteModalProps {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  bill: Bill;
-  removeProduct: {
-    orderId: string;
-    quantity: number;
-  };
+  remove: () => void;
 }
 
 const { width, height } = Dimensions.get('window');
 
-const WarningDeleteProductModal = ({
+const WarningDeleteModal = ({
   visible,
   setVisible,
-  bill,
-  removeProduct,
-}: WarningDeleteProductModalProps) => {
+  remove,
+}: WarningDeleteModalProps) => {
   const [loadingRemove, setLoadingRemove] = useState(false);
   const dispatch = useReduxDispatch();
 
@@ -51,57 +45,13 @@ const WarningDeleteProductModal = ({
 
   const { t } = useTranslation();
 
-  const getBills = useCallback(() => {
-    dispatch(GET_BILLS());
-  }, [dispatch]);
+  const handleRemove = useCallback(() => {
+    setLoadingRemove(true);
 
-  const removeOrder = useCallback(
-    (order: Order) => {
-      dispatch(REMOVE_ORDER({ order }));
-    },
-    [dispatch],
-  );
+    setTimeout(() => remove(), 1000);
 
-  const updateProduct = useCallback(
-    ({ product, quantity }: { product: Product; quantity: number }) => {
-      dispatch(
-        UPDATE_PRODUCT({
-          product,
-          updatedProduct: {
-            quantity: product.quantity + quantity,
-          },
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  const remove = useCallback(
-    async ({ orderId, quantity }: { orderId: string; quantity: number }) => {
-      setLoadingRemove(true);
-
-      const order = await OrderUseCase.getById({
-        billId: bill.id,
-        orderId,
-      });
-
-      const product = await ProductUseCase.getById({
-        productId: order.product.id,
-      });
-
-      setTimeout(() => removeOrder(order), 250);
-
-      setTimeout(() => updateProduct({ product, quantity }), 500);
-
-      setTimeout(() => getBills(), 750);
-
-      setTimeout(() => {
-        setLoadingRemove(false);
-        setVisible(false);
-      }, 1000);
-    },
-    [bill.id, getBills, removeOrder, setVisible, updateProduct],
-  );
+    setTimeout(() => setLoadingRemove(false), 500);
+  }, [remove]);
 
   return (
     <>
@@ -150,15 +100,7 @@ const WarningDeleteProductModal = ({
             <StyledTextButton>{t('components.button.cancel')}</StyledTextButton>
           </StyledBaseButton>
 
-          <StyledBaseButton
-            onPress={() =>
-              remove({
-                orderId: removeProduct.orderId,
-                quantity: removeProduct.quantity,
-              })
-            }
-            remove
-          >
+          <StyledBaseButton onPress={handleRemove} remove>
             {loadingRemove ? (
               <StyledLoading size="small" color={theme.colors.WHITE} />
             ) : (
@@ -249,4 +191,4 @@ const StyledTextButton = styled.Text<TextButtonProps>`
 
 const StyledLoading = styled.ActivityIndicator``;
 
-export default memo(WarningDeleteProductModal);
+export default memo(WarningDeleteModal);

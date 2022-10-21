@@ -36,6 +36,7 @@ import SearchInput from '@components/SearchInput';
 import Button from '@components/Button';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
+import { CREATE_CATEGORY } from '@store/slices/categorySlice';
 
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 

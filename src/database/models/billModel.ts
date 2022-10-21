@@ -1,6 +1,5 @@
 import { Model } from '@nozbe/watermelondb';
 import { field } from '@nozbe/watermelondb/decorators';
-import { Image } from 'react-native-elements';
 
 export class Bill extends Model {
   static table = 'bills';

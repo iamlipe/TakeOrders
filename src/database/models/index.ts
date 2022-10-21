@@ -8,6 +8,7 @@ import { Spent } from './spentModel';
 import { Stock } from './stockModel';
 import { User } from './userModel';
 import { Sales } from './salesModel';
+import { Category } from './categoryModel';
 
 export const models = [
   User,
@@ -20,4 +21,5 @@ export const models = [
   Bill,
   Order,
   Sales,
+  Category,
 ];

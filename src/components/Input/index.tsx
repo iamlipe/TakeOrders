@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import React, { forwardRef, memo, useCallback } from 'react';
+import React, { forwardRef, memo, useCallback, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TextInputProps } from 'react-native';
@@ -56,6 +56,11 @@ const Input = forwardRef<any, InputProps>(
         fontSize: labelFontSize.value,
       };
     });
+
+    useEffect(() => {
+      if (value) handleFocus(true);
+      if (!value) handleFocus(false);
+    }, [handleFocus, value]);
 
     return (
       <StyledContainer>
