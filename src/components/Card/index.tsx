@@ -133,7 +133,7 @@ const Card = ({
       onPress={onPress}
       disabled={!onPress}
     >
-      {image ? (
+      {/* {image ? (
         personCard && typeof image === 'number' ? (
           <StyledImage
             size={cardSize}
@@ -155,7 +155,7 @@ const Card = ({
             size={20}
           />
         </StyledDefaultImage>
-      )}
+      )} */}
 
       <StyledColumn>
         <StyledTitle>{title}</StyledTitle>
@@ -190,7 +190,7 @@ const StyledContainer = styled.TouchableOpacity<CardContainerProps>`
   border-radius: 5px;
   background-color: ${({ theme }) => theme.colors.WHITE};
 
-  padding-right: 16px;
+  padding: 0 16px;
   margin: 4px 32px;
 `;
 

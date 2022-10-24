@@ -145,6 +145,7 @@ const StyledContent = styled.Pressable`
 
 const StyledLabel = styled.Text<StyledLabelProps>`
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 

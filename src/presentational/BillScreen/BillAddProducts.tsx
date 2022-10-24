@@ -10,10 +10,7 @@ import styled, { useTheme } from 'styled-components/native';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
-import {
-  Product,
-  Product as ProductModel,
-} from '@database/models/productModel';
+import { Product as ProductModel } from '@database/models/productModel';
 import { Bill as BillModel } from '@database/models/billModel';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -24,7 +21,7 @@ import { StackActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import { GET_ALL_PRODUCTS } from '@store/slices/productSlice';
+import { GET_ALL_PRODUCTS, ProductResponse } from '@store/slices/productSlice';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Dimensions, FlatList, RefreshControl } from 'react-native';
@@ -50,15 +47,16 @@ const { width, height } = Dimensions.get('window');
 
 export const BillAddProduct = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ProductModel | null>(
+  const [selectedProduct, setSelectedProduct] =
+    useState<ProductResponse | null>(null);
+  const [showContent, setShowContent] = useState(false);
+  const [dataProducts, setDatatProducts] = useState<ProductResponse[] | null>(
     null,
   );
-  const [showContent, setShowContent] = useState(false);
-  const [dataProducts, setDatatProducts] = useState<Product[] | null>(null);
 
   const dispatch = useReduxDispatch();
 
-  const { allProducts, foundProducts, isLoading } = useReduxSelector(
+  const { allProducts, foundProducts } = useReduxSelector(
     state => state.product,
   );
 
@@ -73,7 +71,9 @@ export const BillAddProduct = () => {
 
   const theme = useTheme();
 
-  const pushAction = StackActions.push('ProductRegister', undefined);
+  const pushAction = StackActions.push('ProductRegister', {
+    product: undefined,
+  });
 
   const addOrderBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -127,7 +127,7 @@ export const BillAddProduct = () => {
     >
       <Header title={t('components.header.billAddProducts')} onPress={goBack} />
 
-      {showContent && dataProducts?.length && (
+      {showContent && !!dataProducts?.length && (
         <StyledContent
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingVertical: 32 }}
@@ -143,11 +143,11 @@ export const BillAddProduct = () => {
           <StyledContainerCardProducts
             style={{
               height:
-                ((width - 64) / 2) * Math.round(dataProducts.length / 2) + 16,
+                ((width - 64) / 2) * Math.round(dataProducts?.length / 2) + 16,
               minHeight: heightList,
             }}
           >
-            {dataProducts.map((item, index) => {
+            {dataProducts?.slice(0, 20).map((item, index) => {
               return (
                 <SquareCard
                   key={item.id}

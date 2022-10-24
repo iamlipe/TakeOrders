@@ -165,7 +165,7 @@ export const ProductDetails = () => {
               {ordersLast7Years?.reduce(
                 (prev, curr) => prev + curr.quantity,
                 0,
-              )}
+              ) || '0'}
             </StyledDescriptionInfoSales>
           </StyledColumnInfoSales>
           <StyledColumnInfoSales>
@@ -176,7 +176,7 @@ export const ProductDetails = () => {
               {ordersLast30Years?.reduce(
                 (prev, curr) => prev + curr.quantity,
                 0,
-              )}
+              ) || '0'}
             </StyledDescriptionInfoSales>
           </StyledColumnInfoSales>
           <StyledColumnInfoSales>
@@ -184,7 +184,10 @@ export const ProductDetails = () => {
               {t('screens.stockDetailsProduct.titleSales.lastMonth')}
             </StyledTitleInfoSales>
             <StyledDescriptionInfoSales>
-              {ordersLastMonth?.reduce((prev, curr) => prev + curr.quantity, 0)}
+              {ordersLastMonth?.reduce(
+                (prev, curr) => prev + curr.quantity,
+                0,
+              ) || '0'}
             </StyledDescriptionInfoSales>
           </StyledColumnInfoSales>
         </StyledContainerInfoProduct>
