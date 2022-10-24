@@ -24,10 +24,10 @@
 
     "components": {
       "input": {
-        "name": "nome",
-        "phone": "celular (opcional)",
-        "type": "Tipo",
-        "quantity": "quantidade",
+        "name": "Nome",
+        "phone": "Celular (opcional)",
+        "type": "Categoria",
+        "quantity": "Quantidade",
         "totalPrice": "Preço total da compra",
         "price": "Preço da venda (unidade)",
         "image": "Imagem"

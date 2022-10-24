@@ -214,7 +214,7 @@ export const BillDetails = () => {
 
           {allOrdersClient?.length ? (
             <StyledContainerCardOrders style={{ minHeight: heightList }}>
-              {allOrdersClient.map(item => {
+              {allOrdersClient.slice(0, 10).map(item => {
                 return (
                   <Card
                     key={item.id}

@@ -10,14 +10,14 @@ import * as Yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CREATE_ORDER } from '@store/slices/orderSlice';
-import { Product } from '@database/models/productModel';
 import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
 
-import { UPDATE_PRODUCT } from '@store/slices/productSlice';
+import { ProductResponse, UPDATE_PRODUCT } from '@store/slices/productSlice';
 
+import { RFValue } from 'react-native-responsive-fontsize';
 import formatedCurrency from '@utils/formatedCurrency';
 
 import { Keyboard } from 'react-native';
@@ -25,7 +25,6 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Counter from '@components/Counter';
 import Button from '@components/Button';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 interface FormAddNewOrder {
   quantity: string;
@@ -33,7 +32,7 @@ interface FormAddNewOrder {
 
 interface AddOrderBottomSheetModalProps {
   billId: string;
-  product: Product | null;
+  product: ProductResponse | null;
   closeBottomSheet: () => void;
 }
 
@@ -91,7 +90,7 @@ const AddOrderBottomSheetModal = forwardRef<
       if (product) {
         dispatch(
           UPDATE_PRODUCT({
-            product,
+            productId: product.id,
             updatedProduct: {
               quantitySold: Number(data.quantity),
             },

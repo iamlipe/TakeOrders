@@ -154,7 +154,7 @@ export const BillHome = () => {
 
           {dataBills?.length ? (
             <StyledContainerCardBill style={{ minHeight: heightList }}>
-              {dataBills.map(item => {
+              {dataBills.slice(0, 10).map(item => {
                 return (
                   <Card
                     key={item.id}

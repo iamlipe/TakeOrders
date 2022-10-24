@@ -42,7 +42,7 @@ interface FormReisterOrEditProduct {
 
 type StackParamsList = {
   Info: {
-    product: ProductResponse;
+    product?: ProductResponse;
   };
 };
 
@@ -162,7 +162,7 @@ export const ProductRegister = () => {
         setTimeout(() => {
           setLoadingRegisterProduct(false);
           navigate('ProductHome');
-        }, 1000);
+        }, 500);
       }
     },
     [createProduct, navigate, product, stockId, updateProduct],
