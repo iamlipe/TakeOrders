@@ -147,9 +147,8 @@ const StyledLabel = styled.Text<StyledLabelProps>`
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
 
-  color: ${({ theme }) => theme.colors.GRAY_800};
-
-  opacity: ${({ select }) => (select ? 1 : 0.4)};
+  color: ${({ theme, select }) =>
+    select ? theme.colors.GRAY_800 : theme.colors.GRAY_600};
 `;
 
 const StyledHandleBottomSheetModal = styled.View`

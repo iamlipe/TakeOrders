@@ -47,6 +47,7 @@ const Input = forwardRef<any, InputProps>(
                 options={options}
                 onChangeText={onChange}
                 placeholder={label}
+                placeholderTextColor={theme.colors.GRAY_600}
                 value={value}
               />
             ) : (
@@ -55,6 +56,7 @@ const Input = forwardRef<any, InputProps>(
                 ref={ref}
                 onChangeText={onChange}
                 placeholder={label}
+                placeholderTextColor={theme.colors.GRAY_600}
                 value={value}
               />
             )}

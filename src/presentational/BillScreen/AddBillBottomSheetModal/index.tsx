@@ -24,7 +24,6 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { TextInputMask } from 'react-native-masked-text';
 
 interface FormAddNewBill {
   name: string;
