@@ -12,10 +12,17 @@ interface CounterProps {
   control: any;
   error?: string;
   maxQuantity?: number;
+  quantity?: number;
 }
 
-const Counter = ({ maxQuantity, name, control, error }: CounterProps) => {
-  const [counter, setCounter] = useState(1);
+const Counter = ({
+  maxQuantity,
+  quantity,
+  name,
+  control,
+  error,
+}: CounterProps) => {
+  const [counter, setCounter] = useState(quantity ? quantity : 1);
 
   const { t } = useTranslation();
 
@@ -31,14 +38,13 @@ const Counter = ({ maxQuantity, name, control, error }: CounterProps) => {
 
   return (
     <StyledContainer>
-      <StyledTitle>{t('components.counter.quantity')}</StyledTitle>
       <StyledContent>
         <StyledBaseButton>
           <Icon
             testID="decrement-button"
             name="minus"
             color={theme.colors.PRIMARY_500}
-            size={18}
+            size={14}
             onPress={() => {
               const newCounter = counter - 1 < 1 ? 1 : counter - 1;
 
@@ -53,7 +59,7 @@ const Counter = ({ maxQuantity, name, control, error }: CounterProps) => {
             testID="increment-button"
             name="plus"
             color={theme.colors.PRIMARY_500}
-            size={18}
+            size={14}
             onPress={() => {
               if (maxQuantity) {
                 const newCounter =
@@ -79,8 +85,8 @@ const Counter = ({ maxQuantity, name, control, error }: CounterProps) => {
 const StyledContainer = styled.View``;
 
 const StyledContent = styled.View`
-  height: 40px;
-  width: 118px;
+  height: 24px;
+  width: 72px;
 
   flex-direction: row;
   align-self: center;
@@ -96,10 +102,10 @@ const StyledContent = styled.View`
 `;
 
 const StyledInputCounter = styled.TextInput`
-  width: 40px;
+  width: 24px;
 
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
-  font-size: ${({ theme }) => theme.sizing.MEDIUM};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
 
   color: ${({ theme }) => theme.colors.PRIMARY_500};
 
@@ -109,17 +115,6 @@ const StyledInputCounter = styled.TextInput`
 `;
 
 const StyledBaseButton = styled.TouchableOpacity``;
-
-const StyledTitle = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
-  font-size: ${({ theme }) => theme.sizing.SMALLER};
-
-  color: ${({ theme }) => theme.colors.GRAY_800};
-
-  text-align: center;
-
-  margin-bottom: 4px;
-`;
 
 const StyledError = styled.Text`
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};

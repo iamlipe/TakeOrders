@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import styled, { css, useTheme } from 'styled-components/native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '@styles/colors';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 const buttonIconPosition = {
   none: css``,

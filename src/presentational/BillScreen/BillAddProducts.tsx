@@ -21,11 +21,16 @@ import { StackActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import { GET_ALL_PRODUCTS, ProductResponse } from '@store/slices/productSlice';
+import {
+  GET_ALL_PRODUCTS,
+  ProductResponse,
+  UPDATE_PRODUCT,
+} from '@store/slices/productSlice';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Dimensions, FlatList, RefreshControl } from 'react-native';
+import { Dimensions, RefreshControl, View } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 
 import AddOrderBottomSheetModal from './AddOrderBottomSheetModal';
@@ -34,6 +39,13 @@ import Header from '@components/Header';
 import Button from '@components/Button';
 import SearchInput from '@components/SearchInput';
 import Loading from '@components/Loading';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { CREATE_ORDER } from '@store/slices/orderSlice';
+
+export interface ProductBag {
+  product: ProductResponse;
+  quantity: number;
+}
 
 type StackParamsList = {
   Info: {
@@ -47,8 +59,9 @@ const { width, height } = Dimensions.get('window');
 
 export const BillAddProduct = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedProduct, setSelectedProduct] =
-    useState<ProductResponse | null>(null);
+  const [selectedProducts, setSelectedProducts] = useState<ProductBag[] | null>(
+    null,
+  );
   const [showContent, setShowContent] = useState(false);
   const [dataProducts, setDatatProducts] = useState<ProductResponse[] | null>(
     null,
@@ -81,13 +94,87 @@ export const BillAddProduct = () => {
     dispatch(GET_ALL_PRODUCTS());
   }, [dispatch]);
 
+  const createOrder = useCallback(
+    ({ product, quantity }: ProductBag) => {
+      dispatch(
+        CREATE_ORDER({
+          quantity,
+          billId: bill.id,
+          productId: product.id,
+        }),
+      );
+    },
+    [bill.id, dispatch],
+  );
+
+  const updateProduct = useCallback(
+    ({ product, quantity }: ProductBag) => {
+      dispatch(
+        UPDATE_PRODUCT({
+          productId: product.id,
+          updatedProduct: {
+            quantitySold: quantity,
+          },
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const handleShowAddOrderBottomSheet = useCallback(() => {
     addOrderBottomSheetModalRef.current?.present();
   }, []);
 
   const handleColseAddOrderBottomSheet = useCallback(() => {
+    selectedProducts?.forEach(item => {
+      createOrder(item);
+      updateProduct(item);
+    });
+
     addOrderBottomSheetModalRef.current?.dismiss();
-  }, []);
+  }, [createOrder, selectedProducts, updateProduct]);
+
+  const handleSelectProduct = useCallback(
+    (product: ProductResponse) => {
+      const alreadySelected = selectedProducts?.find(
+        item => item.product.id === product.id,
+      );
+
+      if (alreadySelected && selectedProducts) {
+        setSelectedProducts(
+          selectedProducts?.map(item => {
+            if (item.product.id === product.id) {
+              return {
+                product: item.product,
+                quantity: item.quantity + 1,
+              };
+            }
+
+            return item;
+          }),
+        );
+      } else if (selectedProducts) {
+        setSelectedProducts([...selectedProducts, { product, quantity: 1 }]);
+      } else {
+        setSelectedProducts([{ product, quantity: 1 }]);
+      }
+    },
+    [selectedProducts],
+  );
+
+  const handleRemoveProduct = useCallback(
+    (id: string) => {
+      const filteredProducts = selectedProducts?.filter(
+        item => item.product.id !== id,
+      );
+
+      if (filteredProducts)
+        setSelectedProducts(
+          filteredProducts.length === 0 ? null : filteredProducts,
+        );
+    },
+    [selectedProducts],
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -128,44 +215,63 @@ export const BillAddProduct = () => {
       <Header title={t('components.header.billAddProducts')} onPress={goBack} />
 
       {showContent && !!dataProducts?.length && (
-        <StyledContent
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingVertical: 32 }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <SearchInput
-            placeholder={t('components.searchInput.product')}
-            type="products"
-          />
-
-          <StyledContainerCardProducts
-            style={{
-              height:
-                ((width - 64) / 2) * Math.round(dataProducts?.length / 2) + 16,
-              minHeight: heightList,
+        <>
+          <StyledContent
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingVertical: 32,
+              justifyContent: 'space-between',
             }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
-            {dataProducts?.slice(0, 20).map((item, index) => {
-              return (
-                <SquareCard
-                  key={item.id}
-                  item={{
-                    index,
-                    name: item.name,
-                    image: item.image,
-                    price: formatedCurrency(item.price),
-                  }}
-                  onPress={() => {
-                    setSelectedProduct(item);
-                    handleShowAddOrderBottomSheet();
-                  }}
+            <SearchInput
+              placeholder={t('components.searchInput.product')}
+              type="products"
+            />
+
+            <View style={{ height: heightList - 52 }}>
+              <StyledContainerCardProducts>
+                {dataProducts?.slice(0, 20).map((item, index) => {
+                  return (
+                    <SquareCard
+                      key={item.id}
+                      item={{
+                        index,
+                        name: item.name,
+                        image: item.image,
+                        price: formatedCurrency(item.price),
+                      }}
+                      onPress={() => handleSelectProduct(item)}
+                    />
+                  );
+                })}
+              </StyledContainerCardProducts>
+            </View>
+            <StyledBagButton onPress={handleShowAddOrderBottomSheet}>
+              <StyledTextBagButton>Ver sacola</StyledTextBagButton>
+              <StyledIconBag>
+                <Icon
+                  name="shopping-outline"
+                  color={theme.colors.WHITE}
+                  size={RFValue(20)}
                 />
-              );
-            })}
-          </StyledContainerCardProducts>
-        </StyledContent>
+
+                <StyledCircle>
+                  <StyledTextCircle>
+                    {selectedProducts
+                      ? selectedProducts.reduce(
+                          (prev, curr) => prev + curr.quantity,
+                          0,
+                        )
+                      : 0}
+                  </StyledTextCircle>
+                </StyledCircle>
+              </StyledIconBag>
+            </StyledBagButton>
+          </StyledContent>
+        </>
       )}
 
       {showContent && !dataProducts?.length && (
@@ -186,10 +292,10 @@ export const BillAddProduct = () => {
       {!showContent && <Loading />}
 
       <AddOrderBottomSheetModal
-        product={selectedProduct}
-        billId={bill.id}
+        products={selectedProducts}
         closeBottomSheet={handleColseAddOrderBottomSheet}
         ref={addOrderBottomSheetModalRef}
+        removeProduct={handleRemoveProduct}
       />
     </StyledContainer>
   );
@@ -231,4 +337,52 @@ const StyledContainerCardProducts = styled.View`
 
   justify-content: flex-start;
   align-self: center;
+`;
+
+const StyledIconBag = styled.View``;
+
+const StyledBagButton = styled.TouchableOpacity`
+  min-height: 44px;
+
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.colors.BLACK};
+
+  padding: 8px 16px;
+  margin: 0 32px;
+`;
+
+const StyledTextBagButton = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
+  font-size: ${({ theme }) => theme.sizing.SMALLER};
+
+  color: ${({ theme }) => theme.colors.WHITE};
+
+  align-self: center;
+`;
+
+const StyledCircle = styled.View`
+  position: absolute;
+  top: 2px;
+  right: -4px;
+
+  width: ${RFValue(12)}px;
+  height: ${RFValue(12)}px;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: ${RFValue(6)}px;
+
+  background-color: ${({ theme }) => theme.colors.WHITE};
+`;
+
+const StyledTextCircle = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
+  font-size: ${({ theme }) => theme.sizing.MINOR};
+
+  color: ${({ theme }) => theme.colors.GRAY_800};
 `;
