@@ -9,7 +9,7 @@ import styled, { useTheme } from 'styled-components/native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Overlay } from 'react-native-elements';
-import { RFValue } from 'react-native-responsive-fontsize';
+import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import { Dimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
@@ -167,16 +167,18 @@ const StyledContainerButtons = styled.View`
 `;
 
 const StyledBaseButton = styled.TouchableOpacity<TextButtonProps>`
-  min-width: 80px;
+  min-width: ${RFPercentage(10)}px;
+  height: ${RFPercentage(5)}px;
 
   background-color: ${({ theme, remove }) =>
     remove ? theme.colors.ERROR_500 : 'transparent'};
 
   border-radius: 4px;
 
-  margin-left: 8px;
+  align-items: center;
+  justify-content: center;
 
-  padding: 8px 16px;
+  margin-left: 8px;
 `;
 
 const StyledTextButton = styled.Text<TextButtonProps>`

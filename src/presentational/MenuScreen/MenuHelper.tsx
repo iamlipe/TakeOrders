@@ -8,6 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MenuStackParamList } from '@routes/stacks/MenuStack';
 import { Dimensions } from 'react-native';
+import Background from '@components/Background';
 
 interface Doubt {
   id: number;
@@ -16,8 +17,6 @@ interface Doubt {
 }
 
 type NavProps = NativeStackNavigationProp<MenuStackParamList, 'MenuDoubt'>;
-
-const { height } = Dimensions.get('window');
 
 export const MenuHelper = () => {
   const { navigate } = useNavigation<NavProps>();
@@ -65,16 +64,12 @@ export const MenuHelper = () => {
   };
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header
         title={t('components.header.menuHelper')}
         backgroundColor="SECUNDARY_600"
         onPress={goBack}
+        type="small"
       />
 
       <StyledContent>
@@ -83,13 +78,9 @@ export const MenuHelper = () => {
           renderDoubt({ answer, question, id }),
         )}
       </StyledContent>
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.View`
   padding: 32px;

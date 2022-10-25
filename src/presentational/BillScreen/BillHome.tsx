@@ -37,6 +37,7 @@ import Button from '@components/Button';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
 import { CREATE_CATEGORY } from '@store/slices/categorySlice';
+import Background from '@components/Background';
 
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 
@@ -131,12 +132,7 @@ export const BillHome = () => {
   }, [dataBills]);
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header title={t('components.header.billHome')} />
 
       {showContent ? (
@@ -197,13 +193,9 @@ export const BillHome = () => {
         ref={addBillBottomSheetModalRef}
         closeBottomSheet={handleCloseAddBillBottomSheet}
       />
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.ScrollView`
   margin-bottom: 120px;

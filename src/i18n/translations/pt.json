@@ -51,7 +51,8 @@
         "cancel": "Cancelar",
         "delete": "Excluir",
         "logout": "Sim, desconecte-me",
-        "edit": "Editar"
+        "edit": "Editar",
+        "seeBag": "Ver sacola"
       },
 
       "bigButton": {
@@ -99,7 +100,9 @@
 
         "menuHome": "Menu",
         "menuHelper": "Ajuda",
-        "menuDoubt": "Dúvida"
+        "menuDoubt": "Dúvida",
+
+        "overview": "Visão geral"
       },
 
       "scrollableButton": {
@@ -112,7 +115,29 @@
         "quantity": "quantidade"
       },
 
-      "loading": "Carregando..."
+      "loading": "Carregando...",
+
+      "overview": {
+        "seeMore": "Ver mais",
+
+        "report": {
+          "spending": {
+            "average": "Gastos mêdio",
+            "lastMonth": "Gastos mês anterior",
+            "currMonth": "Gastos mês"
+          },
+          "invoicing": {
+            "average": "Vendas mêdia",
+            "lastMonth": "Vendas mês anterior",
+            "currMonth": "Vendas mês"
+          },
+          "profit": {
+            "average": "Lucro mêdio",
+            "lastMonth": "Lucro mês anterior",
+            "currMonth": "Lucro mês"
+          }
+        }
+      }
     },
     
     "screens": {
@@ -146,7 +171,10 @@
         "textNoProductInStock": "Todos produtos do estoque está em falta",
 
         "addOrderBottomSheet": {
-          "title": "Adicionar produto"
+          "title": "Adicionar produto",
+
+          "titleEmptyBag": "Ops... nada aqui!",
+          "descriptionEmptyBag": "explore ao redor para adicionar itens em sua bolsa"
         }
       },
 
@@ -221,6 +249,33 @@
         "warningLogoutModal": {
           "title": "Saindo da sua conta",
           "description": "Tem certeza de que deseja sair?"
+        }
+      },
+
+      "overviewDetails": {
+        "extract": {
+          "title": {
+            "spending": "Extrato",
+            "invoicing": "Extrado",
+            "profit": "Extrato"
+          }
+        },
+
+        "months": {
+          "title": {
+            "spending": "Meses",
+            "invoicing": "Meses",
+            "profit": "Meses"
+          },
+
+          "card": {
+            "details": "detalhes",
+            "title": {
+              "spending": "Gastos",
+              "invoicing": "Vendas",
+              "profit": "Lucro"
+            }
+          }
         }
       }
     }

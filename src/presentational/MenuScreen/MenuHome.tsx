@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Header from '@components/Header';
 import SelectLanguageModal from './SelectLanguageModal';
 import WarningLogoutModal from './WarningLogoutModal';
+import Background from '@components/Background';
 
 type NavProps = NativeStackNavigationProp<MenuStackParamList, 'MenuHelper'>;
 
@@ -54,60 +55,49 @@ export const MenuHome = () => {
   }, [dispatch]);
 
   return (
-    <>
-      <StyledContainer
-        colors={[
-          theme.colors.BACKGROUND_WEAKYELLOW,
-          theme.colors.BACKGROUND_OFFWHITE,
-        ]}
-      >
-        <Header
-          title={t('components.header.menuHome')}
-          backgroundColor="SECUNDARY_600"
-        />
+    <Background>
+      <Header
+        title={t('components.header.menuHome')}
+        backgroundColor="SECUNDARY_600"
+      />
 
-        <StyledContent>
-          <StyledContainerOptions>
-            <StyledBaseButton onPress={() => setVisibleSelectLanguage(true)}>
-              <StyledTextButton>
-                {t('screens.menuHome.options.language')}
-              </StyledTextButton>
-            </StyledBaseButton>
+      <StyledContent>
+        <StyledContainerOptions>
+          <StyledBaseButton onPress={() => setVisibleSelectLanguage(true)}>
+            <StyledTextButton>
+              {t('screens.menuHome.options.language')}
+            </StyledTextButton>
+          </StyledBaseButton>
 
-            <StyledBaseButton onPress={() => navigate('MenuHelper')}>
-              <StyledTextButton>
-                {t('screens.menuHome.options.help')}
-              </StyledTextButton>
-            </StyledBaseButton>
-          </StyledContainerOptions>
+          <StyledBaseButton onPress={() => navigate('MenuHelper')}>
+            <StyledTextButton>
+              {t('screens.menuHome.options.help')}
+            </StyledTextButton>
+          </StyledBaseButton>
+        </StyledContainerOptions>
 
-          <StyledBaseButtonLogout onPress={() => setVisibleWarningLogout(true)}>
-            <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
-            <StyledTextButtonLogout>
-              {t('screens.menuHome.logout')}
-            </StyledTextButtonLogout>
-          </StyledBaseButtonLogout>
-        </StyledContent>
+        <StyledBaseButtonLogout onPress={() => setVisibleWarningLogout(true)}>
+          <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
+          <StyledTextButtonLogout>
+            {t('screens.menuHome.logout')}
+          </StyledTextButtonLogout>
+        </StyledBaseButtonLogout>
+      </StyledContent>
 
-        <SelectLanguageModal
-          visible={visibleSelectLanguage}
-          setVisible={setVisibleSelectLanguage}
-          handleLanguage={handleLanguage}
-        />
+      <SelectLanguageModal
+        visible={visibleSelectLanguage}
+        setVisible={setVisibleSelectLanguage}
+        handleLanguage={handleLanguage}
+      />
 
-        <WarningLogoutModal
-          visible={visibleWarningLogout}
-          setVisible={setVisibleWarningLogout}
-          handleLogout={handleLogout}
-        />
-      </StyledContainer>
-    </>
+      <WarningLogoutModal
+        visible={visibleWarningLogout}
+        setVisible={setVisibleWarningLogout}
+        handleLogout={handleLogout}
+      />
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.View`
   padding: 32px;

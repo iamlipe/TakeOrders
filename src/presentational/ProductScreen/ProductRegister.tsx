@@ -32,6 +32,7 @@ import Loading from '@components/Loading';
 import Select from '@components/Select';
 import { GET_CATEGORIES } from '@store/slices/categorySlice';
 import formatedCurrency from '@utils/formatedCurrency';
+import Background from '@components/Background';
 
 interface FormReisterOrEditProduct {
   name: string;
@@ -259,12 +260,7 @@ export const ProductRegister = () => {
   };
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header
         title={
           product
@@ -287,13 +283,9 @@ export const ProductRegister = () => {
         showContent,
         t,
       ])}
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.ScrollView``;
 

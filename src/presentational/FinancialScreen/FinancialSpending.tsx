@@ -29,6 +29,7 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
+import i18next from '@i18n/index';
 
 const { height } = Dimensions.get('window');
 
@@ -63,17 +64,31 @@ export const FinancialSpending = () => {
   const handleDataOverview = useCallback(() => {
     const result = spendingFilteredByMonth?.map(spendingMonth => {
       return {
-        months: spendingMonth.length
-          ? new Date(spendingMonth[0].createdAt).toLocaleDateString('pt-br', {
-              month: 'long',
-            })
-          : new Date().toLocaleDateString('pt-br', {
+        month: spendingMonth.length
+          ? new Date(spendingMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'numeric',
+                year: 'numeric',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'numeric',
+              year: 'numeric',
+            }),
+
+        x: spendingMonth.length
+          ? new Date(spendingMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'long',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
               month: 'long',
             }),
-        earnings: spendingMonth.reduce(
-          (prev, curr) => prev + curr.totalPrice * -1,
-          0,
-        ),
+
+        y: spendingMonth.reduce((prev, curr) => prev + curr.totalPrice * -1, 0),
       };
     });
 

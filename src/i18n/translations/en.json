@@ -51,7 +51,8 @@
         "cancel": "Cancel",
         "delete": "Delete",
         "logout": "Yes, log me out",
-        "edit": "Edit"
+        "edit": "Edit",
+        "seeBag": "See bag"
       },
 
       "bigButton": {
@@ -99,7 +100,7 @@
 
         "menuHome": "Menu",
         "menuHelper": "Help",
-        "MenuDoubt": "Doubt"
+        "menuDoubt": "Doubt"
       },
 
       "scrollableButton": {
@@ -112,7 +113,29 @@
         "quantity": "quantity"
       },
 
-      "loading": "Loading..."
+      "loading": "Loading...",
+
+      "overview": {
+        "seeMore": "See more",
+
+        "report": {
+          "spending": {
+            "average": "Average spending",
+            "lastMonth": "Previous month spending",
+            "currMonth": "Month spending"
+          },
+          "invoicing": {
+            "average": "Average invoicing",
+            "lastMonth": "Previous month invoicing",
+            "currMonth": "Month invoicing"
+          },
+          "profit": {
+            "average": "Average profit",
+            "lastMonth": "Previous month profit",
+            "currMonth": "Month profit"
+          }
+        }
+      }
     },
 
     "screens": {
@@ -146,7 +169,10 @@
         "textNoProductInStock": "All items in stock are out of stock",
 
         "addOrderBottomSheet": {
-          "title": "Add product"
+          "title": "Add product",
+
+          "titleEmptyBag": "Whops...nothing here!",
+          "descriptionEmptyBag": "explore around to add items to your bag"
         }
       },
 
@@ -221,6 +247,33 @@
         "warningLogoutModal": {
           "title": "Logging Out",
           "description": "Are you sure want logout ?"
+        }
+      },
+
+      "overviewDetails": {
+        "extract": {
+          "title": {
+            "spending": "Extract",
+            "invoicing": "Extract",
+            "profit": "Extract"
+          }
+        },
+        
+        "months": {
+          "title": {
+            "spending": "Months",
+            "invoicing": "Months",
+            "profit": "Months"
+          },
+
+          "card": {
+            "details": "details",
+            "title": {
+              "spending": "Spending",
+              "invoicing": "Invoicing",
+              "profit": "Profit"
+            }
+          }
         }
       }
     }

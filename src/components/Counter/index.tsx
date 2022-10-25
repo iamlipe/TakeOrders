@@ -24,8 +24,6 @@ const Counter = ({
 }: CounterProps) => {
   const [counter, setCounter] = useState(quantity ? quantity : 1);
 
-  const { t } = useTranslation();
-
   const theme = useTheme();
 
   const {
@@ -33,8 +31,9 @@ const Counter = ({
   } = useController({ name, control });
 
   useEffect(() => {
-    onChange(1);
-  }, [onChange]);
+    onChange(quantity ? quantity : 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <StyledContainer>

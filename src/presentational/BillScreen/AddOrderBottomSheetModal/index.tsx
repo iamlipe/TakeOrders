@@ -12,7 +12,7 @@ import formatedCurrency from '@utils/formatedCurrency';
 
 import EmptyBag from '@assets/svgs/empty-bag.svg';
 
-import { Dimensions, Keyboard } from 'react-native';
+import { Dimensions } from 'react-native';
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -22,7 +22,7 @@ import Button from '@components/Button';
 
 interface AddOrderBottomSheetModalProps {
   products: ProductBag[] | null;
-  closeBottomSheet: () => void;
+  closeBottomSheet: (products: ProductBag[]) => void;
   removeProduct: (id: string) => void;
 }
 
@@ -47,13 +47,27 @@ const AddOrderBottomSheetModal = forwardRef<
     [],
   );
 
-  const onSubmit = () => {
-    setLoading(true);
-    closeBottomSheet();
-    Keyboard.dismiss();
+  const onSubmit = (data: any) => {
+    const productsWithQuantityCorrect = products?.map(item => {
+      return {
+        product: item.product,
+        quantity: data[item.product.id] || item.quantity,
+      };
+    });
 
-    setTimeout(() => setLoading(false), 1500);
-    setTimeout(() => goBack(), 2000);
+    setLoading(true);
+
+    setTimeout(
+      () =>
+        productsWithQuantityCorrect &&
+        closeBottomSheet(productsWithQuantityCorrect),
+      1000,
+    );
+
+    setTimeout(() => {
+      setLoading(false);
+      goBack();
+    }, 1500);
   };
 
   const renderCardWithCounter = ({ product, quantity }: ProductBag) => (
@@ -98,16 +112,20 @@ const AddOrderBottomSheetModal = forwardRef<
           ) : (
             <StyledContainerEmptyBag>
               <EmptyBag width={100} height={100} />
-              <StyledTitleEmptyBag>Ops... nada aqui!</StyledTitleEmptyBag>
+              <StyledTitleEmptyBag>
+                {t('screens.billAddProducts.addOrderBottomSheet.titleEmptyBag')}
+              </StyledTitleEmptyBag>
               <StyledDecribeEmptyBag>
-                explore ao redor para adicionar itens em sua bolsa
+                {t(
+                  'screens.billAddProducts.addOrderBottomSheet.descriptionEmptyBag',
+                )}
               </StyledDecribeEmptyBag>
             </StyledContainerEmptyBag>
           )}
         </StyledScrollBottomSheetModal>
         <StyledContainerButton>
           <Button
-            title="Adicionar"
+            title={t('components.button.add')}
             onPress={handleSubmit(onSubmit)}
             loading={loading}
           />
