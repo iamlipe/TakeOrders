@@ -27,6 +27,7 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
+import i18next from '@i18n/index';
 
 const { height } = Dimensions.get('window');
 
@@ -55,7 +56,7 @@ export const FinancialProfit = () => {
     [],
   );
 
-  const getInvoicies = useCallback(() => {
+  const getProfit = useCallback(() => {
     if (auth) {
       dispatch(GET_PROFIT({ userId: auth.id }));
     }
@@ -64,14 +65,31 @@ export const FinancialProfit = () => {
   const handleDataOverview = useCallback(() => {
     const result = profitFilteredByMonth?.map(invoicingMonth => {
       return {
-        months: invoicingMonth.length
-          ? new Date(invoicingMonth[0].createdAt).toLocaleDateString('pt-br', {
-              month: 'long',
-            })
-          : new Date().toLocaleDateString('pt-br', {
+        month: invoicingMonth.length
+          ? new Date(invoicingMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'numeric',
+                year: 'numeric',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'numeric',
+              year: 'numeric',
+            }),
+
+        x: invoicingMonth.length
+          ? new Date(invoicingMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'long',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
               month: 'long',
             }),
-        earnings: invoicingMonth.reduce((prev, curr) => prev + curr.price, 0),
+
+        y: invoicingMonth.reduce((prev, curr) => prev + curr.price, 0),
       };
     });
 
@@ -81,14 +99,14 @@ export const FinancialProfit = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
 
-    getInvoicies();
+    getProfit();
 
     setTimeout(() => setRefreshing(false), 1000);
-  }, [getInvoicies]);
+  }, [getProfit]);
 
   useEffect(() => {
-    getInvoicies();
-  }, [getInvoicies, isFocused, isLoading]);
+    getProfit();
+  }, [getProfit, isFocused, isLoading]);
 
   useEffect(() => {
     if (allProfit?.length) {

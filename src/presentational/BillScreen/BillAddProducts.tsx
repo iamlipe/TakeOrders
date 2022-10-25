@@ -41,6 +41,7 @@ import SearchInput from '@components/SearchInput';
 import Loading from '@components/Loading';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { CREATE_ORDER } from '@store/slices/orderSlice';
+import Background from '@components/Background';
 
 export interface ProductBag {
   product: ProductResponse;
@@ -125,14 +126,17 @@ export const BillAddProduct = () => {
     addOrderBottomSheetModalRef.current?.present();
   }, []);
 
-  const handleColseAddOrderBottomSheet = useCallback(() => {
-    selectedProducts?.forEach(item => {
-      createOrder(item);
-      updateProduct(item);
-    });
+  const handleColseAddOrderBottomSheet = useCallback(
+    (products: ProductBag[]) => {
+      products?.forEach(item => {
+        createOrder(item);
+        updateProduct(item);
+      });
 
-    addOrderBottomSheetModalRef.current?.dismiss();
-  }, [createOrder, selectedProducts, updateProduct]);
+      addOrderBottomSheetModalRef.current?.dismiss();
+    },
+    [createOrder, updateProduct],
+  );
 
   const handleSelectProduct = useCallback(
     (product: ProductResponse) => {
@@ -206,12 +210,7 @@ export const BillAddProduct = () => {
   }, [allProducts]);
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header title={t('components.header.billAddProducts')} onPress={goBack} />
 
       {showContent && !!dataProducts?.length && (
@@ -250,7 +249,9 @@ export const BillAddProduct = () => {
               </StyledContainerCardProducts>
             </View>
             <StyledBagButton onPress={handleShowAddOrderBottomSheet}>
-              <StyledTextBagButton>Ver sacola</StyledTextBagButton>
+              <StyledTextBagButton>
+                {t('components.button.seeBag')}
+              </StyledTextBagButton>
               <StyledIconBag>
                 <Icon
                   name="shopping-outline"
@@ -297,13 +298,9 @@ export const BillAddProduct = () => {
         ref={addOrderBottomSheetModalRef}
         removeProduct={handleRemoveProduct}
       />
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.ScrollView`
   margin-bottom: 120px;

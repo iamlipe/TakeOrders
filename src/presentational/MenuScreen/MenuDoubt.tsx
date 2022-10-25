@@ -4,9 +4,8 @@ import styled, { useTheme } from 'styled-components/native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
-import LinearGradient from 'react-native-linear-gradient';
-
 import Header from '@components/Header';
+import Background from '@components/Background';
 
 type StackParamsList = {
   Info: {
@@ -26,16 +25,12 @@ export const MenuDoubt = () => {
   const theme = useTheme();
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header
         title={t('components.header.menuDoubt')}
         backgroundColor="SECUNDARY_600"
         onPress={goBack}
+        type="small"
       />
 
       <StyledContent>
@@ -44,13 +39,9 @@ export const MenuDoubt = () => {
           <StyledTextAnswer>{answer}</StyledTextAnswer>
         </StyledContainerDoubt>
       </StyledContent>
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.View`
   padding: 32px;

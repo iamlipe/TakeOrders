@@ -23,6 +23,7 @@ import Header from '@components/Header';
 import Loading from '@components/Loading';
 import Button from '@components/Button';
 import WarningDeleteModal from '@components/WarningDeleteModal';
+import Background from '@components/Background';
 
 interface ContainerInfoProps {
   noPadding?: boolean;
@@ -210,12 +211,7 @@ export const ProductDetails = () => {
   };
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header
         title={t('components.header.stockDetailsProduct')}
         onPress={goBack}
@@ -241,13 +237,9 @@ export const ProductDetails = () => {
         setVisible={setShowWargningModal}
         remove={() => handleRemoveProduct()}
       />
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.ScrollView`
   height: ${height - 120 - 72}px;

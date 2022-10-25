@@ -31,6 +31,7 @@ import ScrollableButton from '@components/ScrollableButton';
 import Loading from '@components/Loading';
 import FinancialCard from '@components/FinancialCard';
 import Button from '@components/Button';
+import Background from '@components/Background';
 
 type NavProps = NativeStackNavigationProp<
   FinancialStackParamList,
@@ -119,12 +120,7 @@ export const FinancialHome = () => {
     ));
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header title={t('components.header.financialHome')} />
 
       {showContent ? (
@@ -188,13 +184,9 @@ export const FinancialHome = () => {
         ref={addPurchaseBottomSheetModalRef}
         closeBottomSheet={handleColseAddPurchaseBottomSheet}
       />
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.ScrollView`
   margin-bottom: 120px;

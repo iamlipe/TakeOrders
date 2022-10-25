@@ -15,7 +15,11 @@ const FinancialCard = ({
 }: FinancialCardProps) => {
   const theme = useTheme();
 
-  const formatedDate = new Date(date).toLocaleDateString('pt-br');
+  const formatedDate = new Date(date).toLocaleDateString('pt-br', {
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  });
 
   return (
     <StyledContainer>

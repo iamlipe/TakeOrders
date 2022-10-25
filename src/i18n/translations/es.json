@@ -51,7 +51,8 @@
         "cancel": "Cancelar",
         "delete": "Eliminar",
         "logout": "Sí, desconéctame",
-        "edit": "Editar"
+        "edit": "Editar",
+        "seeBag": "Ver bolsa"
       },
 
       "bigButton": {
@@ -113,7 +114,29 @@
         "quantity": "cantidad"
       },
 
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+
+      "overview": {
+        "seeMore": "Ver más",
+
+        "report": {
+          "spending": {
+            "average": "Gasto media",
+            "lastMonth": "Gastos del mes anterior",
+            "currMonth": "Gasto mensual"
+          },
+          "invoicing": {
+            "average": "Facturación media",
+            "lastMonth": "Facturación del mes anterior",
+            "currMonth": "Facturación mensual"
+          },
+          "profit": {
+            "average": "Lucro media",
+            "lastMonth": "Lucro del mes anterior",
+            "currMonth": "Lucro mensual"
+          }
+        }
+      }
     },
 
     "screens": {
@@ -147,7 +170,10 @@
         "textNoProductInStock": "Todos los productos en stock están agotados",
 
         "addOrderBottomSheet": {
-          "title": "Agregar producto"
+          "title": "Agregar producto",
+
+          "titleEmptyBag": "Ups... nada aquí!",
+          "descriptionEmptyBag": "explora alrededor para agregar artículos a tu bolsa"
         }
       },
 
@@ -222,6 +248,33 @@
         "warningLogoutModal": {
           "title": "Saliendo de tu cuenta",
           "description": "¿Estás seguro de que quieres cerrar sesión?"
+        }
+      },
+
+      "overviewDetails": {
+        "extract": {
+          "title": {
+            "spending": "Extracto",
+            "invoicing": "Extracto",
+            "profit": "Extracto"
+          }
+        },
+        
+        "months": {
+          "title": {
+            "spending": "Meses",
+            "invoicing": "Meses",
+            "profit": "Meses"
+          },
+
+          "card": {
+            "details": "detalles",
+            "title": {
+              "spending": "Gasto",
+              "invoicing": "Facturación",
+              "profit": "Lucro"
+            }
+          }
         }
       }
     }

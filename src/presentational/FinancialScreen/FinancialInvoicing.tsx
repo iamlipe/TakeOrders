@@ -29,6 +29,7 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
+import i18next from '@i18n/index';
 
 const { height } = Dimensions.get('window');
 
@@ -66,14 +67,31 @@ export const FinancialInvoicing = () => {
   const handleDataOverview = useCallback(() => {
     const result = profitFilteredByMonth?.map(profitMonth => {
       return {
-        months: profitMonth.length
-          ? new Date(profitMonth[0].createdAt).toLocaleDateString('pt-br', {
-              month: 'long',
-            })
-          : new Date().toLocaleDateString('pt-br', {
+        month: profitMonth.length
+          ? new Date(profitMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'numeric',
+                year: 'numeric',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'numeric',
+              year: 'numeric',
+            }),
+
+        x: profitMonth.length
+          ? new Date(profitMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'long',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
               month: 'long',
             }),
-        earnings: profitMonth.reduce((prev, curr) => prev + curr.totalPrice, 0),
+
+        y: profitMonth.reduce((prev, curr) => prev + curr.totalPrice, 0),
       };
     });
 

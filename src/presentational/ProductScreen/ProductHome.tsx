@@ -31,6 +31,7 @@ import Header from '@components/Header';
 import BigButton from '@components/BigButton';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
+import Background from '@components/Background';
 
 type NavProps = NativeStackNavigationProp<
   ProductStackParamList,
@@ -82,12 +83,7 @@ export const ProductHome = () => {
   }, [allProducts]);
 
   return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
+    <Background>
       <Header title={t('components.header.stockHome')} />
 
       {showContent ? (
@@ -143,13 +139,9 @@ export const ProductHome = () => {
       ) : (
         <Loading />
       )}
-    </StyledContainer>
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.ScrollView`
   margin-bottom: 120px;
