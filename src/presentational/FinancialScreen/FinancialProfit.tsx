@@ -156,10 +156,10 @@ export const FinancialProfit = () => {
           {profitFilteredByMonth ? (
             <>
               <StyledTitleOverview>
-                {t('screens.financialInvoicing.overview')}
+                {t('screens.financialProfit.overview')}
               </StyledTitleOverview>
 
-              <Overview data={handleDataOverview()} type="invoicing" />
+              <Overview data={handleDataOverview()} type="profit" />
 
               <StyledContainerCardFinancial style={{ minHeight: heightList }}>
                 {renderListProfit()}
@@ -171,7 +171,7 @@ export const FinancialProfit = () => {
             >
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyInvoicing>
-                {t('screens.financialInvoicing.textEmptyInvoicing')}
+                {t('screens.financialProfit.textEmptyProfit')}
               </StyledTextEmptyInvoicing>
             </StyledContainerEmptyInvoicing>
           )}

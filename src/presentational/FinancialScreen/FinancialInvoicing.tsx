@@ -164,7 +164,7 @@ export const FinancialInvoicing = () => {
               <StyledTitleOverview>
                 {t('screens.financialProfit.overview')}
               </StyledTitleOverview>
-              <Overview data={handleDataOverview()} type="profit" />
+              <Overview data={handleDataOverview()} type="invoicing" />
               <StyledContainerCardFinancial style={{ minHeight: heightList }}>
                 {renderListSales()}
               </StyledContainerCardFinancial>
@@ -175,7 +175,7 @@ export const FinancialInvoicing = () => {
             >
               <EmptyChart width={132} height={132} />
               <StyledTextEmptyProfit>
-                {t('screens.financialProfit.textEmptyProfit')}
+                {t('screens.financialInvoicing.textEmptyInvoicing')}
               </StyledTextEmptyProfit>
             </StyledContainerEmptyProfit>
           )}
