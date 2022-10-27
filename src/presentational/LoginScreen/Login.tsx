@@ -2,15 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import i18next from 'i18next';
 
-import { categories } from '@config/mocks/categories';
+import { mySync } from '@database/index';
 
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
-import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useTranslation } from 'react-i18next';
 import { useUserStorage } from '@hooks/useUserStorage';
 
-import { GET_DEFAULT_USER, LOGIN, REGISTER } from '@store/slices/userSlice';
-import { CREATE_CATEGORY, GET_CATEGORIES } from '@store/slices/categorySlice';
+import { LOGIN } from '@store/slices/userSlice';
 
 import Wallpaper from '@assets/svgs/wallpaper-login.svg';
 
@@ -18,18 +16,15 @@ import { StatusBar } from 'react-native';
 
 import Button from '@components/Button';
 import Loading from '@presentational/LoginScreen/Loading';
+import { User } from '@database/models/userModel';
 
 export const Login = () => {
-  const [getUser, setGetUser] = useState(true);
+  const [loadingRemember, setLoadingRemember] = useState(true);
   const [loadingLogin, setLoadingLogin] = useState(false);
 
   const userStorage = useUserStorage();
 
   const dispatch = useReduxDispatch();
-
-  const { error, defaultUser, isLoading } = useReduxSelector(
-    state => state.user,
-  );
 
   const { t } = useTranslation();
 
@@ -37,45 +32,23 @@ export const Login = () => {
 
   StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
 
-  const login = useCallback(() => {
-    setLoadingLogin(true);
+  const login = useCallback(
+    ({ email, password }: { email: string; password: string }) => {
+      setLoadingLogin(true);
 
-    setTimeout(() => {
-      dispatch(LOGIN({ email: 'default@email.com', password: 'default@123' }));
+      setTimeout(() => {
+        dispatch(LOGIN({ email, password }));
 
-      setLoadingLogin(false);
-    }, 1000);
-  }, [dispatch]);
-
-  const register = useCallback(() => {
-    dispatch(
-      REGISTER({
-        name: 'default',
-        email: 'default@email.com',
-        password: 'default@123',
-      }),
-    );
-  }, [dispatch]);
-
-  const getDefaultUser = useCallback(() => {
-    dispatch(GET_DEFAULT_USER({ email: 'default@email.com' }));
-
-    setTimeout(() => setGetUser(false), 1000);
-  }, [dispatch]);
-
-  const createCategory = useCallback(
-    ({ name }: { name: string }) => {
-      dispatch(CREATE_CATEGORY({ name }));
+        setLoadingLogin(false);
+      }, 1000);
     },
     [dispatch],
   );
 
   const rememberLogin = useCallback(async () => {
-    const data = await userStorage.read('user');
+    const data: User = await userStorage.read('user');
 
-    if (data) login();
-
-    setTimeout(() => setGetUser(false), 1000);
+    if (data) login({ email: data.email, password: data.password });
   }, [login, userStorage]);
 
   const getLanguage = useCallback(async () => {
@@ -90,32 +63,22 @@ export const Login = () => {
     const data = await userStorage.read('firstAccessApp');
 
     if (!data) {
-      categories.map(category => {
-        createCategory({ name: category });
-      });
+      await mySync();
 
       await userStorage.getDidFirstAccessApp('firstAccessApp');
+    } else {
+      rememberLogin();
     }
-  }, [createCategory, userStorage]);
+  }, [rememberLogin, userStorage]);
 
   useEffect(() => {
-    getDefaultUser();
-    getLanguage();
-    getFirstAccessApp();
+    setTimeout(() => getLanguage(), 1000);
+    setTimeout(() => getFirstAccessApp(), 1500);
+    setTimeout(() => setLoadingRemember(false), 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (defaultUser) {
-      rememberLogin();
-    }
-  }, [defaultUser, rememberLogin]);
-
-  useEffect(() => {
-    if (error === 'unregistered default user' && !isLoading) register();
-  }, [error, isLoading, register]);
-
-  if (getUser) return <Loading />;
+  if (loadingRemember) return <Loading />;
 
   return (
     <StyledContainer>
@@ -126,7 +89,9 @@ export const Login = () => {
           title={t('components.button.loginWithoutRegister')}
           icon={{ name: 'arrow-forward', color: 'WHITE' }}
           align="spaceBetween"
-          onPress={login}
+          onPress={() =>
+            login({ email: 'default@email.com', password: 'default@123' })
+          }
           loading={loadingLogin}
         />
       </StyledColumn>

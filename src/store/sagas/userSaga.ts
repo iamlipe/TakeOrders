@@ -38,9 +38,11 @@ function* login({ payload }: PayloadAction<Login>) {
         name: auth[0].name,
         email: auth[0].email,
         phone: auth[0].phone,
+        password: auth[0].password,
       };
 
       yield call(userStorage.save, 'user', user);
+
       yield put(LOGIN_SUCCESS({ data: user }));
     } else {
       yield put(LOGIN_FAILURE({ error: 'unregistered user' }));
@@ -84,6 +86,7 @@ function* getDefaultUser({ payload }: PayloadAction<{ email: string }>) {
         name: data[0].name,
         email: data[0].email,
         phone: data[0].phone,
+        password: data[0].password,
       };
 
       yield put(GET_DEFAULT_USER_SUCCESS({ user }));

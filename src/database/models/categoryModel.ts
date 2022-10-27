@@ -5,4 +5,6 @@ export class Category extends Model {
   static table = 'categories';
 
   @field('name') name!: string;
+
+  @field('categoryId') categoryId!: string;
 }

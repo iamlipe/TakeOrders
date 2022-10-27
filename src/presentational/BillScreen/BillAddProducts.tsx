@@ -233,8 +233,6 @@ export const BillAddProduct = () => {
               type="products"
             />
 
-            {console.log()}
-
             <StyledContainerCardProducts
               style={{
                 height:

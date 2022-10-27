@@ -1,0 +1,33 @@
+{
+  "changes": {
+    "categories": {
+      "created": [
+        { "id": "1", "categoryId": "1", "name": "Bebida alcoólica" },
+        { "id": "2", "categoryId": "2", "name": "Bebida não alcoólica" },
+        { "id": "3", "categoryId": "3", "name": "Petisco" },
+        { "id": "4", "categoryId": "4", "name": "Outros" }
+      ],
+
+      "updated": [],
+      "deleted": []
+    },
+
+    "users": {
+      "created": [
+        { 
+          "id": "1",
+          "userId": "1",
+          "name": "default",
+          "password": "default@123",
+          "email": "default@email.com",
+          "phone": "11111111111"
+        }
+      ],
+
+      "updated": [],
+      "deleted": []
+    } 
+  },
+
+  "timestamp": 1000
+}

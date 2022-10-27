@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from 'styled-components/native';
 import { Provider } from 'react-redux';
 import { theme } from '@styles/index';
