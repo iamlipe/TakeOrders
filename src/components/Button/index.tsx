@@ -20,12 +20,12 @@ const buttonBackgroundColor = {
   `,
 
   dark: css`
-    background-color: ${({ theme }) => theme.colors.GRAY_800};
+    background-color: ${({ theme }) => theme.colors.BLACK};
   `,
 
   trasparent: css`
     background-color: transparent;
-    border: 1.6px solid ${({ theme }) => theme.colors.GRAY_800};
+    border: 1.6px solid ${({ theme }) => theme.colors.BLACK};
   `,
 };
 

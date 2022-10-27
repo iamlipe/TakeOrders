@@ -9,8 +9,8 @@ import React, {
 import styled, { useTheme } from 'styled-components/native';
 
 import formatedCurrency from '@utils/formatedCurrency';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-import { Product as ProductModel } from '@database/models/productModel';
 import { Bill as BillModel } from '@database/models/billModel';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -26,21 +26,18 @@ import {
   ProductResponse,
   UPDATE_PRODUCT,
 } from '@store/slices/productSlice';
+import { CREATE_ORDER } from '@store/slices/orderSlice';
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Dimensions, RefreshControl, View } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import LinearGradient from 'react-native-linear-gradient';
-
 import AddOrderBottomSheetModal from './AddOrderBottomSheetModal';
 import SquareCard from '@components/SquareCard';
 import Header from '@components/Header';
 import Button from '@components/Button';
 import SearchInput from '@components/SearchInput';
 import Loading from '@components/Loading';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { CREATE_ORDER } from '@store/slices/orderSlice';
 import Background from '@components/Background';
 
 export interface ProductBag {
@@ -79,8 +76,17 @@ export const BillAddProduct = () => {
   const { navigate } = useNavigation<NavProps>();
   const { goBack, dispatch: navigateDispatch } = useNavigation();
 
-  const heightList = useMemo(() => height - 120 - 32 - 56 - 24 - 72, []);
+  const heightEmptyContent = useMemo(
+    () => height - 120 - 32 - 56 - 16 - 16 - 44 - 32 - 72,
+    [],
+  );
 
+  const heightList = useMemo(
+    () =>
+      ((width - 64) * 0.48 + width * 0.04) *
+      Math.round(dataProducts ? dataProducts.length / 2 : 0),
+    [dataProducts],
+  );
   const { t } = useTranslation();
 
   const theme = useTheme();
@@ -217,10 +223,7 @@ export const BillAddProduct = () => {
         <>
           <StyledContent
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingVertical: 32,
-              justifyContent: 'space-between',
-            }}
+            contentContainerStyle={{ paddingVertical: 32 }}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -230,24 +233,32 @@ export const BillAddProduct = () => {
               type="products"
             />
 
-            <View style={{ height: heightList - 52 }}>
-              <StyledContainerCardProducts>
-                {dataProducts?.slice(0, 20).map((item, index) => {
-                  return (
-                    <SquareCard
-                      key={item.id}
-                      item={{
-                        index,
-                        name: item.name,
-                        image: item.image,
-                        price: formatedCurrency(item.price),
-                      }}
-                      onPress={() => handleSelectProduct(item)}
-                    />
-                  );
-                })}
-              </StyledContainerCardProducts>
-            </View>
+            {console.log()}
+
+            <StyledContainerCardProducts
+              style={{
+                height:
+                  heightList < heightEmptyContent
+                    ? heightEmptyContent
+                    : heightList,
+              }}
+            >
+              {dataProducts?.slice(0, 20).map((item, index) => {
+                return (
+                  <SquareCard
+                    key={item.id}
+                    item={{
+                      index,
+                      name: item.name,
+                      image: item.image,
+                      price: formatedCurrency(item.price),
+                    }}
+                    onPress={() => handleSelectProduct(item)}
+                  />
+                );
+              })}
+            </StyledContainerCardProducts>
+
             <StyledBagButton onPress={handleShowAddOrderBottomSheet}>
               <StyledTextBagButton>
                 {t('components.button.seeBag')}
@@ -332,7 +343,6 @@ const StyledContainerCardProducts = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
 
-  justify-content: flex-start;
   align-self: center;
 `;
 
