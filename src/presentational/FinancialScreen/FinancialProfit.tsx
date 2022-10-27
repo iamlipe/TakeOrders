@@ -1,20 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
-import { Sales as SalesModel } from '@database/models/salesModel';
-
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
+import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-import { GET_SALES } from '@store/slices/saleSlice';
+import { GET_PROFIT, ProfitResponse } from '@store/slices/profitSlice';
 
 import { filterAllByMonth } from '@utils/filterByDate';
 
-import EmptyChart from '@assets/svgs/empty-chart-2.svg';
+import EmptyChart from '@assets/svgs/empty-chart-1.svg';
 
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -22,20 +27,21 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
-import { RFValue } from 'react-native-responsive-fontsize';
+import i18next from '@i18n/index';
 
 const { height } = Dimensions.get('window');
 
 export const FinancialProfit = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [profitFilteredByMonth, setProfitFilteredByMonth] = useState<
-    SalesModel[][] | null
+    ProfitResponse[][] | null
   >(null);
 
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allSales, isLoading } = useReduxSelector(state => state.sale);
+  const { allProfit, isLoading } = useReduxSelector(state => state.profit);
 
   const isFocused = useIsFocused();
 
@@ -46,35 +52,89 @@ export const FinancialProfit = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 32 - 72,
+    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 16 - 72 - 120,
     [],
   );
 
-  const getSales = useCallback(() => {
+  const getProfit = useCallback(() => {
     if (auth) {
-      dispatch(GET_SALES({ userId: auth.id }));
+      dispatch(GET_PROFIT({ userId: auth.id }));
     }
   }, [auth, dispatch]);
 
-  useEffect(() => {
-    getSales();
-  }, [getSales, isFocused]);
+  const handleDataOverview = useCallback(() => {
+    const result = profitFilteredByMonth?.map(invoicingMonth => {
+      return {
+        month: invoicingMonth.length
+          ? new Date(invoicingMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'numeric',
+                year: 'numeric',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'numeric',
+              year: 'numeric',
+            }),
+
+        x: invoicingMonth.length
+          ? new Date(invoicingMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'long',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'long',
+            }),
+
+        y: invoicingMonth.reduce((prev, curr) => prev + curr.price, 0),
+      };
+    });
+
+    return result || [];
+  }, [profitFilteredByMonth]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    getProfit();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getProfit]);
 
   useEffect(() => {
-    if (allSales && !isLoading) {
-      setTimeout(() => setShowContent(true), 1000);
-    }
-  }, [allSales, isLoading]);
+    getProfit();
+  }, [getProfit, isFocused, isLoading]);
 
   useEffect(() => {
-    if (allSales?.length) {
+    if (allProfit?.length) {
       const data = filterAllByMonth({
-        data: allSales,
-      }) as unknown as SalesModel[][];
+        data: allProfit,
+      }) as unknown as ProfitResponse[][];
 
       setProfitFilteredByMonth(data);
     }
-  }, [allSales]);
+  }, [allProfit]);
+
+  useLayoutEffect(() => {
+    if (allProfit) {
+      setTimeout(() => setShowContent(true), 1000);
+    }
+  }, [allProfit]);
+
+  const renderListProfit = () =>
+    allProfit?.map(item => (
+      <FinancialCard
+        key={item.id}
+        item={{
+          title: item.name,
+          price: item.price,
+          date: item.createdAt,
+        }}
+      />
+    ));
 
   return (
     <StyledContainer
@@ -86,65 +146,34 @@ export const FinancialProfit = () => {
       <Header title={t('components.header.financialProfit')} onPress={goBack} />
 
       {showContent ? (
-        <StyledContent>
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {profitFilteredByMonth ? (
             <>
               <StyledTitleOverview>
                 {t('screens.financialProfit.overview')}
               </StyledTitleOverview>
 
-              {profitFilteredByMonth && (
-                <Overview
-                  data={profitFilteredByMonth.map(profitMonth => {
-                    return {
-                      months: profitMonth.length
-                        ? new Date(profitMonth[0].createdAt).toLocaleDateString(
-                            'pt-br',
-                            { month: 'long' },
-                          )
-                        : new Date().toLocaleDateString('pt-br', {
-                            month: 'long',
-                          }),
-                      earnings: profitMonth.reduce(
-                        (prev, curr) => prev + curr.totalPrice,
-                        0,
-                      ),
-                    };
-                  })}
-                  type="profit"
-                />
-              )}
+              <Overview data={handleDataOverview()} type="profit" />
 
-              <FlatList
-                data={allSales}
-                renderItem={({ item }) => (
-                  <FinancialCard
-                    key={item.id}
-                    item={{
-                      title: item.name,
-                      date: item.createdAt,
-                      price: item.totalPrice,
-                    }}
-                  />
-                )}
-                style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
-                  marginVertical: 16,
-                  paddingHorizontal: 32,
-                }}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-              />
+              <StyledContainerCardFinancial style={{ minHeight: heightList }}>
+                {renderListProfit()}
+              </StyledContainerCardFinancial>
             </>
           ) : (
-            <StyledContainerEmptyProfit>
+            <StyledContainerEmptyInvoicing
+              style={{ height: heightList + 220 + RFValue(24) + 8 }}
+            >
               <EmptyChart width={132} height={132} />
-              <StyledTextEmptyProfit>
+              <StyledTextEmptyInvoicing>
                 {t('screens.financialProfit.textEmptyProfit')}
-              </StyledTextEmptyProfit>
-            </StyledContainerEmptyProfit>
+              </StyledTextEmptyInvoicing>
+            </StyledContainerEmptyInvoicing>
           )}
         </StyledContent>
       ) : (
@@ -158,8 +187,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledTitleOverview = styled.Text`
@@ -174,18 +203,14 @@ const StyledTitleOverview = styled.Text`
   margin-bottom: 8px;
 `;
 
-const StyledContainerEmptyProfit = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-
+const StyledContainerEmptyInvoicing = styled.View`
   justify-content: center;
   align-items: center;
 
-  margin-top: -32px;
+  margin: 16px 0;
 `;
 
-const StyledTextEmptyProfit = styled.Text`
+const StyledTextEmptyInvoicing = styled.Text`
   width: 80%;
 
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
@@ -195,5 +220,9 @@ const StyledTextEmptyProfit = styled.Text`
 
   text-align: center;
 
+  margin-top: 16px;
+`;
+
+const StyledContainerCardFinancial = styled.View`
   margin-top: 16px;
 `;

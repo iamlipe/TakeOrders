@@ -1,103 +1,103 @@
-import React, { forwardRef, memo, useEffect, useMemo } from 'react';
-import styled from 'styled-components/native';
-import * as Yup from 'yup';
+import React, { forwardRef, memo, useMemo, useState } from 'react';
+import styled, { useTheme } from 'styled-components/native';
 
-import { yupResolver } from '@hookform/resolvers/yup';
-import { CREATE_ORDER } from '@store/slices/orderSlice';
-import { Product } from '@database/models/productModel';
 import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
-import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
 
-import { UPDATE_PRODUCT } from '@store/slices/productSlice';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { ProductBag } from '../BillAddProducts';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
-import { Keyboard } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import EmptyBag from '@assets/svgs/empty-bag.svg';
+
+import { Dimensions } from 'react-native';
+import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Counter from '@components/Counter';
 import Button from '@components/Button';
-import { RFValue } from 'react-native-responsive-fontsize';
-
-interface FormAddNewOrder {
-  quantity: string;
-}
 
 interface AddOrderBottomSheetModalProps {
-  billId: string;
-  product: Product | null;
-  closeBottomSheet: () => void;
+  products: ProductBag[] | null;
+  closeBottomSheet: (products: ProductBag[]) => void;
+  removeProduct: (id: string) => void;
 }
+
+const { width } = Dimensions.get('window');
 
 const AddOrderBottomSheetModal = forwardRef<
   BottomSheetModal,
   AddOrderBottomSheetModalProps
->(({ product, billId, closeBottomSheet }, ref) => {
-  const dispatch = useReduxDispatch();
+>(({ products, closeBottomSheet, removeProduct }, ref) => {
+  const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
 
-  const schema = useMemo(
-    () =>
-      Yup.object().shape({
-        quantity: Yup.number()
-          .min(1, t('errors.minOne'))
-          .required(t('errors.required')),
-      }),
-    [t],
-  );
-
-  const {
-    control,
-    reset,
-    handleSubmit,
-    formState: { errors, isSubmitted, isSubmitSuccessful },
-  } = useForm<FormAddNewOrder>({
-    resolver: yupResolver(schema),
-  });
+  const theme = useTheme();
 
   const { goBack } = useNavigation();
 
+  const { control, handleSubmit } = useForm();
+
   const snapPointHeigth = useMemo(
-    () => [16 + 32 + RFValue(32) + 24 + 136 + 24 + 60 + 40 + 45 + 32],
+    () => [16 + 32 + RFValue(32) + 24 + 16 + 240 + 16 + 44 + 48],
     [],
   );
 
-  const onSubmit = (data: FormAddNewOrder) => {
-    if (product) {
-      dispatch(
-        CREATE_ORDER({
-          quantity: Number(data.quantity),
-          billId,
-          productId: product.id,
-        }),
-      );
+  const onSubmit = (data: any) => {
+    const productsWithQuantityCorrect = products?.map(item => {
+      return {
+        product: item.product,
+        quantity: data[item.product.id] || item.quantity,
+      };
+    });
 
-      setTimeout(() => {
-        dispatch(
-          UPDATE_PRODUCT({
-            product,
-            updatedProduct: {
-              quantity: product.quantity - Number(data.quantity),
-            },
-          }),
-        );
-      }, 1000);
-    }
+    setLoading(true);
+
+    setTimeout(
+      () =>
+        productsWithQuantityCorrect &&
+        closeBottomSheet(productsWithQuantityCorrect),
+      1000,
+    );
+
+    setTimeout(() => {
+      setLoading(false);
+      goBack();
+    }, 1500);
   };
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({
-        quantity: '1',
-      });
-      closeBottomSheet();
-      Keyboard.dismiss();
-      goBack();
-    }
-  }, [closeBottomSheet, goBack, isSubmitSuccessful, reset]);
+  const renderCardWithCounter = ({ product, quantity }: ProductBag) => (
+    <StyledContainerCard key={product.id}>
+      {product.image ? (
+        <StyledImage source={{ uri: product.image }} resizeMode="contain" />
+      ) : (
+        <StyledDefaultImage />
+      )}
+
+      <StyledContainerInfoProduct>
+        <StyledTitleProduct>{product.name}</StyledTitleProduct>
+        <StyledPriceProduct>
+          {formatedCurrency(product.price)}
+        </StyledPriceProduct>
+      </StyledContainerInfoProduct>
+
+      <StyledContainerEdit>
+        <StyledBaseButton onPress={() => removeProduct(product.id)}>
+          <Icon
+            name="delete-outline"
+            color={theme.colors.ERROR_500}
+            size={RFValue(14)}
+          />
+        </StyledBaseButton>
+
+        <Counter name={product.id} control={control} quantity={quantity} />
+      </StyledContainerEdit>
+    </StyledContainerCard>
+  );
 
   return (
     <BottomSheetModal ref={ref} snapPoints={snapPointHeigth}>
@@ -106,48 +106,39 @@ const AddOrderBottomSheetModal = forwardRef<
           {t('screens.billAddProducts.addOrderBottomSheet.title')}
         </StyledTitle>
 
-        {product && (
-          <>
-            <StyledColumnProduct>
-              {product.image ? (
-                <StyledImage
-                  source={{ uri: product.image }}
-                  resizeMode="stretch"
-                />
-              ) : (
-                <StyledDefaultImage />
-              )}
-
-              <StyledColumnProductInfo>
-                <StyledTitleProduct>{product.name}</StyledTitleProduct>
-                <StyledPriceProduct>
-                  {formatedCurrency(product.price)}
-                </StyledPriceProduct>
-              </StyledColumnProductInfo>
-            </StyledColumnProduct>
-
-            <StyledContainerForm>
-              <Counter
-                name="quantity"
-                control={control}
-                maxQuantity={product.quantity}
-                error={isSubmitted ? errors.quantity?.message : ''}
-              />
-            </StyledContainerForm>
-
-            <Button
-              title={t('components.button.add')}
-              onPress={handleSubmit(onSubmit)}
-            />
-          </>
-        )}
+        <StyledScrollBottomSheetModal>
+          {products?.length ? (
+            products.map(item => renderCardWithCounter(item))
+          ) : (
+            <StyledContainerEmptyBag>
+              <EmptyBag width={100} height={100} />
+              <StyledTitleEmptyBag>
+                {t('screens.billAddProducts.addOrderBottomSheet.titleEmptyBag')}
+              </StyledTitleEmptyBag>
+              <StyledDecribeEmptyBag>
+                {t(
+                  'screens.billAddProducts.addOrderBottomSheet.descriptionEmptyBag',
+                )}
+              </StyledDecribeEmptyBag>
+            </StyledContainerEmptyBag>
+          )}
+        </StyledScrollBottomSheetModal>
+        <StyledContainerButton>
+          <Button
+            title={t('components.button.add')}
+            onPress={handleSubmit(onSubmit)}
+            loading={loading}
+          />
+        </StyledContainerButton>
       </StyledContainer>
     </BottomSheetModal>
   );
 });
 
-const StyledContainer = styled.View`
-  padding: 16px 0 46px 0;
+const StyledContainer = styled(BottomSheetScrollView)`
+  margin: 16px 0 48px;
+
+  min-height: 300px;
 
   background-color: ${({ theme }) => theme.colors.WHITE};
 `;
@@ -165,25 +156,8 @@ const StyledTitle = styled.Text`
   margin-bottom: 24px;
 `;
 
-const StyledContainerForm = styled.View`
-  height: 60px;
-
-  margin-bottom: 40px;
-`;
-
-const StyledColumnProduct = styled.View`
-  height: 136px;
-
-  align-items: center;
-  justify-content: center;
-
-  margin: 0 32px 24px;
-`;
-
-const StyledColumnProductInfo = styled.View`
-  height: 40px;
-
-  justify-content: space-between;
+const StyledScrollBottomSheetModal = styled.View`
+  min-height: 240px;
 `;
 
 const StyledTitleProduct = styled.Text`
@@ -192,9 +166,9 @@ const StyledTitleProduct = styled.Text`
 
   color: ${({ theme }) => theme.colors.GRAY_800};
 
-  text-align: center;
+  line-height: ${RFValue(16)}px;
 
-  line-height: 20px;
+  margin-left: 4px;
 `;
 
 const StyledPriceProduct = styled(StyledTitleProduct)`
@@ -203,20 +177,78 @@ const StyledPriceProduct = styled(StyledTitleProduct)`
 
 const StyledImage = styled.Image`
   width: 60px;
-  height: 80px;
+  height: 60px;
+
+  border-radius: 4px;
 
   background-color: ${({ theme }) => theme.colors.WHITE};
-
-  margin-bottom: 16px;
 `;
 
 const StyledDefaultImage = styled.View`
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
+
+  border-radius: 4px;
 
   background-color: ${({ theme }) => theme.colors.SECUNDARY_200};
+`;
 
-  margin-bottom: 16px;
+const StyledContainerCard = styled.View`
+  height: 80px;
+
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.GRAY_300};
+
+  margin: 0 32px;
+`;
+
+const StyledContainerInfoProduct = styled.View`
+  width: ${width - 64 - 80 - 60}px;
+  height: 56px;
+
+  justify-content: space-evenly;
+`;
+
+const StyledContainerEdit = styled.View`
+  width: 80px;
+  height: 100%;
+
+  justify-content: space-around;
+  align-items: flex-end;
+`;
+
+const StyledBaseButton = styled.TouchableOpacity``;
+
+const StyledContainerButton = styled.View`
+  margin-top: 32px;
+`;
+
+const StyledContainerEmptyBag = styled.View`
+  height: 240px;
+
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledTitleEmptyBag = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
+  font-size: ${({ theme }) => theme.sizing.SMALLER};
+  color: ${({ theme }) => theme.colors.GRAY_800};
+
+  margin-top: 16px;
+`;
+
+const StyledDecribeEmptyBag = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+  color: ${({ theme }) => theme.colors.GRAY_600};
+
+  margin-top: 8px;
 `;
 
 export default memo(AddOrderBottomSheetModal);

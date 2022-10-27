@@ -13,6 +13,7 @@
         "limitBills": "¿Hay algún límite de comandos que puedo abrir?",
         "limitProductInStock": "¿Hay un límite de productos en stock que puedo tener registrados?"
       },
+
       "answers": {
         "saveData": "No, todos los datos solo se guardan en el dispositivo",
         "whatHappenWithMyData": "Todos los datos se pierden",
@@ -46,7 +47,12 @@
         "closeBill": "Finalizar cuenta",
         "addProductStock": "Agregar producto en inventario",
         "register": "Registrar",
-        "addExpense": "Agregar gasto"
+        "addExpense": "Agregar gasto",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "logout": "Sí, desconéctame",
+        "edit": "Editar",
+        "seeBag": "Ver bolsa"
       },
 
       "bigButton": {
@@ -72,7 +78,7 @@
 
       "bottomTab": {
         "bill": "Cuenta",
-        "stock": "Inventario",
+        "products": "Products",
         "financial": "Financeiro",
         "menu": "Menu"
       },
@@ -85,6 +91,7 @@
 
         "stockHome": "Inventario",
         "stockRegisterProduct": "Registrar producto",
+        "stockEditProduct": "Editar produto",
         "stockDetailsProduct": "Detalles del producto",
 
         "financialHome": "Financiero",
@@ -93,7 +100,8 @@
         "financialSpending": "Gasto",
 
         "menuHome": "Menu",
-        "menuHelper": "Ayuda"
+        "menuHelper": "Ayuda",
+        "menuDoubt": "Duda"
       },
 
       "scrollableButton": {
@@ -106,7 +114,29 @@
         "quantity": "cantidad"
       },
 
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+
+      "overview": {
+        "seeMore": "Ver más",
+
+        "report": {
+          "spending": {
+            "average": "Gasto media",
+            "lastMonth": "Gastos del mes anterior",
+            "currMonth": "Gasto mensual"
+          },
+          "invoicing": {
+            "average": "Facturación media",
+            "lastMonth": "Facturación del mes anterior",
+            "currMonth": "Facturación mensual"
+          },
+          "profit": {
+            "average": "Lucro media",
+            "lastMonth": "Lucro del mes anterior",
+            "currMonth": "Lucro mensual"
+          }
+        }
+      }
     },
 
     "screens": {
@@ -127,6 +157,11 @@
           "title": "Cerrar cuenta",
           "client": "Cliente",
           "total": "Total"
+        },
+
+        "warningDeleteProductModal": {
+          "title": "Estás seguro ?",
+          "description": "¿Realmente desea eliminar esta orden del comando? este proceso no se puede deshacer"
         }
       },
 
@@ -135,7 +170,10 @@
         "textNoProductInStock": "Todos los productos en stock están agotados",
 
         "addOrderBottomSheet": {
-          "title": "Agregar producto"
+          "title": "Agregar producto",
+
+          "titleEmptyBag": "Ups... nada aquí!",
+          "descriptionEmptyBag": "explora alrededor para agregar artículos a tu bolsa"
         }
       },
 
@@ -204,6 +242,38 @@
             "portuguese": "Portugués",
             "english": "Inglés",
             "spanish": "Español"
+          }
+        },
+
+        "warningLogoutModal": {
+          "title": "Saliendo de tu cuenta",
+          "description": "¿Estás seguro de que quieres cerrar sesión?"
+        }
+      },
+
+      "overviewDetails": {
+        "extract": {
+          "title": {
+            "spending": "Extracto",
+            "invoicing": "Extracto",
+            "profit": "Extracto"
+          }
+        },
+        
+        "months": {
+          "title": {
+            "spending": "Meses",
+            "invoicing": "Meses",
+            "profit": "Meses"
+          },
+
+          "card": {
+            "details": "detalles",
+            "title": {
+              "spending": "Gasto",
+              "invoicing": "Facturación",
+              "profit": "Lucro"
+            }
           }
         }
       }

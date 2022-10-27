@@ -13,6 +13,7 @@
         "limitBills": "Is there any limit of commands that I can open?",
         "limitProductInStock": "Is there a limit of products in stock that I can have registered?"
       },
+
       "answers": {
         "saveData": "No, all data is only saved on the device",
         "whatHappenWithMyData": "All data is lost",
@@ -29,7 +30,7 @@
         "quantity": "Quantity",
         "totalPrice": "Total purchase price",
         "price": "Sale price (unit)",
-        "image": "image"
+        "image": "Image"
       },
       
       "searchInput": {
@@ -46,7 +47,12 @@
         "closeBill": "Close bill",
         "addProductStock": "Add product in stock",
         "register": "Register",
-        "addExpense": "Add expense"
+        "addExpense": "Add expense",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "logout": "Yes, log me out",
+        "edit": "Edit",
+        "seeBag": "See bag"
       },
 
       "bigButton": {
@@ -71,7 +77,7 @@
 
       "bottomTab": {
         "bill": "Bill",
-        "stock": "Stock",
+        "products": "Products",
         "financial": "Financial",
         "menu": "Menu"
       },
@@ -84,6 +90,7 @@
 
         "stockHome": "Stock",
         "stockRegisterProduct": "Register product",
+        "stockEditProduct": "Edit product",
         "stockDetailsProduct": "Product details",
 
         "financialHome": "Financial",
@@ -92,7 +99,8 @@
         "financialSpending": "Spending",
 
         "menuHome": "Menu",
-        "menuHelper": "Help"
+        "menuHelper": "Help",
+        "menuDoubt": "Doubt"
       },
 
       "scrollableButton": {
@@ -105,7 +113,29 @@
         "quantity": "quantity"
       },
 
-      "loading": "Loading..."
+      "loading": "Loading...",
+
+      "overview": {
+        "seeMore": "See more",
+
+        "report": {
+          "spending": {
+            "average": "Average spending",
+            "lastMonth": "Previous month spending",
+            "currMonth": "Month spending"
+          },
+          "invoicing": {
+            "average": "Average invoicing",
+            "lastMonth": "Previous month invoicing",
+            "currMonth": "Month invoicing"
+          },
+          "profit": {
+            "average": "Average profit",
+            "lastMonth": "Previous month profit",
+            "currMonth": "Month profit"
+          }
+        }
+      }
     },
 
     "screens": {
@@ -126,6 +156,11 @@
           "title": "End bill",
           "client": "Client",
           "total": "Total"
+        },
+
+        "warningDeleteProductModal": {
+          "title": "Are you safe?",
+          "description": "Do you really want to delete this order from the command? this process cannot be undone"
         }
       },
 
@@ -134,7 +169,10 @@
         "textNoProductInStock": "All items in stock are out of stock",
 
         "addOrderBottomSheet": {
-          "title": "Add product"
+          "title": "Add product",
+
+          "titleEmptyBag": "Whops...nothing here!",
+          "descriptionEmptyBag": "explore around to add items to your bag"
         }
       },
 
@@ -203,6 +241,38 @@
             "portuguese": "Portuguese",
             "english": "English",
             "spanish": "Spanish"
+          }
+        },
+
+        "warningLogoutModal": {
+          "title": "Logging Out",
+          "description": "Are you sure want logout ?"
+        }
+      },
+
+      "overviewDetails": {
+        "extract": {
+          "title": {
+            "spending": "Extract",
+            "invoicing": "Extract",
+            "profit": "Extract"
+          }
+        },
+        
+        "months": {
+          "title": {
+            "spending": "Months",
+            "invoicing": "Months",
+            "profit": "Months"
+          },
+
+          "card": {
+            "details": "details",
+            "title": {
+              "spending": "Spending",
+              "invoicing": "Invoicing",
+              "profit": "Profit"
+            }
           }
         }
       }

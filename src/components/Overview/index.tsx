@@ -10,6 +10,10 @@ import {
 import { VictoryChart, VictoryBar, VictoryTheme } from 'victory-native';
 
 import formatedCurrency from '@utils/formatedCurrency';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RoutesParamList } from '@routes/index';
+import { useTranslation } from 'react-i18next';
 
 interface SwiperDotProps {
   active: boolean;
@@ -17,28 +21,37 @@ interface SwiperDotProps {
 
 interface OverviewProps {
   data: {
-    months: string;
-    earnings: number;
+    month: string;
+    x: string;
+    y: number;
   }[];
 
   type: 'invoicing' | 'spending' | 'profit';
 }
+
+type NavProps = NativeStackNavigationProp<RoutesParamList, 'OverviewMonth'>;
 
 const { width } = Dimensions.get('window');
 
 const Overview = ({ data, type }: OverviewProps) => {
   const [pageActive, setPageActive] = useState(0);
 
+  const { navigate } = useNavigation<NavProps>();
+
   const average = formatedCurrency(
-    data.reduce((prev, curr) => prev + curr.earnings, 0) / data.length,
+    data.reduce((prev, curr) => prev + curr.y, 0) / data.length,
   );
   const prevMonth =
-    data.length >= 2
-      ? formatedCurrency(data[data.length - 2].earnings)
-      : 'R$ 0.00';
-  const currMonth = formatedCurrency(data[data.length - 1].earnings);
+    data.length >= 2 ? formatedCurrency(data[data.length - 2].y) : 'R$ 0.00';
+  const currMonth = formatedCurrency(data[data.length - 1].y);
 
   const theme = useTheme();
+
+  const { t } = useTranslation();
+
+  const handleNavigateToOverviewMonth = useCallback(() => {
+    navigate('OverviewMonth', { data, type });
+  }, [data, navigate, type]);
 
   const onChange = (nativeEvent: NativeScrollEvent) => {
     if (nativeEvent) {
@@ -49,17 +62,6 @@ const Overview = ({ data, type }: OverviewProps) => {
       if (slide !== pageActive) setPageActive(slide);
     }
   };
-
-  const returnTitleText = useCallback(() => {
-    switch (type) {
-      case 'invoicing':
-        return 'Faturamento';
-      case 'spending':
-        return 'Gastos';
-      case 'profit':
-        return 'Lucro';
-    }
-  }, [type]);
 
   const renderChart = () => {
     return (
@@ -109,8 +111,8 @@ const Overview = ({ data, type }: OverviewProps) => {
       >
         <VictoryBar
           data={data}
-          x="months"
-          y="earnings"
+          x="x"
+          y="y"
           alignment="middle"
           barWidth={24}
           cornerRadius={4}
@@ -123,7 +125,7 @@ const Overview = ({ data, type }: OverviewProps) => {
               fontSize: theme.sizing.MINOR,
             },
           }}
-          labels={({ datum }) => `R$ ${datum.earnings.toLocaleString('pt-br')}`}
+          labels={({ datum }) => `R$ ${datum.y.toLocaleString('pt-br')}`}
         />
       </VictoryChart>
     );
@@ -132,18 +134,28 @@ const Overview = ({ data, type }: OverviewProps) => {
   const renderReport = () => {
     return (
       <StyledContainerReport>
+        <StyledBaseButton onPress={handleNavigateToOverviewMonth}>
+          <StyledLink>{t('components.overview.seeMore')}</StyledLink>
+        </StyledBaseButton>
+
         <StyledColumn>
-          <StyledTitleReport>{`${returnTitleText()} mêdio`}</StyledTitleReport>
+          <StyledTitleReport>
+            {t(`components.overview.report.${type}.average`)}
+          </StyledTitleReport>
           <StyledDescriptionReport>{average}</StyledDescriptionReport>
         </StyledColumn>
 
         <StyledColumn>
-          <StyledTitleReport>{`${returnTitleText()} mês anterior`}</StyledTitleReport>
+          <StyledTitleReport>
+            {t(`components.overview.report.${type}.lastMonth`)}
+          </StyledTitleReport>
           <StyledDescriptionReport>{prevMonth}</StyledDescriptionReport>
         </StyledColumn>
 
         <StyledColumn>
-          <StyledTitleReport>{`${returnTitleText()} mês`}</StyledTitleReport>
+          <StyledTitleReport>
+            {t(`components.overview.report.${type}.currMonth`)}
+          </StyledTitleReport>
           <StyledDescriptionReport>{currMonth}</StyledDescriptionReport>
         </StyledColumn>
       </StyledContainerReport>
@@ -164,8 +176,10 @@ const Overview = ({ data, type }: OverviewProps) => {
           {useMemo(renderReport, [
             average,
             currMonth,
+            handleNavigateToOverviewMonth,
             prevMonth,
-            returnTitleText,
+            t,
+            type,
           ])}
 
           {useMemo(renderChart, [
@@ -216,7 +230,9 @@ const StyledContainerSwiperDot = styled.View`
 `;
 
 const StyledSwiperDot = styled.Text<SwiperDotProps>`
-  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+  font-size: 8px;
+
+  margin: 0 2px;
 
   color: ${({ theme, active }) =>
     active ? theme.colors.GRAY_800 : theme.colors.GRAY_600};
@@ -235,6 +251,20 @@ const StyledDescriptionReport = styled(StyledTitleReport)`
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
 
   color: ${({ theme }) => theme.colors.PRIMARY_600};
+`;
+
+const StyledBaseButton = styled.TouchableOpacity`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+`;
+
+const StyledLink = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
+  font-size: ${({ theme }) => theme.sizing.SMALLEST};
+  color: ${({ theme }) => theme.colors.GRAY_600};
+
+  text-decoration: underline;
 `;
 
 export default memo(Overview);

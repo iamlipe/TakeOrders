@@ -4,6 +4,7 @@ import { Product as ProductModel } from '@database/models/productModel';
 import {
   GetProductById,
   NewProduct,
+  ProductResponse,
   RemovedProduct,
   UpdatedProduct,
 } from '@store/slices/productSlice';
@@ -12,10 +13,10 @@ export class ProductUseCase {
   public static async create({
     stockId,
     name,
-    type,
+    categoryId,
     image,
     price,
-    quantity,
+    quantitySold,
   }: NewProduct): Promise<ProductModel | null> {
     let product: ProductModel | null = null;
 
@@ -23,10 +24,10 @@ export class ProductUseCase {
       const data = await database.get<ProductModel>('products').create(data => {
         (data.stockId = stockId),
           (data.name = name),
-          (data.type = type),
+          (data.categoryId = categoryId),
           (data.image = image),
           (data.price = price),
-          (data.quantity = quantity);
+          (data.quantitySold = quantitySold);
       });
 
       product = data;
@@ -35,50 +36,99 @@ export class ProductUseCase {
     return product;
   }
 
-  public static async get(): Promise<ProductModel[]> {
-    return database.get<ProductModel>('products').query().fetch();
+  public static async get(): Promise<ProductResponse[]> {
+    const data = await database.get<ProductModel>('products').query().fetch();
+
+    const products = data.map(async product => {
+      return {
+        id: product.id,
+        name: product.name,
+        categoryId: product.categoryId,
+        image: product.image,
+        price: product.price,
+        quantitySold: product.quantitySold,
+        category: await product.category,
+      };
+    });
+
+    return Promise.all(products);
   }
 
   public static async getById({
     productId,
-  }: GetProductById): Promise<ProductModel> {
-    return database.get<ProductModel>('products').find(productId);
+  }: GetProductById): Promise<ProductResponse> {
+    const data = await database.get<ProductModel>('products').find(productId);
+
+    const product: ProductResponse = {
+      id: data.id,
+      name: data.name,
+      categoryId: data.categoryId,
+      image: data.image,
+      price: data.price,
+      quantitySold: data.quantitySold,
+      category: await data.category,
+    };
+
+    return product;
   }
 
   public static async getByName({
     name,
   }: {
     name: string;
-  }): Promise<ProductModel[]> {
-    const data = await database
-      .get<ProductModel>('products')
-      .query(Q.where('name', name))
-      .fetch();
+  }): Promise<ProductResponse[] | undefined> {
+    const data = await database.get<ProductModel>('products').query().fetch();
 
-    return data;
+    if (name) {
+      const filteredProducts = data.filter(item =>
+        item.name.toLowerCase().includes(name.toLowerCase()),
+      );
+
+      const products = filteredProducts.map(async product => {
+        return {
+          id: product.id,
+          name: product.name,
+          categoryId: product.categoryId,
+          image: product.image,
+          price: product.price,
+          quantitySold: product.quantitySold,
+          category: await product.category,
+        };
+      });
+
+      return Promise.all(products);
+    }
   }
 
   public static async update({
-    updatedProduct: { image, name, price, stockId, type, quantity },
-    product,
+    updatedProduct: { image, name, price, stockId, categoryId, quantitySold },
+    productId,
   }: UpdatedProduct): Promise<void> {
+    const product = await database
+      .get<ProductModel>('products')
+      .find(productId);
+
     await database.write(async () => {
       await product.update(data => {
         (data.stockId = stockId || product.stockId),
           (data.name = name || product.name),
-          (data.type = type || product.type),
+          (data.categoryId = categoryId || product.categoryId),
           (data.image = image || product.image),
           (data.price =
             typeof price === 'number' ? price : price || product.price),
-          (data.quantity =
-            typeof quantity === 'number'
-              ? quantity
-              : quantity || product.quantity);
+          (data.quantitySold =
+            typeof quantitySold === 'number'
+              ? quantitySold
+              : quantitySold || product.quantitySold);
       });
     });
   }
 
-  public static async remove({ product }: RemovedProduct): Promise<void> {
+  public static async remove({ productId }: RemovedProduct): Promise<void> {
+    const product = await database
+      .get<ProductModel>('products')
+      .find(productId);
+
     await database.write(async () => {
       await product.destroyPermanently();
     });

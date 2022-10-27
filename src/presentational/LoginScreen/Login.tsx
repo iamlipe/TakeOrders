@@ -2,12 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import i18next from 'i18next';
 
+import { categories } from '@config/mocks/categories';
+
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useTranslation } from 'react-i18next';
 import { useUserStorage } from '@hooks/useUserStorage';
 
 import { GET_DEFAULT_USER, LOGIN, REGISTER } from '@store/slices/userSlice';
+import { CREATE_CATEGORY, GET_CATEGORIES } from '@store/slices/categorySlice';
 
 import Wallpaper from '@assets/svgs/wallpaper-login.svg';
 
@@ -60,6 +63,13 @@ export const Login = () => {
     setTimeout(() => setGetUser(false), 1000);
   }, [dispatch]);
 
+  const createCategory = useCallback(
+    ({ name }: { name: string }) => {
+      dispatch(CREATE_CATEGORY({ name }));
+    },
+    [dispatch],
+  );
+
   const rememberLogin = useCallback(async () => {
     const data = await userStorage.read('user');
 
@@ -76,9 +86,22 @@ export const Login = () => {
     }
   }, [userStorage]);
 
+  const getFirstAccessApp = useCallback(async () => {
+    const data = await userStorage.read('firstAccessApp');
+
+    if (!data) {
+      categories.map(category => {
+        createCategory({ name: category });
+      });
+
+      await userStorage.getDidFirstAccessApp('firstAccessApp');
+    }
+  }, [createCategory, userStorage]);
+
   useEffect(() => {
     getDefaultUser();
     getLanguage();
+    getFirstAccessApp();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

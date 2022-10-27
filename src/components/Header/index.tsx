@@ -1,55 +1,131 @@
-import React, { memo } from 'react';
-import styled, { useTheme } from 'styled-components/native';
+import React, { memo, useCallback } from 'react';
+import styled, { css, useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '@styles/colors';
 
 import { useTranslation } from 'react-i18next';
 
-interface HeaderTitleProps {
-  type: 'primary' | 'secundary';
-}
+const typeContainerHeader = {
+  small: css`
+    height: 80px;
+
+    flex-direction: row;
+    justify-content: space-between;
+  `,
+
+  normal: css`
+    height: 120px;
+
+    flex-direction: column;
+    justify-content: space-evenly;
+  `,
+};
+
+const typeTitleHeader = {
+  small: css`
+    font-size: ${({ theme }) => theme.sizing.MEDIUM};
+
+    color: ${({ theme }) => theme.colors.WHITE};
+
+    align-self: center;
+  `,
+
+  main: css`
+    font-size: ${({ theme }) => theme.sizing.LARGER};
+
+    color: ${({ theme }) => theme.colors.WHITE};
+
+    align-self: center;
+  `,
+
+  secundary: css`
+    font-size: ${({ theme }) => theme.sizing.LARGE};
+
+    color: ${({ theme }) => theme.colors.WHITE};
+
+    align-self: flex-start;
+  `,
+};
 
 interface ContainerProps {
-  background?: keyof typeof colors;
+  type: keyof typeof typeContainerHeader;
+  background: keyof typeof colors;
+}
+
+interface HeaderTitleProps {
+  type: keyof typeof typeTitleHeader;
 }
 
 interface HeaderProps {
   title: string;
+  type?: 'normal' | 'small';
   backgroundColor?: keyof typeof colors;
   onPress?: () => void;
 }
 
-const Header = ({ title, backgroundColor, onPress }: HeaderProps) => {
+const Header = ({
+  type = 'normal',
+  title,
+  backgroundColor = 'PRIMARY_500',
+  onPress,
+}: HeaderProps) => {
   const theme = useTheme();
 
   const { t } = useTranslation();
 
+  const handleTypeTitle = useCallback(() => {
+    if (type === 'small') return 'small';
+
+    if (type === 'normal' && !onPress) return 'main';
+
+    if (type === 'normal' && !!onPress) return 'secundary';
+  }, [onPress, type]);
+
+  const handleTypeShareButton = useCallback(() => {
+    if (type === 'small') return true;
+
+    return false;
+  }, [type]);
+
   return (
-    <StyledContainer background={backgroundColor}>
+    <StyledContainer type={type} background={backgroundColor}>
       {onPress && (
         <StyledBaseButton onPress={onPress}>
           <Icon name="angle-left" color={theme.colors.WHITE} size={16} />
+
           <StyledTextButton>
             {t('components.header.backButton').toUpperCase()}
           </StyledTextButton>
         </StyledBaseButton>
       )}
 
-      <StyledTitle type={!onPress ? 'primary' : 'secundary'}>
-        {title}
-      </StyledTitle>
+      <StyledTitle type={handleTypeTitle()}>{title}</StyledTitle>
+
+      {handleTypeShareButton() && (
+        <StyledBaseButton style={{ opacity: type === 'small' ? 0 : 1 }}>
+          <Icon name="angle-left" color={theme.colors.WHITE} size={16} />
+
+          <StyledTextButton>
+            {t('components.header.backButton').toUpperCase()}
+          </StyledTextButton>
+        </StyledBaseButton>
+      )}
     </StyledContainer>
   );
 };
 
 const StyledContainer = styled.View<ContainerProps>`
+  ${({ type }) =>
+    css`
+      ${typeContainerHeader[type]},
+    `};
+
+  background-color: ${({ theme, background }) => theme.colors[background]};
+
+  position: relative;
+  z-index: 1;
+
   width: 100%;
-  height: 120px;
-
-  justify-content: space-evenly;
-
-  background-color: ${({ theme, background }) =>
-    background ? theme.colors[background] : theme.colors.PRIMARY_500};
 
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -58,13 +134,12 @@ const StyledContainer = styled.View<ContainerProps>`
 `;
 
 const StyledTitle = styled.Text<HeaderTitleProps>`
+  ${({ type }) =>
+    css`
+      ${typeTitleHeader[type]},
+    `};
+
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
-  font-size: ${({ theme, type }) =>
-    type === 'primary' ? theme.sizing.LARGER : theme.sizing.LARGE};
-
-  color: ${({ theme }) => theme.colors.WHITE};
-
-  align-self: ${({ type }) => (type === 'primary' ? 'center' : 'flex-start')};
 
   padding: 0 16px;
 `;

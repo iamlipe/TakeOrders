@@ -4,6 +4,8 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
+  useState,
 } from 'react';
 import styled from 'styled-components/native';
 import * as Yup from 'yup';
@@ -16,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import { CREATE_BILL, GET_BILLS } from '@store/slices/billSlice';
 
-import { Keyboard } from 'react-native';
+import { Keyboard, TextInput } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Input from '@components/Input';
@@ -36,6 +38,8 @@ const AddBillBottomSheetModal = forwardRef<
   BottomSheetModal,
   AddBillBottomSheetModalProps
 >(({ closeBottomSheet }, ref) => {
+  const [loadingAddBill, setLoadingAddBill] = useState(false);
+
   const { invoiceId } = useReduxSelector(state => state.invoice);
   const { auth } = useReduxSelector(state => state.user);
   const dispatch = useReduxDispatch();
@@ -88,10 +92,17 @@ const AddBillBottomSheetModal = forwardRef<
   }, [dispatch]);
 
   const onSubmit = (data: FormAddNewBill) => {
-    createBill(data);
-    getBills();
-    closeBottomSheet();
+    setLoadingAddBill(true);
+
     Keyboard.dismiss();
+
+    setTimeout(() => createBill(data), 500);
+
+    setTimeout(() => getBills(), 1000);
+
+    setTimeout(() => closeBottomSheet(), 1500);
+
+    setTimeout(() => setLoadingAddBill(false), 2000);
   };
 
   useEffect(() => {
@@ -125,12 +136,14 @@ const AddBillBottomSheetModal = forwardRef<
             label={t('components.input.phone')}
             error={isSubmitted ? errors.phone?.message : ''}
             type="cel-phone"
+            onSubmitEditing={handleSubmit(onSubmit)}
           />
         </StyledContainerForm>
 
         <Button
           title={t('components.button.add')}
           onPress={handleSubmit(onSubmit)}
+          loading={loadingAddBill}
         />
       </StyledContainer>
     </BottomSheetModal>

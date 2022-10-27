@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import i18next from 'i18next/index';
@@ -12,21 +12,23 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 import { LOGOUT } from '@store/slices/userSlice';
 
-import { Dimensions, StatusBar } from 'react-native';
+import { Dimensions } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Header from '@components/Header';
-import ModalSelectLanguage from './SelectLanguageModal';
+import SelectLanguageModal from './SelectLanguageModal';
+import WarningLogoutModal from './WarningLogoutModal';
+import Background from '@components/Background';
 
 type NavProps = NativeStackNavigationProp<MenuStackParamList, 'MenuHelper'>;
 
 const { height } = Dimensions.get('window');
 
 export const MenuHome = () => {
-  const [visibleModalSelectLanguage, setVisibleModalSelectLanguage] =
-    useState(false);
+  const [visibleSelectLanguage, setVisibleSelectLanguage] = useState(false);
+  const [visibleWarningLogout, setVisibleWarningLogout] = useState(false);
 
   const dispatch = useReduxDispatch();
 
@@ -43,72 +45,66 @@ export const MenuHome = () => {
 
     userStorage.saveUserLanguage('language', language);
 
-    setVisibleModalSelectLanguage(false);
+    setVisibleSelectLanguage(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(LOGOUT());
-  };
+
+    setVisibleWarningLogout(false);
+  }, [dispatch]);
 
   return (
-    <>
-      <StyledContainer
-        colors={[
-          theme.colors.BACKGROUND_WEAKYELLOW,
-          theme.colors.BACKGROUND_OFFWHITE,
-        ]}
-      >
-        <Header
-          title={t('components.header.menuHome')}
-          backgroundColor="SECUNDARY_600"
-        />
+    <Background>
+      <Header
+        title={t('components.header.menuHome')}
+        backgroundColor="SECUNDARY_600"
+      />
 
-        <StyledContent>
-          <StyledContainerOptions>
-            <StyledBaseButton
-              onPress={() => setVisibleModalSelectLanguage(true)}
-            >
-              <StyledTextButton>
-                {t('screens.menuHome.options.language')}
-              </StyledTextButton>
-            </StyledBaseButton>
+      <StyledContent>
+        <StyledContainerOptions>
+          <StyledBaseButton onPress={() => setVisibleSelectLanguage(true)}>
+            <StyledTextButton>
+              {t('screens.menuHome.options.language')}
+            </StyledTextButton>
+          </StyledBaseButton>
 
-            <StyledBaseButton onPress={() => navigate('MenuHelper')}>
-              <StyledTextButton>
-                {t('screens.menuHome.options.help')}
-              </StyledTextButton>
-            </StyledBaseButton>
-          </StyledContainerOptions>
+          <StyledBaseButton onPress={() => navigate('MenuHelper')}>
+            <StyledTextButton>
+              {t('screens.menuHome.options.help')}
+            </StyledTextButton>
+          </StyledBaseButton>
+        </StyledContainerOptions>
 
-          <StyledBaseButtonLogout onPress={handleLogout}>
-            <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
-            <StyledTextButtonLogout>
-              {t('screens.menuHome.logout')}
-            </StyledTextButtonLogout>
-          </StyledBaseButtonLogout>
-        </StyledContent>
-      </StyledContainer>
-      <ModalSelectLanguage
-        visible={visibleModalSelectLanguage}
-        setVisible={setVisibleModalSelectLanguage}
+        <StyledBaseButtonLogout onPress={() => setVisibleWarningLogout(true)}>
+          <Icon name="logout" color={theme.colors.GRAY_800} size={24} />
+          <StyledTextButtonLogout>
+            {t('screens.menuHome.logout')}
+          </StyledTextButtonLogout>
+        </StyledBaseButtonLogout>
+      </StyledContent>
+
+      <SelectLanguageModal
+        visible={visibleSelectLanguage}
+        setVisible={setVisibleSelectLanguage}
         handleLanguage={handleLanguage}
       />
-    </>
+
+      <WarningLogoutModal
+        visible={visibleWarningLogout}
+        setVisible={setVisibleWarningLogout}
+        handleLogout={handleLogout}
+      />
+    </Background>
   );
 };
-
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
-`;
 
 const StyledContent = styled.View`
   padding: 32px;
 `;
 
 const StyledContainerOptions = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 32 - RFValue(24) - 32 - 72
-    : height - 120 - 32 - RFValue(24) - 32 - 72}px;
+  height: ${height - 120 - 32 - RFValue(24) - 32 - 72}px;
 `;
 
 const StyledBaseButton = styled.TouchableOpacity`

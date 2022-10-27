@@ -1,13 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Product as ProductModel } from '@database/models/productModel';
+import { Category as CategoryModel } from '@database/models/categoryModel';
 
 export interface NewProduct {
   stockId: string;
   name: string;
-  type: string;
+  categoryId: string;
   image?: string;
   price: number;
-  quantity: number;
+  quantitySold: number;
+}
+
+export interface ProductResponse {
+  id: string;
+  name: string;
+  categoryId: string;
+  image?: string;
+  price: number;
+  quantitySold: number;
+  category: CategoryModel;
 }
 
 export interface GetProducsByName {
@@ -19,17 +30,17 @@ export interface GetProductById {
 }
 
 export interface RemovedProduct {
-  product: ProductModel;
+  productId: string;
 }
 
 export interface UpdatedProduct extends RemovedProduct {
   updatedProduct: {
     stockId?: string;
     name?: string;
-    type?: string;
+    categoryId?: string;
     image?: string;
     price?: number;
-    quantity?: number;
+    quantitySold?: number;
   };
 }
 
@@ -37,10 +48,10 @@ interface ProductState {
   isLoading: boolean;
   error: null | string;
 
-  allProducts: ProductModel[] | null;
-  foundProducts: ProductModel[] | null;
-  selectedProduct: ProductModel | null;
-  latestProductCreated: ProductModel | null;
+  allProducts: ProductResponse[] | null;
+  foundProducts: ProductResponse[] | null;
+  selectedProduct: ProductResponse | null;
+  latestProductCreated: ProductResponse | null;
 }
 
 const initialState: ProductState = {
@@ -66,7 +77,7 @@ const productSlice = createSlice({
       state,
       {
         payload: { allProducts },
-      }: PayloadAction<{ allProducts: ProductModel[] }>,
+      }: PayloadAction<{ allProducts: ProductResponse[] }>,
     ) => ({
       ...state,
       isLoading: false,
@@ -95,7 +106,7 @@ const productSlice = createSlice({
       state,
       {
         payload: { foundProducts },
-      }: PayloadAction<{ foundProducts: ProductModel[] }>,
+      }: PayloadAction<{ foundProducts: ProductResponse[] }>,
     ) => ({
       ...state,
       isLoading: false,
@@ -123,7 +134,7 @@ const productSlice = createSlice({
       state,
       {
         payload: { selectedProduct },
-      }: PayloadAction<{ selectedProduct: ProductModel }>,
+      }: PayloadAction<{ selectedProduct: ProductResponse }>,
     ) => ({
       ...state,
       isLoading: false,
@@ -153,7 +164,7 @@ const productSlice = createSlice({
       state,
       {
         payload: { latestProductCreated },
-      }: PayloadAction<{ latestProductCreated: ProductModel }>,
+      }: PayloadAction<{ latestProductCreated: ProductResponse }>,
     ) => ({
       ...state,
       isLoading: false,

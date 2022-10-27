@@ -1,4 +1,4 @@
-import React, { Ref, RefCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
 import { useTranslation } from 'react-i18next';
@@ -10,13 +10,7 @@ import {
 } from '@react-navigation/native';
 import { LoggedStackParamList } from '@routes/stacks/LoggedStack';
 
-import {
-  Dimensions,
-  Keyboard,
-  Platform,
-  StatusBar,
-  MeasureLayoutOnSuccessCallback,
-} from 'react-native';
+import { Dimensions, Keyboard, Platform, StatusBar } from 'react-native';
 
 import Animated, {
   useAnimatedStyle,
@@ -26,12 +20,12 @@ import Animated, {
 
 import BillIcon from '@assets/svgs/bill.svg';
 import FinancialIcon from '@assets/svgs/financial.svg';
-import StockIcon from '@assets/svgs/stock.svg';
+import ProductIcon from '@assets/svgs/stock.svg';
 import MenuIcon from '@assets/svgs/menu.svg';
 
 type NavPropsProducer = NativeStackNavigationProp<
   LoggedStackParamList,
-  'BillStack' | 'FinancialStack' | 'StockStack'
+  'BillStack' | 'FinancialStack' | 'ProductStack'
 >;
 
 interface TitleTabProps {
@@ -89,7 +83,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
           );
       }
     };
-  }, [heightBottomTab, opacityIcons]);
+  }, [activeTab, heightBottomTab, opacityIcons]);
 
   useEffect(() => {
     if (activeTab === 'BillStack') {
@@ -109,7 +103,7 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
       );
     }
 
-    if (activeTab === 'StockStack') {
+    if (activeTab === 'ProductStack') {
       StatusBar.setBackgroundColor(theme.colors.PRIMARY_500);
 
       refTextTab.current[1]?.measure(
@@ -236,16 +230,16 @@ export const BottonTab = ({ state }: ButtonTabProps) => {
         {renderTab(
           1,
           () => (
-            <StockIcon
+            <ProductIcon
               fill={
-                activeTab === 'StockStack'
+                activeTab === 'ProductStack'
                   ? theme.colors.PRIMARY_600
                   : theme.colors.GRAY_800
               }
             />
           ),
-          t('components.bottomTab.stock'),
-          'StockStack',
+          t('components.bottomTab.products'),
+          'ProductStack',
         )}
         {renderTab(
           2,

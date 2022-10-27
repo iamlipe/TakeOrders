@@ -10,6 +10,8 @@ export class Bill extends Model {
 
   @field('phone') phone?: string;
 
+  @field('image') image?: number;
+
   @field('status') status!: boolean;
 
   @field('invoiceId') invoiceId!: string;

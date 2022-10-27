@@ -13,6 +13,7 @@
         "limitBills": "Existe algum limite de comandas que posso abrir ?",
         "limitProductInStock": "Existe algum limite de produtos em estoque que posso ter cadastrado ?"
       },
+
       "answers": {
         "saveData": "Não, todos os dados são salvos apenas no dispositivo",
         "whatHappenWithMyData": "Todos os dados são perdidos",
@@ -23,13 +24,13 @@
 
     "components": {
       "input": {
-        "name": "nome",
-        "phone": "celular (opcional)",
-        "type": "Tipo",
-        "quantity": "quantidade",
+        "name": "Nome",
+        "phone": "Celular (opcional)",
+        "type": "Categoria",
+        "quantity": "Quantidade",
         "totalPrice": "Preço total da compra",
         "price": "Preço da venda (unidade)",
-        "image": "imagem"
+        "image": "Imagem"
       },
       
       "searchInput": {
@@ -38,7 +39,7 @@
       },
 
       "button": {
-        "loginWithoutRegister": "Entrar sem cadastro",
+        "loginWithoutRegister": "Entrar sem cadastro (teste)",
         "add": "Adicionar",
         "close": "Fechar",
         "addBill": "Adicionar comanda",
@@ -46,8 +47,12 @@
         "closeBill": "Fechar comanda",
         "addProductStock": "Adicionar produto no estoque",
         "register": "Cadastrar",
-        "addExpense": "Adicionar despesa"
-
+        "addExpense": "Adicionar despesa",
+        "cancel": "Cancelar",
+        "delete": "Excluir",
+        "logout": "Sim, desconecte-me",
+        "edit": "Editar",
+        "seeBag": "Ver sacola"
       },
 
       "bigButton": {
@@ -72,7 +77,7 @@
 
       "bottomTab": {
         "bill": "Comandas",
-        "stock": "Estoque",
+        "products": "Produtos",
         "financial": "Financeiro",
         "menu": "Menu"
       },
@@ -85,20 +90,24 @@
 
         "stockHome": "Estoque",
         "stockRegisterProduct": "Cadastrar produto",
+        "stockEditProduct": "Editar produto",
         "stockDetailsProduct": "Detalhes do produto",
 
         "financialHome": "Financeiro",
-        "financialInvoicing": "Faturamento",
+        "financialInvoicing": "Vendas",
         "financialProfit": "Lucro",
         "financialSpending": "Gastos",
 
         "menuHome": "Menu",
-        "menuHelper": "Ajuda"
+        "menuHelper": "Ajuda",
+        "menuDoubt": "Dúvida",
+
+        "overview": "Visão geral"
       },
 
       "scrollableButton": {
         "spending": "Gastos",
-        "invoicing": "Faturamento",
+        "invoicing": "Vendas",
         "profit": "Lucro"
       },
 
@@ -106,7 +115,29 @@
         "quantity": "quantidade"
       },
 
-      "loading": "Carregando..."
+      "loading": "Carregando...",
+
+      "overview": {
+        "seeMore": "Ver mais",
+
+        "report": {
+          "spending": {
+            "average": "Gastos mêdio",
+            "lastMonth": "Gastos mês anterior",
+            "currMonth": "Gastos mês"
+          },
+          "invoicing": {
+            "average": "Vendas mêdia",
+            "lastMonth": "Vendas mês anterior",
+            "currMonth": "Vendas mês"
+          },
+          "profit": {
+            "average": "Lucro mêdio",
+            "lastMonth": "Lucro mês anterior",
+            "currMonth": "Lucro mês"
+          }
+        }
+      }
     },
     
     "screens": {
@@ -127,6 +158,11 @@
           "title": "Finalizar comanda",
           "client": "Cliente",
           "total": "Total"
+        },
+
+        "warningDeleteProductModal": {
+          "title": "Tem certeza ?",
+          "description": "Você realmente deseja excluir esse pedido da comanda? este processo não pode ser desfeito"
         }
       },
 
@@ -135,7 +171,10 @@
         "textNoProductInStock": "Todos produtos do estoque está em falta",
 
         "addOrderBottomSheet": {
-          "title": "Adicionar produto"
+          "title": "Adicionar produto",
+
+          "titleEmptyBag": "Ops... nada aqui!",
+          "descriptionEmptyBag": "explore ao redor para adicionar itens em sua bolsa"
         }
       },
 
@@ -181,7 +220,7 @@
 
       "financialProfit": {
         "overview": "Visão geral",
-        "textEmptyProfit": "Ainda não tem nenhum registro do seu lucro..."
+        "textEmptyProfit": "Ainda não tem nenhum registro de venda..."
       },
 
       "financialSpending": {
@@ -204,6 +243,38 @@
             "portuguese": "Português",
             "english": "inglês",
             "spanish": "Espanhol"
+          }
+        },
+
+        "warningLogoutModal": {
+          "title": "Saindo da sua conta",
+          "description": "Tem certeza de que deseja sair?"
+        }
+      },
+
+      "overviewDetails": {
+        "extract": {
+          "title": {
+            "spending": "Extrato",
+            "invoicing": "Extrado",
+            "profit": "Extrato"
+          }
+        },
+
+        "months": {
+          "title": {
+            "spending": "Meses",
+            "invoicing": "Meses",
+            "profit": "Meses"
+          },
+
+          "card": {
+            "details": "detalhes",
+            "title": {
+              "spending": "Gastos",
+              "invoicing": "Vendas",
+              "profit": "Lucro"
+            }
           }
         }
       }

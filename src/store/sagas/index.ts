@@ -10,6 +10,8 @@ import invoiceSaga from './invoiceSaga';
 import clientSaga from './clientSaga';
 import billSaga from './billSaga';
 import saleSaga from './saleSaga';
+import profitSaga from './profitSaga';
+import categorySaga from './categorySaga';
 
 function* rootSaga() {
   yield all([
@@ -23,6 +25,8 @@ function* rootSaga() {
     clientSaga(),
     billSaga(),
     saleSaga(),
+    profitSaga(),
+    categorySaga(),
   ]);
 }
 

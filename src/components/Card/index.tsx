@@ -7,6 +7,8 @@ import { OrderUseCase } from '@database/useCase/orderUseCase';
 
 import formatedCurrency from '@utils/formatedCurrency';
 
+import { avatar } from '@config/mocks/avatar';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const cardSize = {
@@ -73,7 +75,7 @@ interface CardImageProps {
 
 interface CardProps {
   item: {
-    image?: string;
+    image?: string | number;
     title: string;
     description: string;
     quantity?: string;
@@ -85,6 +87,7 @@ interface CardProps {
   cardSize?: 'small' | 'medium' | 'large';
 
   onPress?: () => void;
+  personCard?: boolean;
 }
 
 const Card = ({
@@ -92,6 +95,7 @@ const Card = ({
   type = 'normal',
   cardSize = 'medium',
   onPress,
+  personCard = false,
 }: CardProps) => {
   const [price, setPrice] = useState(0);
 
@@ -111,6 +115,8 @@ const Card = ({
       );
 
       setPrice(priceOrder);
+    } else {
+      setPrice(0);
     }
   }, [description]);
 
@@ -128,11 +134,19 @@ const Card = ({
       disabled={!onPress}
     >
       {image ? (
-        <StyledImage
-          size={cardSize}
-          source={{ uri: image }}
-          resizeMode="contain"
-        />
+        personCard && typeof image === 'number' ? (
+          <StyledImage
+            size={cardSize}
+            source={avatar.filter(item => item.id === image)[0]?.src}
+            resizeMode="contain"
+          />
+        ) : (
+          <StyledImage
+            size={cardSize}
+            source={{ uri: image }}
+            resizeMode="contain"
+          />
+        )
       ) : (
         <StyledDefaultImage size={cardSize}>
           <Icon
@@ -214,8 +228,7 @@ const StyledImage = styled.Image<CardImageProps>`
 
   align-self: center;
 
-  border-bottom-left-radius: 5px;
-  border-top-left-radius: 5px;
+  border-radius: 4px;
 
   background-color: ${({ theme }) => theme.colors.WHITE};
 `;

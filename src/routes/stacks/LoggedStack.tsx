@@ -7,7 +7,7 @@ import {
 
 import { BillStack } from './BillStack';
 import { FinancialStack } from './FinancialStack';
-import { StockStack } from './StockStack';
+import { ProductStack } from './ProductStack';
 import { MenuStack } from './MenuStack';
 
 import { BottonTab } from '@routes/BottomTab';
@@ -15,7 +15,7 @@ import { BottonTab } from '@routes/BottomTab';
 export type LoggedStackParamList = {
   BillStack: undefined;
   FinancialStack: undefined;
-  StockStack: undefined;
+  ProductStack: undefined;
   MenuStack: undefined;
 };
 
@@ -34,7 +34,7 @@ export const LoggedStack = () => (
   >
     <Logged.Screen name="BillStack" component={BillStack} />
     <Logged.Screen name="FinancialStack" component={FinancialStack} />
-    <Logged.Screen name="StockStack" component={StockStack} />
+    <Logged.Screen name="ProductStack" component={ProductStack} />
     <Logged.Screen name="MenuStack" component={MenuStack} />
   </Logged.Navigator>
 );

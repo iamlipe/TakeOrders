@@ -1,7 +1,6 @@
-import React, { memo, forwardRef, Dispatch, SetStateAction } from 'react';
+import React, { memo, Dispatch, SetStateAction } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Overlay } from 'react-native-elements';
 
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -42,9 +41,6 @@ const SelectLanguageModal = ({
           backgroundColor: theme.colors.WHITE,
         }}
       >
-        <StyledBaseButtonClose onPress={() => setVisible(false)}>
-          <Icon name="close" size={RFValue(16)} color={theme.colors.GRAY_800} />
-        </StyledBaseButtonClose>
         <StyledTitle>
           {t('screens.menuHome.selectLanguageModal.title')}
         </StyledTitle>
@@ -78,26 +74,6 @@ const StyledBackground = styled.Pressable`
   justify-content: center;
 
   background-color: ${({ theme }) => theme.colors.BACKGROUND_MODAL};
-`;
-
-const StyledBaseButtonClose = styled.TouchableOpacity`
-  position: absolute;
-  top: 24px;
-  right: 16px;
-
-  z-index: 1;
-
-  width: ${RFValue(24)}px;
-  height: ${RFValue(24)}px;
-
-  align-self: flex-end;
-
-  justify-content: center;
-  align-items: center;
-
-  border-radius: ${RFValue(12)}px;
-
-  background-color: ${({ theme }) => theme.colors.GRAY_100};
 `;
 
 const StyledTitle = styled.Text`

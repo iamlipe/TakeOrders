@@ -2,8 +2,8 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { FinancialHome } from '@presentational/FinancialScreen/FinancialHome';
-import { FinancialInvoicing } from '@presentational/FinancialScreen/FinancialInvoicing';
 import { FinancialProfit } from '@presentational/FinancialScreen/FinancialProfit';
+import { FinancialInvoicing } from '@presentational/FinancialScreen/FinancialInvoicing';
 import { FinancialSpending } from '@presentational/FinancialScreen/FinancialSpending';
 
 export type FinancialStackParamList = {

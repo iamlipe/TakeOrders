@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,10 +20,9 @@ import { GET_BILLS } from '@store/slices/billSlice';
 import { GET_INVOICE_ID } from '@store/slices/invoiceSlice';
 import { GET_STOCK } from '@store/slices/stockSlice';
 import { GET_SPENT } from '@store/slices/spentSlice';
+import { Bill } from '@database/models/billModel';
 
-import emptyBillsImg from '@assets/imgs/empty-bills.png';
-
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import EmptyBills from '@assets/svgs/empty-bills.svg';
@@ -36,14 +36,17 @@ import SearchInput from '@components/SearchInput';
 import Button from '@components/Button';
 import Card from '@components/Card';
 import Loading from '@components/Loading';
-import i18next from 'i18next';
+import { CREATE_CATEGORY } from '@store/slices/categorySlice';
+import Background from '@components/Background';
 
 type NavProps = NativeStackNavigationProp<BillStackParamList, 'BillDetails'>;
 
 const { height } = Dimensions.get('window');
 
 export const BillHome = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [dataBills, setDataBills] = useState<Bill[] | null>(null);
 
   const addBillBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -54,6 +57,7 @@ export const BillHome = () => {
   );
 
   const isFocused = useIsFocused();
+
   const { navigate } = useNavigation<NavProps>();
 
   const { t } = useTranslation();
@@ -61,7 +65,7 @@ export const BillHome = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - 56 - 16 - 16 - 44 - 16 - 72,
+    () => height - 120 - 32 - 56 - 16 - 16 - 44 - 32 - 72,
     [],
   );
 
@@ -93,37 +97,61 @@ export const BillHome = () => {
     getBills();
   }, [getBills]);
 
-  useEffect(() => {
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
     getBills();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getBills]);
+
+  useEffect(() => {
     getInvoiceId();
     getStockId();
     getSpentId();
-  }, [getBills, getInvoiceId, getSpentId, getStockId, isFocused]);
+  }, [getInvoiceId, getSpentId, getStockId]);
 
   useEffect(() => {
-    if (allBills && !isLoading) {
-      setTimeout(() => {
-        setShowContent(true);
-      }, 1000);
+    getBills();
+  }, [getBills, isFocused, isLoading]);
+
+  useEffect(() => {
+    if (allBills || foundBills) {
+      if (foundBills?.length) return setDataBills(foundBills);
+
+      if (allBills?.length) return setDataBills([...allBills].reverse());
+
+      return setDataBills([]);
     }
-  }, [allBills, isLoading]);
+  }, [allBills, foundBills]);
 
-  const renderContent = () => {
-    return (
-      <>
-        {showContent ? (
-          <StyledContent>
-            <SearchInput
-              placeholder={t('components.searchInput.bill')}
-              type="bills"
-            />
+  useLayoutEffect(() => {
+    if (dataBills) {
+      setTimeout(() => setShowContent(true), 1000);
+    }
+  }, [dataBills]);
 
-            {foundBills?.length || allBills?.length ? (
-              <FlatList
-                data={
-                  foundBills && foundBills.length > 0 ? foundBills : allBills
-                }
-                renderItem={({ item }) => (
+  return (
+    <Background>
+      <Header title={t('components.header.billHome')} />
+
+      {showContent ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <SearchInput
+            placeholder={t('components.searchInput.bill')}
+            type="bills"
+          />
+
+          {dataBills?.length ? (
+            <StyledContainerCardBill style={{ minHeight: heightList }}>
+              {dataBills.slice(0, 10).map(item => {
+                return (
                   <Card
                     key={item.id}
                     type="clients"
@@ -134,83 +162,54 @@ export const BillHome = () => {
                         item.name.substring(1).toLowerCase(),
                       description: item.id,
                       linkTitle: t('components.card.links.details'),
+                      image: item.image,
                       link: () => navigate('BillDetails', { bill: item }),
                     }}
                     onPress={() => navigate('BillDetails', { bill: item })}
+                    personCard
                   />
-                )}
-                keyExtractor={item => item.id}
-                style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
-                  marginVertical: 16,
-                }}
-                showsVerticalScrollIndicator={false}
-              />
-            ) : (
-              <StyledContainerEmptyBills style={{ height: heightList }}>
-                <EmptyBills width={132} height={132} />
-                <StyledTextEmptyBills>
-                  {t('screens.billHome.listBillEmpty')}
-                </StyledTextEmptyBills>
-              </StyledContainerEmptyBills>
-            )}
+                );
+              })}
+            </StyledContainerCardBill>
+          ) : (
+            <StyledContainerEmptyBills style={{ height: heightList }}>
+              <EmptyBills width={132} height={132} />
+              <StyledTextEmptyBills>
+                {t('screens.billHome.listBillEmpty')}
+              </StyledTextEmptyBills>
+            </StyledContainerEmptyBills>
+          )}
 
-            <Button
-              title={t('components.button.addBill')}
-              backgroundColor="trasparent"
-              fontColor="GRAY_800"
-              onPress={handleShowAddBillBottomSheet}
-            />
-          </StyledContent>
-        ) : (
-          <Loading />
-        )}
-      </>
-    );
-  };
-
-  return (
-    <StyledContainer
-      colors={[
-        theme.colors.BACKGROUND_WEAKYELLOW,
-        theme.colors.BACKGROUND_OFFWHITE,
-      ]}
-    >
-      <Header title={t('components.header.billHome')} />
-
-      {useMemo(renderContent, [
-        allBills,
-        foundBills,
-        handleShowAddBillBottomSheet,
-        heightList,
-        navigate,
-        showContent,
-        t,
-      ])}
+          <Button
+            title={t('components.button.addBill')}
+            onPress={handleShowAddBillBottomSheet}
+          />
+        </StyledContent>
+      ) : (
+        <Loading />
+      )}
 
       <AddBillBottomSheetModal
         ref={addBillBottomSheetModalRef}
         closeBottomSheet={handleCloseAddBillBottomSheet}
       />
-    </StyledContainer>
+    </Background>
   );
 };
 
-const StyledContainer = styled(LinearGradient)`
-  min-height: 100%;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
-const StyledContent = styled.View`
-  justify-content: space-between;
-
-  padding: 32px 0;
+const StyledContainerCardBill = styled.View`
+  margin: 16px 0;
 `;
 
 const StyledContainerEmptyBills = styled.View`
   justify-content: center;
   align-items: center;
+
+  margin: 16px 0;
 `;
 
 const StyledTextEmptyBills = styled.Text`

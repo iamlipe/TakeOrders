@@ -1,21 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styled, { useTheme } from 'styled-components/native';
 
+import { Sales as SalesModel } from '@database/models/salesModel';
+
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
+import { useReduxSelector } from '@hooks/useReduxSelector';
 import { useTranslation } from 'react-i18next';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 import { GET_SALES } from '@store/slices/saleSlice';
-import { GET_PURCHASES } from '@store/slices/purchaseSlice';
-import { GET_INVOICE, InvoiceResponse } from '@store/slices/invoiceSlice';
 
+import { RFValue } from 'react-native-responsive-fontsize';
 import { filterAllByMonth } from '@utils/filterByDate';
 
-import EmptyChart from '@assets/svgs/empty-chart-1.svg';
+import EmptyChart from '@assets/svgs/empty-chart-2.svg';
 
-import { Dimensions, FlatList, StatusBar } from 'react-native';
+import { Dimensions, RefreshControl } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -23,19 +29,21 @@ import Header from '@components/Header';
 import FinancialCard from '@components/FinancialCard';
 import Loading from '@components/Loading';
 import Overview from '@components/Overview';
+import i18next from '@i18n/index';
 
 const { height } = Dimensions.get('window');
 
 export const FinancialInvoicing = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [showContent, setShowContent] = useState(false);
-  const [invoicingFilteredByMonth, setInvoicingFilteredByMonth] = useState<
-    InvoiceResponse[][] | null
+  const [profitFilteredByMonth, setProfitFilteredByMonth] = useState<
+    SalesModel[][] | null
   >(null);
 
   const dispatch = useReduxDispatch();
 
   const { auth } = useReduxSelector(state => state.user);
-  const { allInvoicies, isLoading } = useReduxSelector(state => state.invoice);
+  const { allSales, isLoading } = useReduxSelector(state => state.sale);
 
   const isFocused = useIsFocused();
 
@@ -46,35 +54,90 @@ export const FinancialInvoicing = () => {
   const theme = useTheme();
 
   const heightList = useMemo(
-    () => height - 120 - 32 - RFValue(24) - 8 - 220 - 32 - 32 - 72,
+    () => height - 120 - RFValue(24) - 8 - 220 - 16 - 72 - 120,
     [],
   );
 
-  const getInvoicies = useCallback(() => {
+  const getSales = useCallback(() => {
     if (auth) {
-      dispatch(GET_INVOICE({ userId: auth.id }));
+      dispatch(GET_SALES({ userId: auth.id }));
     }
   }, [auth, dispatch]);
 
-  useEffect(() => {
-    getInvoicies();
-  }, [getInvoicies, isFocused]);
+  const handleDataOverview = useCallback(() => {
+    const result = profitFilteredByMonth?.map(profitMonth => {
+      return {
+        month: profitMonth.length
+          ? new Date(profitMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'numeric',
+                year: 'numeric',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'numeric',
+              year: 'numeric',
+            }),
+
+        x: profitMonth.length
+          ? new Date(profitMonth[0].createdAt).toLocaleDateString(
+              i18next.language,
+              {
+                month: 'long',
+              },
+            )
+          : new Date().toLocaleDateString(i18next.language, {
+              month: 'long',
+            }),
+
+        y: profitMonth.reduce((prev, curr) => prev + curr.totalPrice, 0),
+      };
+    });
+
+    return result || [];
+  }, [profitFilteredByMonth]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+
+    getSales();
+
+    setTimeout(() => setRefreshing(false), 1000);
+  }, [getSales]);
 
   useEffect(() => {
-    if (allInvoicies) {
+    getSales();
+  }, [getSales, isFocused, isLoading]);
+
+  useEffect(() => {
+    if (allSales?.length) {
+      const data = filterAllByMonth({
+        data: allSales,
+      }) as unknown as SalesModel[][];
+
+      setProfitFilteredByMonth(data);
+    }
+  }, [allSales]);
+
+  useLayoutEffect(() => {
+    if (allSales) {
       setTimeout(() => setShowContent(true), 1000);
     }
-  }, [allInvoicies]);
+  }, [allSales]);
 
-  useEffect(() => {
-    if (allInvoicies?.length) {
-      const data = filterAllByMonth({
-        data: allInvoicies,
-      }) as unknown as InvoiceResponse[][];
-
-      setInvoicingFilteredByMonth(data);
-    }
-  }, [allInvoicies]);
+  const renderListSales = () =>
+    allSales &&
+    [...allSales].reverse().map(item => (
+      <FinancialCard
+        key={item.id}
+        item={{
+          title: item.name,
+          date: item.createdAt,
+          price: item.totalPrice,
+        }}
+      />
+    ));
 
   return (
     <StyledContainer
@@ -89,64 +152,32 @@ export const FinancialInvoicing = () => {
       />
 
       {showContent ? (
-        <StyledContent>
-          {invoicingFilteredByMonth ? (
+        <StyledContent
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 32 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {profitFilteredByMonth ? (
             <>
               <StyledTitleOverview>
-                {t('screens.financialInvoicing.overview')}
+                {t('screens.financialProfit.overview')}
               </StyledTitleOverview>
-
-              {invoicingFilteredByMonth && (
-                <Overview
-                  data={invoicingFilteredByMonth?.map(invoicingMonth => {
-                    return {
-                      months: invoicingMonth.length
-                        ? new Date(
-                            invoicingMonth[0].createdAt,
-                          ).toLocaleDateString('pt-br', { month: 'long' })
-                        : new Date().toLocaleDateString('pt-br', {
-                            month: 'long',
-                          }),
-                      earnings: invoicingMonth.reduce(
-                        (prev, curr) => prev + curr.price,
-                        0,
-                      ),
-                    };
-                  })}
-                  type="invoicing"
-                />
-              )}
-
-              <FlatList
-                data={allInvoicies}
-                renderItem={({ item }) => (
-                  <FinancialCard
-                    key={item.id}
-                    item={{
-                      title: item.name,
-                      price: item.price,
-                      date: item.createdAt,
-                    }}
-                  />
-                )}
-                style={{
-                  height: StatusBar.currentHeight
-                    ? heightList - StatusBar.currentHeight
-                    : heightList,
-                  marginVertical: 16,
-                  paddingHorizontal: 32,
-                }}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-              />
+              <Overview data={handleDataOverview()} type="invoicing" />
+              <StyledContainerCardFinancial style={{ minHeight: heightList }}>
+                {renderListSales()}
+              </StyledContainerCardFinancial>
             </>
           ) : (
-            <StyledContainerEmptyInvoicing>
+            <StyledContainerEmptyProfit
+              style={{ height: heightList + 220 + RFValue(24) + 8 }}
+            >
               <EmptyChart width={132} height={132} />
-              <StyledTextEmptyInvoicing>
+              <StyledTextEmptyProfit>
                 {t('screens.financialInvoicing.textEmptyInvoicing')}
-              </StyledTextEmptyInvoicing>
-            </StyledContainerEmptyInvoicing>
+              </StyledTextEmptyProfit>
+            </StyledContainerEmptyProfit>
           )}
         </StyledContent>
       ) : (
@@ -160,8 +191,8 @@ const StyledContainer = styled(LinearGradient)`
   min-height: 100%;
 `;
 
-const StyledContent = styled.View`
-  padding: 32px 0;
+const StyledContent = styled.ScrollView`
+  margin-bottom: 120px;
 `;
 
 const StyledTitleOverview = styled.Text`
@@ -176,18 +207,14 @@ const StyledTitleOverview = styled.Text`
   margin-bottom: 8px;
 `;
 
-const StyledContainerEmptyInvoicing = styled.View`
-  height: ${StatusBar.currentHeight
-    ? height - StatusBar.currentHeight - 120 - 72
-    : height - 120 - 72}px;
-
+const StyledContainerEmptyProfit = styled.View`
   justify-content: center;
   align-items: center;
 
-  margin-top: -32px;
+  margin: 16px 0;
 `;
 
-const StyledTextEmptyInvoicing = styled.Text`
+const StyledTextEmptyProfit = styled.Text`
   width: 80%;
 
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
@@ -198,4 +225,8 @@ const StyledTextEmptyInvoicing = styled.Text`
   text-align: center;
 
   margin-top: 16px;
+`;
+
+const StyledContainerCardFinancial = styled.View`
+  margin: 16px 0;
 `;

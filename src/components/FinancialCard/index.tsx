@@ -15,7 +15,11 @@ const FinancialCard = ({
 }: FinancialCardProps) => {
   const theme = useTheme();
 
-  const formatedDate = new Date(date).toLocaleDateString('pt-br');
+  const formatedDate = new Date(date).toLocaleDateString('pt-br', {
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  });
 
   return (
     <StyledContainer>
@@ -49,7 +53,7 @@ const StyledContainer = styled.View`
   justify-content: space-between;
 
   padding: 2px 0;
-  margin-bottom: 16px;
+  margin: 0 32px 16px;
 `;
 
 const StyledCircle = styled.View`

@@ -3,9 +3,11 @@ import styled, { useTheme } from 'styled-components/native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useTranslation } from 'react-i18next';
+import { Dimensions } from 'react-native';
 
 interface SquareCardProps {
   item: {
+    index: number;
     name: string;
     price: string;
     image?: string;
@@ -14,8 +16,10 @@ interface SquareCardProps {
   onPress: () => void;
 }
 
+const { width } = Dimensions.get('window');
+
 const SquareCard = ({
-  item: { name, price, image },
+  item: { name, price, image, index },
   onPress,
 }: SquareCardProps) => {
   const { t } = useTranslation();
@@ -23,7 +27,13 @@ const SquareCard = ({
   const theme = useTheme();
 
   return (
-    <StyledContainer style={{ elevation: 5 }}>
+    <StyledContainer
+      style={{
+        elevation: 5,
+        marginRight: index % 2 === 0 ? (width - 64) * 0.04 : 0,
+      }}
+      onPress={onPress}
+    >
       {image ? (
         <StyledImage source={{ uri: image }} resizeMode="stretch" />
       ) : (
@@ -39,15 +49,14 @@ const SquareCard = ({
       <StyledTitle>{name}</StyledTitle>
       <StyledDescription>{price}</StyledDescription>
 
-      <StyledBaseButton onPress={onPress}>
-        <StyledLink>{t('components.squareCard.button.add')}</StyledLink>
-      </StyledBaseButton>
+      <StyledLink>{t('components.squareCard.button.add')}</StyledLink>
     </StyledContainer>
   );
 };
 
-const StyledContainer = styled.View`
-  width: 48%;
+const StyledContainer = styled.TouchableOpacity`
+  width: ${(width - 64) * 0.48}px;
+  height: ${(width - 64) * 0.48}px;
 
   border-radius: 5px;
 
@@ -57,7 +66,7 @@ const StyledContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.WHITE};
 
   padding: 16px 8px;
-  margin-bottom: 8px;
+  margin-bottom: ${width * 0.04}px;
 `;
 
 const StyledImage = styled.Image`
@@ -92,10 +101,6 @@ const StyledDescription = styled(StyledTitle)`
   margin-top: 0px;
 `;
 
-const StyledBaseButton = styled.TouchableOpacity`
-  margin-top: 8px;
-`;
-
 const StyledLink = styled.Text`
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
   font-size: ${({ theme }) => theme.sizing.SMALLEST};
@@ -103,6 +108,8 @@ const StyledLink = styled.Text`
   color: ${({ theme }) => theme.colors.SECUNDARY_600};
 
   text-decoration: underline;
+
+  margin-top: 8px;
 `;
 
 export default memo(SquareCard);

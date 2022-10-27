@@ -15,7 +15,7 @@ import { CREATE_EXPANSE_PURCHASE } from '@store/slices/purchaseSlice';
 
 import { formatedValue } from '@utils/formatedValueString';
 
-import { Keyboard } from 'react-native';
+import { Dimensions, Keyboard } from 'react-native';
 import { BottomSheetScrollView, BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -60,6 +60,8 @@ const arrNumPad = [
   'enter',
 ];
 
+const { height } = Dimensions.get('window');
+
 const AddPurchaseBottomSheetModal = forwardRef<
   BottomSheetModal,
   AddPurchaseBottomSheetModalProps
@@ -75,7 +77,7 @@ const AddPurchaseBottomSheetModal = forwardRef<
 
   const theme = useTheme();
 
-  const snapPointHeigth = useMemo(() => ['90%'], []);
+  const snapPointHeigth = useMemo(() => [height - 40], []);
 
   const schema = useMemo(
     () =>
@@ -132,9 +134,11 @@ const AddPurchaseBottomSheetModal = forwardRef<
           icon === 'enter'
             ? handleSubmit(onSubmit)
             : () => {
-                if (!isNaN(Number(text))) setValue(value + text);
-                if (icon === 'backspace' && value !== '0')
-                  setValue(value.substring(0, value.length - 1));
+                if ((value === '0' && text !== '0') || value !== '0') {
+                  if (!isNaN(Number(text))) setValue(value + text);
+                  if (icon === 'backspace' && value !== '0')
+                    setValue(value.substring(0, value.length - 1));
+                }
               }
         }
         backgroundColor={icon === 'enter' ? 'PRIMARY_500' : 'PRIMARY_200'}
