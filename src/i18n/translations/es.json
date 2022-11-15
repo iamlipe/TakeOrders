@@ -52,7 +52,8 @@
         "delete": "Eliminar",
         "logout": "Sí, desconéctame",
         "edit": "Editar",
-        "seeBag": "Ver bolsa"
+        "seeBag": "Ver bolsa",
+        "login": "Iniciar sesión"
       },
 
       "bigButton": {

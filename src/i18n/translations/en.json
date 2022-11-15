@@ -52,7 +52,8 @@
         "delete": "Delete",
         "logout": "Yes, log me out",
         "edit": "Edit",
-        "seeBag": "See bag"
+        "seeBag": "See bag",
+        "login": "Login"
       },
 
       "bigButton": {
@@ -88,7 +89,7 @@
         "billHome": "Bills",
         "billAddProducts": "Add products",
 
-        "stockHome": "Stock",
+        "stockHome": "Products",
         "stockRegisterProduct": "Register product",
         "stockEditProduct": "Edit product",
         "stockDetailsProduct": "Product details",

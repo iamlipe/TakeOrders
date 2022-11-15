@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import styled, { css, useTheme } from 'styled-components/native';
+import { ViewStyle } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '@styles/colors';
@@ -65,6 +66,7 @@ interface Props {
     color: keyof typeof colors;
   };
   onPress: () => void;
+  containerStyle?: ViewStyle;
   loading?: boolean;
 }
 
@@ -76,6 +78,7 @@ const Button = ({
   icon,
   title,
   loading,
+  containerStyle = {},
   onPress,
 }: Props) => {
   const theme = useTheme();
@@ -85,6 +88,7 @@ const Button = ({
       background={backgroundColor}
       align={align}
       onPress={onPress}
+      style={containerStyle}
     >
       {loading && !icon ? (
         <StyledLoading color="white" size="small" />

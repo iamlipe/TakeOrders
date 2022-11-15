@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
+import { StatusBar } from 'react-native';
+
 import i18next from 'i18next';
 
 import { mySync } from '@database/index';
+import { User } from '@database/models/userModel';
 
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
@@ -12,13 +15,11 @@ import { LOGIN } from '@store/slices/userSlice';
 
 import Wallpaper from '@assets/svgs/wallpaper-login.svg';
 
-import { StatusBar } from 'react-native';
-
 import Button from '@components/Button';
 import Loading from '@presentational/LoginScreen/Loading';
-import { User } from '@database/models/userModel';
+import RowOr from '@components/RowOr';
 
-export const Login = () => {
+export const LoginOrRegister = () => {
   const [loadingRemember, setLoadingRemember] = useState(true);
   const [loadingLogin, setLoadingLogin] = useState(false);
 
@@ -30,7 +31,7 @@ export const Login = () => {
 
   const theme = useTheme();
 
-  StatusBar.setBackgroundColor(theme.colors.PRIMARY_600);
+  StatusBar.setBackgroundColor(theme.colors.PRIMARY_200);
 
   const login = useCallback(
     ({ email, password }: { email: string; password: string }) => {
@@ -82,19 +83,34 @@ export const Login = () => {
 
   return (
     <StyledContainer>
-      <Wallpaper />
+      <StyleWallpaper />
 
-      <StyledColumn>
+      <StyledContent>
+        <Button
+          title={t('components.button.login')}
+          onPress={() => null}
+          containerStyle={{ marginBottom: 8 }}
+        />
+
+        <Button
+          title={t('components.button.register')}
+          onPress={() => null}
+          backgroundColor="trasparent"
+          fontColor="GRAY_800"
+        />
+
+        <RowOr />
+
         <Button
           title={t('components.button.loginWithoutRegister')}
-          icon={{ name: 'arrow-forward', color: 'WHITE' }}
-          align="spaceBetween"
           onPress={() =>
             login({ email: 'default@email.com', password: 'default@123' })
           }
           loading={loadingLogin}
+          backgroundColor="trasparent"
+          fontColor="GRAY_800"
         />
-      </StyledColumn>
+      </StyledContent>
     </StyledContainer>
   );
 };
@@ -107,11 +123,13 @@ const StyledContainer = styled.View`
   align-items: center;
   align-self: center;
 
-  background-color: ${({ theme }) => theme.colors.PRIMARY_600};
+  background-color: ${({ theme }) => theme.colors.PRIMARY_200};
 `;
 
-const StyledColumn = styled.View`
-  width: 100%;
+const StyleWallpaper = styled(Wallpaper)`
+  margin-bottom: 24px;
+`;
 
-  margin-top: 100px;
+const StyledContent = styled.View`
+  width: 100%;
 `;

@@ -52,7 +52,8 @@
         "delete": "Excluir",
         "logout": "Sim, desconecte-me",
         "edit": "Editar",
-        "seeBag": "Ver sacola"
+        "seeBag": "Ver sacola",
+        "login": "Entrar"
       },
 
       "bigButton": {
@@ -88,7 +89,7 @@
         "billHome": "Comandas",
         "billAddProducts": "Adicionar produtos",
 
-        "stockHome": "Estoque",
+        "stockHome": "Produtos",
         "stockRegisterProduct": "Cadastrar produto",
         "stockEditProduct": "Editar produto",
         "stockDetailsProduct": "Detalhes do produto",
