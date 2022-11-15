@@ -30,6 +30,10 @@ build/
 local.properties
 *.iml
 *.hprof
+*.jks
+*.pem
+*.aab
+*.apk
 
 # node.js
 #
