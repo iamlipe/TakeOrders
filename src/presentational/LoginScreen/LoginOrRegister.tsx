@@ -21,7 +21,7 @@ import Button from '@components/Button';
 import Loading from '@presentational/LoginScreen/Loading';
 import RowOr from '@components/RowOr';
 
-type NavProps = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+type NavProps = NativeStackNavigationProp<AuthStackParamList>;
 
 export const LoginOrRegister = () => {
   const [loadingRemember, setLoadingRemember] = useState(true);
@@ -39,6 +39,10 @@ export const LoginOrRegister = () => {
 
   const navigateToLogin = useCallback(() => {
     navigate('Login');
+  }, [navigate]);
+
+  const navigateToRegister = useCallback(() => {
+    navigate('Register');
   }, [navigate]);
 
   const login = useCallback(
@@ -102,7 +106,7 @@ export const LoginOrRegister = () => {
 
         <Button
           title={t('components.button.register')}
-          onPress={() => null}
+          onPress={navigateToRegister}
           backgroundColor="trasparent"
           fontColor="GRAY_800"
         />

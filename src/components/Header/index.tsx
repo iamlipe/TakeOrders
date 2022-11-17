@@ -21,7 +21,7 @@ const typeContainerHeader = {
   `,
 
   justBackButton: css`
-    height: 60px;
+    height: 100px;
 
     justify-content: center;
   `,
@@ -168,7 +168,7 @@ const StyledBaseButton = styled.TouchableOpacity`
 `;
 
 const StyledTextButton = styled.Text<TextButtonProps>`
-  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
+  font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
   font-size: ${({ theme }) => theme.sizing.MINOR};
 
   color: ${({ color }) => color};

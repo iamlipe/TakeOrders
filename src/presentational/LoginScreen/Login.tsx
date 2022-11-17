@@ -37,14 +37,7 @@ export const Login = () => {
         type="justBackButton"
       />
 
-      <StyledContent
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingVertical: 16,
-          justifyContent: 'space-between',
-          minHeight: height - 92,
-        }}
-      >
+      <StyledContent showsVerticalScrollIndicator={false}>
         <StyledContainerIntroduction>
           <StyledTitle>Fazer login</StyledTitle>
           <StyledSubtitle>
