@@ -122,9 +122,7 @@ const StyledBackground = styled.Pressable`
 `;
 
 const StyledContainerSelect = styled.View`
-  margin: 0 32px;
-
-  margin-bottom: 12px;
+  margin: 0 32px 12px;
 `;
 
 const StyledContent = styled.Pressable`
