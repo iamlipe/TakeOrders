@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import React, { forwardRef, memo, useCallback, useEffect } from 'react';
+import React, { forwardRef, memo } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TextInputProps } from 'react-native';
@@ -9,14 +9,8 @@ import {
   TextInputMaskTypeProp,
   TextInputMaskOptionProp,
 } from 'react-native-masked-text';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
 
 import { useController } from 'react-hook-form';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 interface InputProps extends TextInputProps {
   name: string;
@@ -77,9 +71,7 @@ const Input = forwardRef<any, InputProps>(
 );
 
 const StyledContainer = styled.View`
-  margin: 0 32px;
-
-  margin-bottom: 12px;
+  margin: 0 32px 12px;
 `;
 
 const StyledContent = styled.View`

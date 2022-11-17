@@ -55,6 +55,7 @@ export const BillHome = () => {
   const { allBills, foundBills, isLoading } = useReduxSelector(
     state => state.bill,
   );
+  const { stockId } = useReduxSelector(state => state.stock);
 
   const isFocused = useIsFocused();
 

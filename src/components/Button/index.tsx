@@ -65,6 +65,7 @@ interface Props {
     name: string;
     color: keyof typeof colors;
   };
+  IconComponent?: () => JSX.Element;
   onPress: () => void;
   containerStyle?: ViewStyle;
   loading?: boolean;
@@ -78,6 +79,7 @@ const Button = ({
   icon,
   title,
   loading,
+  IconComponent,
   containerStyle = {},
   onPress,
 }: Props) => {
@@ -88,8 +90,10 @@ const Button = ({
       background={backgroundColor}
       align={align}
       onPress={onPress}
-      style={containerStyle}
+      style={[containerStyle, { elevation: 1 }]}
     >
+      {IconComponent && <IconComponent />}
+
       {loading && !icon ? (
         <StyledLoading color="white" size="small" />
       ) : (
@@ -122,7 +126,7 @@ const StyledContainer = styled.TouchableOpacity<ButtonContainerProps>`
   flex-direction: row;
   align-items: center;
 
-  border-radius: 10px;
+  border-radius: 8px;
 
   padding: 8px 12px;
   margin: 0 32px;

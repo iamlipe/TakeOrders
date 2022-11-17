@@ -16,7 +16,6 @@
       "created": [
         { 
           "id": "1",
-          "userId": "1",
           "name": "default",
           "password": "default@123",
           "email": "default@email.com",

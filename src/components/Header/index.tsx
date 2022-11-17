@@ -19,6 +19,12 @@ const typeContainerHeader = {
     flex-direction: column;
     justify-content: space-evenly;
   `,
+
+  justBackButton: css`
+    height: 60px;
+
+    justify-content: center;
+  `,
 };
 
 const typeTitleHeader = {
@@ -56,9 +62,13 @@ interface HeaderTitleProps {
   type: keyof typeof typeTitleHeader;
 }
 
+interface TextButtonProps {
+  color: keyof typeof colors;
+}
+
 interface HeaderProps {
-  title: string;
-  type?: 'normal' | 'small';
+  title?: string;
+  type?: keyof typeof typeContainerHeader;
   backgroundColor?: keyof typeof colors;
   onPress?: () => void;
 }
@@ -87,19 +97,26 @@ const Header = ({
     return false;
   }, [type]);
 
+  const handleColorBackButton = useCallback(() => {
+    if (backgroundColor === 'BACKGROUND_TRANSPARENT')
+      return theme.colors.PRIMARY_TEXT;
+
+    return theme.colors.WHITE;
+  }, [backgroundColor, theme.colors.PRIMARY_TEXT, theme.colors.WHITE]);
+
   return (
     <StyledContainer type={type} background={backgroundColor}>
       {onPress && (
         <StyledBaseButton onPress={onPress}>
-          <Icon name="angle-left" color={theme.colors.WHITE} size={16} />
+          <Icon name="angle-left" color={handleColorBackButton()} size={16} />
 
-          <StyledTextButton>
+          <StyledTextButton color={handleColorBackButton}>
             {t('components.header.backButton').toUpperCase()}
           </StyledTextButton>
         </StyledBaseButton>
       )}
 
-      <StyledTitle type={handleTypeTitle()}>{title}</StyledTitle>
+      {title && <StyledTitle type={handleTypeTitle()}>{title}</StyledTitle>}
 
       {handleTypeShareButton() && (
         <StyledBaseButton style={{ opacity: type === 'small' ? 0 : 1 }}>
@@ -130,7 +147,7 @@ const StyledContainer = styled.View<ContainerProps>`
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 
-  padding: 8px 16px;
+  padding: 8px 32px;
 `;
 
 const StyledTitle = styled.Text<HeaderTitleProps>`
@@ -140,8 +157,6 @@ const StyledTitle = styled.Text<HeaderTitleProps>`
     `};
 
   font-family: ${({ theme }) => theme.fonts.HEEBO_MEDIUM};
-
-  padding: 0 16px;
 `;
 
 const StyledBaseButton = styled.TouchableOpacity`
@@ -152,11 +167,11 @@ const StyledBaseButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const StyledTextButton = styled.Text`
+const StyledTextButton = styled.Text<TextButtonProps>`
   font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
   font-size: ${({ theme }) => theme.sizing.MINOR};
 
-  color: ${({ theme }) => theme.colors.WHITE};
+  color: ${({ color }) => color};
 
   margin-left: 5px;
 `;

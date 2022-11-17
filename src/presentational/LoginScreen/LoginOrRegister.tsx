@@ -1,15 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components/native';
-import { StatusBar } from 'react-native';
 
 import i18next from 'i18next';
 
 import { mySync } from '@database/index';
 import { User } from '@database/models/userModel';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@routes/stacks/AuthStack';
 
 import { useReduxDispatch } from '@hooks/useReduxDispatch';
 import { useTranslation } from 'react-i18next';
 import { useUserStorage } from '@hooks/useUserStorage';
+import { useNavigation } from '@react-navigation/native';
 
 import { LOGIN } from '@store/slices/userSlice';
 
@@ -19,9 +21,13 @@ import Button from '@components/Button';
 import Loading from '@presentational/LoginScreen/Loading';
 import RowOr from '@components/RowOr';
 
+type NavProps = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+
 export const LoginOrRegister = () => {
   const [loadingRemember, setLoadingRemember] = useState(true);
   const [loadingLogin, setLoadingLogin] = useState(false);
+
+  const { navigate } = useNavigation<NavProps>();
 
   const userStorage = useUserStorage();
 
@@ -31,7 +37,9 @@ export const LoginOrRegister = () => {
 
   const theme = useTheme();
 
-  StatusBar.setBackgroundColor(theme.colors.PRIMARY_200);
+  const navigateToLogin = useCallback(() => {
+    navigate('Login');
+  }, [navigate]);
 
   const login = useCallback(
     ({ email, password }: { email: string; password: string }) => {
@@ -88,7 +96,7 @@ export const LoginOrRegister = () => {
       <StyledContent>
         <Button
           title={t('components.button.login')}
-          onPress={() => null}
+          onPress={navigateToLogin}
           containerStyle={{ marginBottom: 8 }}
         />
 

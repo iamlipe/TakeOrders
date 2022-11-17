@@ -15,7 +15,7 @@ const RowOr = () => {
 };
 
 const StyledContainer = styled.View`
-  height: 40px;
+  height: 48px;
 
   align-items: center;
   justify-content: center;
