@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useCallback } from 'react';
 import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TextInputProps } from 'react-native';
@@ -19,15 +19,28 @@ interface InputProps extends TextInputProps {
   error?: string;
   type?: TextInputMaskTypeProp;
   options?: TextInputMaskOptionProp;
+  onChangeText?: (text: string) => void;
 }
 
 const Input = forwardRef<any, InputProps>(
-  ({ name, control, label, error, type, options, ...rest }, ref) => {
+  (
+    { name, control, label, error, type, options, onChangeText, ...rest },
+    ref,
+  ) => {
     const theme = useTheme();
 
     const {
       field: { onChange, value },
     } = useController({ name, control });
+
+    const handleText = useCallback(
+      (text: string) => {
+        onChange(text);
+
+        if (onChangeText) onChangeText(text);
+      },
+      [onChange, onChangeText],
+    );
 
     return (
       <StyledContainer>
@@ -39,7 +52,7 @@ const Input = forwardRef<any, InputProps>(
                 ref={ref}
                 type={type}
                 options={options}
-                onChangeText={onChange}
+                onChangeText={handleText}
                 placeholder={label}
                 placeholderTextColor={theme.colors.GRAY_600}
                 value={value}
@@ -48,7 +61,7 @@ const Input = forwardRef<any, InputProps>(
               <StyledInputText
                 {...rest}
                 ref={ref}
-                onChangeText={onChange}
+                onChangeText={handleText}
                 placeholder={label}
                 placeholderTextColor={theme.colors.GRAY_600}
                 value={value}
