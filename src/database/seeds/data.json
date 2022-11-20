@@ -16,17 +16,48 @@
       "created": [
         { 
           "id": "1",
-          "userId": "1",
           "name": "default",
           "password": "default@123",
           "email": "default@email.com",
           "phone": "11111111111"
         }
       ],
-
       "updated": [],
       "deleted": []
-    } 
+    },
+
+    "stock": {
+      "created": [
+        {
+          "id": "1",
+          "userId": "1"
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    },
+
+    "spending": {
+      "created": [
+        {
+          "id": "1",
+          "userId": "1"
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    },
+
+    "invoicing": {
+      "created": [
+        {
+          "id": "1",
+          "userId": "1"
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    }
   },
 
   "timestamp": 1000
