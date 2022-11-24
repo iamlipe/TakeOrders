@@ -7,19 +7,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { Keyboard, useWindowDimensions } from 'react-native';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@routes/stacks/AuthStack';
-
-import { Keyboard } from 'react-native';
-
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Header from '@components/Header';
 import Background from '@components/Background';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import Checkbox from '@components/Checkbox';
+import Title from '@components/Title';
+import Subtitle from '@components/Subtitle';
+import { GlobalStackParamList } from '@routes/stacks/GlobalStack';
 
 interface FormRegister {
   firstName: string;
@@ -30,57 +30,18 @@ interface FormRegister {
   confirmPassword: string;
 }
 
-interface ValidatePassword {
-  key: number;
-  validate:
-    | 'atLeastEightChar'
-    | 'atLeastOneUpperCaseWord'
-    | 'atLeastOneNumber'
-    | 'atLeastOneSpecialChar';
-  description: string;
-}
-
-type NavProps = NativeStackNavigationProp<AuthStackParamList>;
+type NavPropsAuthStack = NativeStackNavigationProp<AuthStackParamList>;
+type NavPropsGlobalStack = NativeStackNavigationProp<GlobalStackParamList>;
 
 export const Register = () => {
-  const [validatePassword, setValidatePassword] = useState({
-    atLeastEightChar: false,
-    atLeastOneUpperCaseWord: false,
-    atLeastOneNumber: false,
-    atLeastOneSpecialChar: false,
-  });
+  const { height } = useWindowDimensions();
 
-  const { goBack, navigate } = useNavigation<NavProps>();
+  const { goBack, navigate: navigateAuthStack } =
+    useNavigation<NavPropsAuthStack>();
+  const { navigate: navigateGlobalStack } =
+    useNavigation<NavPropsGlobalStack>();
 
   const { t } = useTranslation();
-
-  const theme = useTheme();
-
-  const dataValidatePassword: ValidatePassword[] = useMemo(
-    () => [
-      {
-        key: 0,
-        validate: 'atLeastEightChar',
-        description: 'deve conter ao menos 8 caracteres',
-      },
-      {
-        key: 1,
-        validate: 'atLeastOneUpperCaseWord',
-        description: 'deve conter ao menos 1 letra minúscula',
-      },
-      {
-        key: 2,
-        validate: 'atLeastOneNumber',
-        description: 'deve conter ao menos 1 número',
-      },
-      {
-        key: 3,
-        validate: 'atLeastOneSpecialChar',
-        description: 'deve conter ao menos 1 caractere especial',
-      },
-    ],
-    [],
-  );
 
   const schema = useMemo(
     () =>
@@ -116,71 +77,52 @@ export const Register = () => {
   });
 
   const navigateToLogin = useCallback(() => {
-    navigate('Login');
-  }, [navigate]);
+    navigateAuthStack('Login');
+  }, [navigateAuthStack]);
 
-  const handleValidatePassword = useCallback(
-    (text: string) => {
-      if (text.match(/^.{8,}$/)) {
-        setValidatePassword({ ...validatePassword, atLeastEightChar: true });
-      } else {
-        setValidatePassword({ ...validatePassword, atLeastEightChar: false });
-      }
+  const navigateToVerifyPhoneOrEmail = useCallback(() => {
+    navigateGlobalStack('VerifyPhoneOrEmail');
+  }, [navigateGlobalStack]);
+
+  const onSubmit = useCallback(
+    (data: FormRegister) => {
+      navigateToVerifyPhoneOrEmail();
     },
-    [validatePassword],
+    [navigateToVerifyPhoneOrEmail],
   );
-
-  const onSubmit = useCallback((data: FormRegister) => {
-    console.log(data);
-  }, []);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        firstName: undefined,
-        lastName: undefined,
-        email: undefined,
-        phone: undefined,
-        password: undefined,
-        confirmPassword: undefined,
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: '',
       });
 
       Keyboard.dismiss();
     }
   }, [isSubmitSuccessful, reset]);
 
-  const renderItemValidatePassword = ({
-    key,
-    validate,
-    description,
-  }: ValidatePassword) => {
-    const isValid = validatePassword[validate];
-
-    return (
-      <StyledRowValidatePassword key={key}>
-        <Icon
-          name={isValid ? 'check-circle-outline' : 'remove-circle-outline'}
-          color={isValid ? theme.colors.SUCCESS_600 : theme.colors.ERROR_300}
-          size={16}
-        />
-        <StyledTextValidatePassword>{description}</StyledTextValidatePassword>
-      </StyledRowValidatePassword>
-    );
-  };
-
   return (
     <Background>
-      <Header
-        onPress={goBack}
-        backgroundColor="BACKGROUND_TRANSPARENT"
-        type="justBackButton"
-      />
-
-      <StyledContent showsVerticalScrollIndicator={false}>
+      <StyledContent
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          height: height - 24,
+        }}
+      >
+        <Header
+          onPress={goBack}
+          backgroundColor="BACKGROUND_TRANSPARENT"
+          type="justBackButton"
+        />
         <StyledContainerIntroduction>
-          <StyledTitle>Register</StyledTitle>
+          <Title>Register</Title>
           <StyledRowSubtitle>
-            <StyledSubtitle>{'Você já tem uma conta? '}</StyledSubtitle>
+            <Subtitle>{'Você já tem uma conta? '}</Subtitle>
             <StyledButtonLinkLogin onPress={navigateToLogin}>
               <StyledTextLinkLogin>Faça login</StyledTextLinkLogin>
             </StyledButtonLinkLogin>
@@ -218,20 +160,16 @@ export const Register = () => {
             control={control}
             label="Senha"
             error={isSubmitted ? errors.password?.message : ''}
-            onChangeText={handleValidatePassword}
+            passowrd
+            secureTextEntry
           />
-
-          <StyledContainerValidatePassword>
-            {dataValidatePassword.map(validate =>
-              renderItemValidatePassword(validate),
-            )}
-          </StyledContainerValidatePassword>
 
           <Input
             name="confirmPassword"
             control={control}
             label="Confirmar senha"
             error={isSubmitted ? errors.confirmPassword?.message : ''}
+            secureTextEntry
           />
         </StyledContainerFormRegister>
 
@@ -245,27 +183,13 @@ export const Register = () => {
 
 const StyledContent = styled.ScrollView``;
 
-const StyledTitle = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
-  font-size: ${({ theme }) => theme.sizing.LARGE};
-
-  color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
-
-  margin: 0 32px 8px;
-`;
-
-const StyledSubtitle = styled.Text`
-  font-family: ${({ theme }) => theme.fonts.HEEBO_REGULAR};
-  font-size: ${({ theme }) => theme.sizing.SMALLER};
-
-  color: ${({ theme }) => theme.colors.SECUNDARY_TEXT};
-`;
-
 const StyledContainerIntroduction = styled.View`
   margin-bottom: 48px;
 `;
 
-const StyledContainerFormRegister = styled(StyledContainerIntroduction)``;
+const StyledContainerFormRegister = styled.View`
+  margin-bottom: 16px;
+`;
 
 const StyledRowSubtitle = styled.View`
   flex-direction: row;
@@ -280,24 +204,4 @@ const StyledTextLinkLogin = styled.Text`
   font-size: ${({ theme }) => theme.sizing.SMALLER};
 
   color: ${({ theme }) => theme.colors.PRIMARY_500};
-`;
-
-const StyledContainerValidatePassword = styled.View`
-  margin: 0 32px 12px;
-`;
-
-const StyledRowValidatePassword = styled.View`
-  flex-direction: row;
-
-  align-items: center;
-
-  margin-bottom: 2px;
-`;
-
-const StyledTextValidatePassword = styled.Text`
-  font-size: ${({ theme }) => theme.sizing.SMALLEST};
-
-  color: ${({ theme }) => theme.colors.PRIMARY_TEXT};
-
-  margin-left: 2px;
 `;

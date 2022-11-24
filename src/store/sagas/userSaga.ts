@@ -1,4 +1,4 @@
-import { takeLatest, all, put, call } from 'redux-saga/effects';
+import { takeLatest, all, put, call, take } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { UserUseCase } from '@database/useCase/usersUseCase';
@@ -12,6 +12,9 @@ import {
   GET_DEFAULT_USER,
   GET_DEFAULT_USER_FAILURE,
   GET_DEFAULT_USER_SUCCESS,
+  GET_FIRST_ACCESS,
+  GET_FIRST_ACCESS_FAILURE,
+  GET_FIRST_ACCESS_SUCCESS,
   Login,
   LOGIN,
   LOGIN_FAILURE,
@@ -112,11 +115,25 @@ export function* logout() {
   }
 }
 
+export function* getFirstAccess() {
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const userStorage = useUserStorage();
+
+    const firstAccess: boolean = yield call(userStorage.read, 'firstAccessApp');
+
+    yield put(GET_FIRST_ACCESS_SUCCESS({ firstAccess: firstAccess || false }));
+  } catch (error) {
+    yield put(GET_FIRST_ACCESS_FAILURE({ error: 'something went wrong' }));
+  }
+}
+
 export default function* watcher() {
   yield all([
     takeLatest(LOGIN, login),
     takeLatest(REGISTER, register),
     takeLatest(GET_DEFAULT_USER, getDefaultUser),
     takeLatest(LOGOUT, logout),
+    takeLatest(GET_FIRST_ACCESS, getFirstAccess),
   ]);
 }
