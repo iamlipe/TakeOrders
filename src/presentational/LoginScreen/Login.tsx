@@ -14,6 +14,8 @@ import Header from '@components/Header';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import RowOr from '@components/RowOr';
+import Title from '@components/Title';
+import Subtitle from '@components/Subtitle';
 
 interface FormLogin {
   email: string;
@@ -31,25 +33,20 @@ export const Login = () => {
 
   return (
     <Background>
-      <Header
-        onPress={goBack}
-        backgroundColor="BACKGROUND_TRANSPARENT"
-        type="justBackButton"
-      />
-
       <StyledContent
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingVertical: 16,
-          justifyContent: 'space-between',
-          minHeight: height - 92,
+          height: height - 24,
         }}
       >
+        <Header
+          onPress={goBack}
+          backgroundColor="BACKGROUND_TRANSPARENT"
+          type="justBackButton"
+        />
         <StyledContainerIntroduction>
-          <StyledTitle>Fazer login</StyledTitle>
-          <StyledSubtitle>
-            Insira suas credenciais para continuar
-          </StyledSubtitle>
+          <Title>Fazer login</Title>
+          <Subtitle>Insira suas credenciais para continuar</Subtitle>
         </StyledContainerIntroduction>
 
         <StyledContainerFormLogin>

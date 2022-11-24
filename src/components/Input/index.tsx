@@ -1,16 +1,43 @@
 /* eslint-disable react/display-name */
 
-import React, { forwardRef, memo } from 'react';
-import styled, { useTheme } from 'styled-components/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { TextInputProps } from 'react-native';
+import React, { forwardRef, memo, useCallback, useState } from 'react';
+import styled, { useTheme, css } from 'styled-components/native';
+
+import { useController } from 'react-hook-form';
+
+import { Dimensions, TextInputProps, ViewStyle } from 'react-native';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   TextInputMask,
   TextInputMaskTypeProp,
   TextInputMaskOptionProp,
 } from 'react-native-masked-text';
 
-import { useController } from 'react-hook-form';
+import StrenghtPassword from './StrenghtPassword';
+
+const { width } = Dimensions.get('window');
+
+const containerType = {
+  full: css`
+    margin: 0 32px 12px;
+  `,
+
+  firstHalf: css`
+    width: ${(width - 64) * 0.49}px;
+    margin: 0 0 12px 32px;
+  `,
+
+  secondHalf: css`
+    width: ${(width - 64) * 0.49}px;
+    margin: 0 32px 12px 0;
+  `,
+};
+
+interface ContainerProps {
+  box: keyof typeof containerType;
+}
 
 interface InputProps extends TextInputProps {
   name: string;
@@ -19,19 +46,58 @@ interface InputProps extends TextInputProps {
   error?: string;
   type?: TextInputMaskTypeProp;
   options?: TextInputMaskOptionProp;
+  passowrd?: boolean;
+  secureTextEntry?: boolean;
+  containerStyle?: ViewStyle;
+  box?: keyof typeof containerType;
 }
 
 const Input = forwardRef<any, InputProps>(
-  ({ name, control, label, error, type, options, ...rest }, ref) => {
+  (
+    {
+      name,
+      control,
+      label,
+      error,
+      type,
+      options,
+      passowrd = false,
+      secureTextEntry = false,
+      containerStyle = {},
+      box = 'full',
+      ...rest
+    },
+    ref,
+  ) => {
+    const [securityText, setSecurityText] = useState(secureTextEntry);
+    const [showRequirementsPassword, setShowRequirementsPassoword] =
+      useState(false);
+
     const theme = useTheme();
 
     const {
       field: { onChange, value },
     } = useController({ name, control });
 
+    const handleText = useCallback(
+      (text: string) => {
+        onChange(text);
+      },
+      [onChange],
+    );
+
+    const handleShowRequirementsPassword = useCallback(
+      (show: boolean) => {
+        if (passowrd) {
+          setShowRequirementsPassoword(show);
+        }
+      },
+      [passowrd],
+    );
+
     return (
-      <StyledContainer>
-        <StyledContent style={{ elevation: 2 }}>
+      <StyledContainer box={box} style={[containerStyle]}>
+        <StyledContent style={{ elevation: 1 }}>
           <StyledRow>
             {type ? (
               <StyledInputMask
@@ -39,7 +105,9 @@ const Input = forwardRef<any, InputProps>(
                 ref={ref}
                 type={type}
                 options={options}
-                onChangeText={onChange}
+                onChangeText={handleText}
+                onFocus={() => handleShowRequirementsPassword(true)}
+                onBlur={() => handleShowRequirementsPassword(false)}
                 placeholder={label}
                 placeholderTextColor={theme.colors.GRAY_600}
                 value={value}
@@ -48,30 +116,53 @@ const Input = forwardRef<any, InputProps>(
               <StyledInputText
                 {...rest}
                 ref={ref}
-                onChangeText={onChange}
+                onChangeText={handleText}
                 placeholder={label}
                 placeholderTextColor={theme.colors.GRAY_600}
+                onFocus={() => handleShowRequirementsPassword(true)}
+                onBlur={() => handleShowRequirementsPassword(false)}
+                secureTextEntry={securityText}
                 value={value}
               />
             )}
 
+            {secureTextEntry && (
+              <StyledBaseButton onPress={() => setSecurityText(!securityText)}>
+                <Ionicons
+                  name={securityText ? 'eye' : 'eye-off'}
+                  size={18}
+                  color={theme.colors.GRAY_600}
+                  style={{ marginHorizontal: 2 }}
+                />
+              </StyledBaseButton>
+            )}
+
             {error && (
-              <StyledIconError
+              <MaterialIcons
                 name="error-outline"
-                size={16}
+                size={18}
                 color={theme.colors.ERROR_300}
+                style={{ marginHorizontal: 2, alignSelf: 'center' }}
               />
             )}
           </StyledRow>
         </StyledContent>
-        {error && <StyledError>{error}</StyledError>}
+
+        {error && !passowrd && <StyledError>{error}</StyledError>}
+
+        {showRequirementsPassword && passowrd && (
+          <StrenghtPassword password={value} />
+        )}
       </StyledContainer>
     );
   },
 );
 
-const StyledContainer = styled.View`
-  margin: 0 32px 12px;
+const StyledContainer = styled.View<ContainerProps>`
+  ${({ box }) =>
+    css`
+      ${containerType[box]},
+    `};
 `;
 
 const StyledContent = styled.View`
@@ -124,8 +215,8 @@ const StyledError = styled.Text`
   margin: 0;
 `;
 
-const StyledIconError = styled(Icon)`
-  align-self: center;
+const StyledBaseButton = styled.TouchableOpacity`
+  justify-content: center;
 `;
 
 export default memo(Input);

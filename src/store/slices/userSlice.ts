@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { State } from 'react-native-gesture-handler';
 
 export interface Login {
   email: string;
@@ -26,6 +27,8 @@ interface UserState {
 
   auth: User | null;
   defaultUser: User | null;
+
+  firstAccess: boolean | null;
 }
 
 const initialState: UserState = {
@@ -34,6 +37,8 @@ const initialState: UserState = {
 
   auth: null,
   defaultUser: null,
+
+  firstAccess: null,
 };
 
 const userSlice = createSlice({
@@ -114,11 +119,41 @@ const userSlice = createSlice({
       error: null,
     }),
 
-    LOGOUT_SUCCESS: () => ({
-      ...initialState,
+    LOGOUT_SUCCESS: state => ({
+      ...state,
+      isLoading: false,
+
+      auth: null,
+      defaultUser: null,
     }),
 
     LOGOUT_FAILURE: (
+      state,
+      { payload: { error } }: PayloadAction<{ error: string }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error,
+    }),
+
+    GET_FIRST_ACCESS: state => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    }),
+
+    GET_FIRST_ACCESS_SUCCESS: (
+      state,
+      { payload: { firstAccess } }: PayloadAction<{ firstAccess: boolean }>,
+    ) => ({
+      ...state,
+      isLoading: false,
+      error: null,
+
+      firstAccess,
+    }),
+
+    GET_FIRST_ACCESS_FAILURE: (
       state,
       { payload: { error } }: PayloadAction<{ error: string }>,
     ) => ({
@@ -146,6 +181,9 @@ export const {
   LOGOUT,
   LOGOUT_SUCCESS,
   LOGOUT_FAILURE,
+  GET_FIRST_ACCESS,
+  GET_FIRST_ACCESS_SUCCESS,
+  GET_FIRST_ACCESS_FAILURE,
 } = actions;
 
 export default reducer;

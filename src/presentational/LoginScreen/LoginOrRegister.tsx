@@ -3,8 +3,6 @@ import styled, { useTheme } from 'styled-components/native';
 
 import i18next from 'i18next';
 
-import { mySync } from '@database/index';
-import { User } from '@database/models/userModel';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@routes/stacks/AuthStack';
 
@@ -13,18 +11,18 @@ import { useTranslation } from 'react-i18next';
 import { useUserStorage } from '@hooks/useUserStorage';
 import { useNavigation } from '@react-navigation/native';
 
-import { LOGIN } from '@store/slices/userSlice';
+import { LOGIN, User } from '@store/slices/userSlice';
+
+import { StatusBar } from 'react-native';
 
 import Wallpaper from '@assets/svgs/wallpaper-login.svg';
 
 import Button from '@components/Button';
-import Loading from '@presentational/LoginScreen/Loading';
 import RowOr from '@components/RowOr';
 
-type NavProps = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+type NavProps = NativeStackNavigationProp<AuthStackParamList>;
 
 export const LoginOrRegister = () => {
-  const [loadingRemember, setLoadingRemember] = useState(true);
   const [loadingLogin, setLoadingLogin] = useState(false);
 
   const { navigate } = useNavigation<NavProps>();
@@ -37,8 +35,14 @@ export const LoginOrRegister = () => {
 
   const theme = useTheme();
 
+  StatusBar.setBackgroundColor(theme.colors.PRIMARY_200);
+
   const navigateToLogin = useCallback(() => {
     navigate('Login');
+  }, [navigate]);
+
+  const navigateToRegister = useCallback(() => {
+    navigate('Register');
   }, [navigate]);
 
   const login = useCallback(
@@ -68,26 +72,11 @@ export const LoginOrRegister = () => {
     }
   }, [userStorage]);
 
-  const getFirstAccessApp = useCallback(async () => {
-    const data = await userStorage.read('firstAccessApp');
-
-    if (!data) {
-      await mySync();
-
-      await userStorage.getDidFirstAccessApp('firstAccessApp');
-    } else {
-      rememberLogin();
-    }
-  }, [rememberLogin, userStorage]);
-
   useEffect(() => {
     setTimeout(() => getLanguage(), 1000);
-    setTimeout(() => getFirstAccessApp(), 1500);
-    setTimeout(() => setLoadingRemember(false), 2000);
+    setTimeout(() => rememberLogin(), 1500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (loadingRemember) return <Loading />;
 
   return (
     <StyledContainer>
@@ -102,7 +91,7 @@ export const LoginOrRegister = () => {
 
         <Button
           title={t('components.button.register')}
-          onPress={() => null}
+          onPress={navigateToRegister}
           backgroundColor="trasparent"
           fontColor="GRAY_800"
         />

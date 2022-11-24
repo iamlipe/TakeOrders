@@ -27,16 +27,11 @@ export function useUserStorage() {
     await storage.save(key, JSON.stringify(true));
   }
 
-  async function getDidFirstAccessAccount(key: StorageKeys) {
-    await storage.save(key, JSON.stringify(true));
-  }
-
   return {
     save,
     read,
     remove,
     saveUserLanguage,
     getDidFirstAccessApp,
-    getDidFirstAccessAccount,
   };
 }

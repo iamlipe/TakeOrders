@@ -66,8 +66,6 @@ export const ProductRegister = () => {
 
   const { t } = useTranslation();
 
-  const theme = useTheme();
-
   const schema = useMemo(
     () =>
       Yup.object().shape({

@@ -95,7 +95,7 @@ const Button = ({
       {IconComponent && <IconComponent />}
 
       {loading && !icon ? (
-        <StyledLoading color="white" size="small" />
+        <StyledLoading color={theme.colors[fontColor]} size="small" />
       ) : (
         <StyledText color={fontColor}>{title}</StyledText>
       )}
